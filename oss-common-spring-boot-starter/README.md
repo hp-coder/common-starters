@@ -1,1 +1,1 @@
-- Amazon S3 OSS common client 
+- Amazon S3 OSS common client
