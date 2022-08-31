@@ -15,7 +15,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Getter
 public class OssProperties {
 
-    private boolean enable = true;
+    private boolean enable = false;
     private String accessKey;
     private String accessSecret;
     /**

@@ -24,6 +24,7 @@ import java.util.stream.Stream;
  * @date 2022/8/25
  */
 @Configuration
+@ConditionalOnProperty(prefix = "oss",name = "enable",havingValue = "true")
 @EnableConfigurationProperties(OssProperties.class)
 public class OssAutoConfiguration {
 
@@ -35,7 +36,6 @@ public class OssAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(AmazonS3.class)
-    @ConditionalOnProperty(prefix = "oss",name = "enable",havingValue = "true")
     public AmazonS3 amazonS3(OssProperties ossProperties){
         final long count = Stream.builder()
                 .add(ossProperties.getEndpoint())
