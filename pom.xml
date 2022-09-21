@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>oss-common-spring-boot-starter</module>
+        <module>elasticsearch-common-spring-boot-starter</module>
     </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>2.3.7.RELEASE</version>
+        <version>2.7.2</version>
         <relativePath/>
     </parent>
     <groupId>com.hp</groupId>
