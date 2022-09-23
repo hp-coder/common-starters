@@ -30,4 +30,5 @@ public class OssProperties {
      */
     private String region;
     private boolean pathStyleAccess = true;
+    private String bucketName;
 }
