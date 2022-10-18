@@ -1,1 +1,2 @@
 - Amazon S3 OSS common client
+  - 注意需要在springboot配置文件中配置 oss.enable=true 才能正确使用springboot完成自动化配置，管理对象

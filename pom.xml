@@ -6,6 +6,7 @@
     <modules>
         <module>oss-common-spring-boot-starter</module>
         <module>elasticsearch-common-spring-boot-starter</module>
+        <module>mybatis-plus-common-spring-boot-starter</module>
     </modules>
 
     <parent>
@@ -25,6 +26,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
