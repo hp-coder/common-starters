@@ -7,6 +7,7 @@
         <module>oss-common-spring-boot-starter</module>
         <module>elasticsearch-common-spring-boot-starter</module>
         <module>mybatis-plus-common-spring-boot-starter</module>
+        <module>extension-common-spring-boot-starter</module>
     </modules>
 
     <parent>
@@ -23,6 +24,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <guava.version>31.1-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -43,7 +45,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
 
