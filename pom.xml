@@ -8,6 +8,7 @@
         <module>elasticsearch-common-spring-boot-starter</module>
         <module>mybatis-plus-common-spring-boot-starter</module>
         <module>extension-common-spring-boot-starter</module>
+        <module>jpa-common-spring-boot-starter</module>
     </modules>
 
     <parent>
