@@ -9,6 +9,7 @@
         <module>mybatis-plus-common-spring-boot-starter</module>
         <module>extension-common-spring-boot-starter</module>
         <module>jpa-common-spring-boot-starter</module>
+        <module>security-common-spring-boot-starter</module>
     </modules>
 
     <parent>
@@ -19,7 +20,7 @@
     </parent>
     <groupId>com.hp</groupId>
     <artifactId>common-starters</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <properties>
