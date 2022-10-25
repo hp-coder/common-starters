@@ -34,9 +34,10 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
                 .addSuperinterface(Serializable.class)
                 .addModifiers(Modifier.PUBLIC);
         generateGettersAndSettersWithLombok(builder, variableElements);
-        generateJavaSourceFile(generatePackage(typeElement),
-                typeElement.getAnnotation(GenVo.class).sourcePath(),
-                builder);
+//        generateJavaSourceFile(generatePackage(typeElement),
+//                typeElement.getAnnotation(GenVo.class).sourcePath(),
+//                builder);
+        generateJavaFile(generatePackage(typeElement), builder);
     }
 
     @Override

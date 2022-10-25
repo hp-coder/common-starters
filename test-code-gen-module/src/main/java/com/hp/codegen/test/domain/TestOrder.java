@@ -1,6 +1,7 @@
 package com.hp.codegen.test.domain;
 
 import com.hp.codegen.processor.vo.GenVo;
+import com.hp.codegen.test.domain.vo.TestOrderVO;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -23,4 +24,6 @@ public class TestOrder implements Serializable {
     private String taxCategoryNo;
 
     private String measureUnit;
+
+    private TestOrderVO testOrderVO;
 }
