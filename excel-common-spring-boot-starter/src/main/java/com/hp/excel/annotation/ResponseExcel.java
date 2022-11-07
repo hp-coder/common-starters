@@ -1,0 +1,60 @@
+package com.hp.excel.annotation;
+
+import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.handler.WriteHandler;
+import com.hp.excel.enhence.ExcelWriterBuilderEnhance;
+import com.hp.excel.head.HeadGenerator;
+
+import java.lang.annotation.*;
+
+/**
+ * @author HP
+ * @date 2022/11/7
+ */
+@Documented
+@Target({ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ResponseExcel {
+    String name() default "";
+
+    /**
+     * 文件后缀*
+     * @return
+     */
+    ExcelTypeEnum suffix() default ExcelTypeEnum.XLSX;
+
+    /**
+     * 是否添加密码*
+     * @return
+     */
+    String password() default "";
+
+    /**
+     * sheet*
+     * @return
+     */
+    Sheet[] sheets() default {@Sheet(
+            sheetName = "sheet1"
+    )};
+
+    boolean inMemory() default false;
+
+    String template() default "";
+
+    String[] include() default {};
+
+    String[] exclude() default {};
+
+    Class<? extends WriteHandler>[] writeHandler() default {};
+
+    Class<? extends ExcelWriterBuilderEnhance>[] enhancement() default {};
+
+    Class<? extends Converter>[] converter() default {};
+
+    Class<? extends HeadGenerator> headGenerator() default HeadGenerator.class;
+
+    boolean i18nHeader() default false;
+
+    boolean fill() default false;
+}

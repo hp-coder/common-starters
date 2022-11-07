@@ -12,6 +12,7 @@
         <module>security-common-spring-boot-starter</module>
         <module>code-gen-common-spring-boot-starter</module>
         <module>test-code-gen-module</module>
+        <module>excel-common-spring-boot-starter</module>
     </modules>
 
     <parent>
