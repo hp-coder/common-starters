@@ -13,9 +13,6 @@ import java.util.Set;
 public final class ValidateUtil {
     private static final Validator VALIDATOR;
 
-    private Validators() {
-    }
-
     public static <T> Set<ConstraintViolation<T>> validate(T object) {
         return VALIDATOR.validate(object, new Class[0]);
     }
