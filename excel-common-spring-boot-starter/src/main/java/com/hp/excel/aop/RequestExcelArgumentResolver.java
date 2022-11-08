@@ -42,7 +42,6 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
             }
             final RequestExcel requestExcel = parameter.getParameterAnnotation(RequestExcel.class);
             assert requestExcel != null;
-            final Class<? extends ExcelAnalysisEventListener<?>> listenerClass = requestExcel.analysisEventListener();
             final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
             InputStream inputStream;
             if (request instanceof MultipartRequest) {
@@ -50,9 +49,11 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
                 assert file != null;
                 inputStream = file.getInputStream();
             } else {
+                assert request != null;
                 inputStream = request.getInputStream();
             }
             final Class<?> excelModelClass = ResolvableType.forMethodParameter(parameter).getGeneric(new int[]{0}).resolve();
+            final Class<? extends ExcelAnalysisEventListener<?>> listenerClass = requestExcel.analysisEventListener();
             final ExcelAnalysisEventListener<?> listener = BeanUtils.instantiateClass(listenerClass);
             EasyExcel.read(inputStream, excelModelClass, listener)
                     .registerConverter(LocalDateTimeConverter.INSTANCE)
