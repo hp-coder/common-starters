@@ -9,6 +9,10 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
+/**
+ * 提供导入数据自定义数据源校验*
+ * 通过handler返回的数据集是否包含单元格数据判断是否合法*
+ */
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

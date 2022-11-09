@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  * @date 2022/11/7
  */
 public class DynamicSelectDataWriterEnhance implements ExcelWriterBuilderEnhance {
+
     @Override
     public ExcelWriterBuilder enhanceExcel(ExcelWriterBuilder writerBuilder, HttpServletResponse response, ResponseExcel responseExcel, Class<?> dataClass, String templatePath) {
         Map<Integer, ExcelSelectDataColumn> selectedMap = resolveExcelSelect(dataClass);

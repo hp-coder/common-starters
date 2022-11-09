@@ -9,6 +9,10 @@ import com.hp.excel.head.HeadGenerator;
 import java.lang.annotation.*;
 
 /**
+ * 导出excel
+ * <p>
+ * 方法需要返回对应List<T>
+ *
  * @author HP
  * @date 2022/11/7
  */
@@ -20,18 +24,21 @@ public @interface ResponseExcel {
 
     /**
      * 文件后缀*
+     *
      * @return
      */
     ExcelTypeEnum suffix() default ExcelTypeEnum.XLSX;
 
     /**
      * 是否添加密码*
+     *
      * @return
      */
     String password() default "";
 
     /**
      * sheet*
+     *
      * @return
      */
     Sheet[] sheets() default {@Sheet(

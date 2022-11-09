@@ -6,7 +6,10 @@ import com.hp.excel.handler.DefaultColumnDynamicSelectDataHandler;
 import java.lang.annotation.*;
 
 /**
- * 下拉列表*
+ * 添加下拉列表注解
+ * <p>
+ * 支持静态，动态字符串数据源*
+ * 以及二级级联下拉列表数据源*
  *
  * @author HP
  * @date 2022/11/7
@@ -40,6 +43,7 @@ public @interface ExcelSelect {
 
     /**
      * 主要是提供一些简单参数*
+     *
      * @return
      */
     String parameter() default "";

@@ -1,9 +1,14 @@
 package com.hp.excel.aop;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ArrayUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.builder.ExcelReaderBuilder;
+import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.hp.excel.annotation.RequestExcel;
 import com.hp.excel.converter.LocalDateConverter;
 import com.hp.excel.converter.LocalDateTimeConverter;
+import com.hp.excel.enhence.ExcelReaderBuilderEnhance;
 import com.hp.excel.listener.ExcelAnalysisEventListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.MethodParameter;
@@ -20,13 +25,17 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author HP
  * @date 2022/11/7
  */
 public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private final List<ExcelReaderBuilderEnhance> enhanceHolder = new ArrayList<>();
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -37,8 +46,16 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         try {
             final Class<?> parameterType = parameter.getParameterType();
-            if (!parameterType.isAssignableFrom(List.class)) {
-                throw new IllegalArgumentException(" @RequestExcel annotation only works with List type");
+            if (!parameterType.isAssignableFrom(List.class) && !parameterType.isAssignableFrom(Map.class)) {
+                throw new IllegalArgumentException(" @RequestExcel annotation only works with List<T> or Map<K,List<T>> ");
+            }
+            Class<?> excelModelClass;
+            if (parameterType.isAssignableFrom(List.class)) {
+                excelModelClass = ResolvableType.forMethodParameter(parameter).getGeneric(0).resolve();
+            } else if (parameterType.isAssignableFrom(Map.class)) {
+                excelModelClass = ResolvableType.forMethodParameter(parameter).getGeneric(1).resolveGeneric(0);
+            } else {
+                throw new IllegalArgumentException(" @RequestExcel annotation only works with List<T> or Map<K,List<T>> ");
             }
             final RequestExcel requestExcel = parameter.getParameterAnnotation(RequestExcel.class);
             assert requestExcel != null;
@@ -52,21 +69,42 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
                 assert request != null;
                 inputStream = request.getInputStream();
             }
-            final Class<?> excelModelClass = ResolvableType.forMethodParameter(parameter).getGeneric(new int[]{0}).resolve();
-            final Class<? extends ExcelAnalysisEventListener<?>> listenerClass = requestExcel.analysisEventListener();
-            final ExcelAnalysisEventListener<?> listener = BeanUtils.instantiateClass(listenerClass);
-            EasyExcel.read(inputStream, excelModelClass, listener)
-                    .registerConverter(LocalDateTimeConverter.INSTANCE)
-                    .registerConverter(LocalDateConverter.INSTANCE)
-                    .ignoreEmptyRow(requestExcel.ignoreEmptyRow())
-                    .sheet()
-                    .doRead();
+            final Class<? extends ExcelAnalysisEventListener<?, ?>> listenerClass = requestExcel.listener();
+            final ExcelAnalysisEventListener<?, ?> listener = BeanUtils.instantiateClass(listenerClass);
+            ExcelReaderBuilder excelReaderBuilder = initReaderBuilder(requestExcel, inputStream, excelModelClass, listener);
+            final Class<? extends ExcelReaderBuilderEnhance>[] enhancements = requestExcel.enhancement();
+            if (ArrayUtil.isNotEmpty(enhancements)) {
+                for (Class<? extends ExcelReaderBuilderEnhance> enhancement : enhancements) {
+                    final ExcelReaderBuilderEnhance enhance = BeanUtils.instantiateClass(enhancement);
+                    enhanceHolder.add(enhance);
+                    excelReaderBuilder = enhance.enhanceExcel(excelReaderBuilder, request, requestExcel, excelModelClass);
+                }
+            }
+            ExcelReaderSheetBuilder excelReaderSheetBuilder = initSheetReaderBuilder(excelReaderBuilder);
+            if (CollUtil.isNotEmpty(enhanceHolder)) {
+                for (ExcelReaderBuilderEnhance enhance : enhanceHolder) {
+                    excelReaderSheetBuilder = enhance.enhanceSheet(excelReaderSheetBuilder, request, requestExcel, excelModelClass);
+                }
+            }
+            excelReaderSheetBuilder.doRead();
             final WebDataBinder binder = binderFactory.createBinder(webRequest, listener.getErrors(), "excel");
             ModelMap model = mavContainer.getModel();
             model.put(BindingResult.MODEL_KEY_PREFIX + "excel", binder.getBindingResult());
-            return listener.getList();
+            return listener.getData();
         } catch (Exception e) {
             throw e;
         }
     }
+
+    private static ExcelReaderBuilder initReaderBuilder(RequestExcel requestExcel, InputStream inputStream, Class<?> excelModelClass, ExcelAnalysisEventListener<?, ?> listener) {
+        return EasyExcel.read(inputStream, excelModelClass, listener)
+                .registerConverter(LocalDateTimeConverter.INSTANCE)
+                .registerConverter(LocalDateConverter.INSTANCE)
+                .ignoreEmptyRow(requestExcel.ignoreEmptyRow());
+    }
+
+    private static ExcelReaderSheetBuilder initSheetReaderBuilder(ExcelReaderBuilder readerBuilder) {
+        return readerBuilder.sheet();
+    }
+
 }

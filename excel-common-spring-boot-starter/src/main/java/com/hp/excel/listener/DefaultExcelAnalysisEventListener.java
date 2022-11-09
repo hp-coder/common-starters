@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
  * @date 2022/11/7
  */
 @Slf4j
-public class DefaultExcelAnalysisEventListener extends ExcelAnalysisEventListener<Object> {
+public class DefaultExcelAnalysisEventListener extends ExcelAnalysisEventListener<Object,List<Object>> {
 
     private final List<Object> list = new ArrayList();
     private final List<ErrorMessage> errorMessageList = new ArrayList();
     private long lineNum = 1L;
 
     @Override
-    public List<Object> getList() {
+    public List<Object> getData() {
         return this.list;
     }
 
