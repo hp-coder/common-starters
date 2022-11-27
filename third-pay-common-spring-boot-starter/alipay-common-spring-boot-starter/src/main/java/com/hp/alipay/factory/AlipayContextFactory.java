@@ -21,8 +21,7 @@ public final class AlipayContextFactory {
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
-        final AlipayContext<T, E, R> alipayContext = new AlipayContext<T, E, R>(alipayClient){};
-        return alipayContext;
+        return new AlipayContext<T, E, R>(alipayClient){};
     }
 
 
@@ -34,7 +33,6 @@ public final class AlipayContextFactory {
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
-        final AlipayContext<T,E,R> alipayContext = new AlipayContext<T, E, R>(alipayClient, httpServletRequest, httpServletResponse){};
-        return alipayContext;
+        return new AlipayContext<T, E, R>(alipayClient, httpServletRequest, httpServletResponse){};
     }
 }
