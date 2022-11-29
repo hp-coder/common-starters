@@ -5,7 +5,7 @@ import cn.hutool.core.util.RandomUtil;
 /**
  * @author HP 2022/11/15
  */
-public final class PaymentSupport {
+public final class PaymentSupport  {
 
     private PaymentSupport() {
     }
