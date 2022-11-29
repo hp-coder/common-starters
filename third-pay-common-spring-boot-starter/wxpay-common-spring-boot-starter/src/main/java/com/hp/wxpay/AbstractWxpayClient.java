@@ -57,6 +57,6 @@ public abstract class AbstractWxpayClient implements WxpayClient {
     }
 
     private <T extends WxpayResponse> T doRequest(WxpayRequest<T> request, WxpayParser<T> parser) {
-
+        return null;
     }
 }
