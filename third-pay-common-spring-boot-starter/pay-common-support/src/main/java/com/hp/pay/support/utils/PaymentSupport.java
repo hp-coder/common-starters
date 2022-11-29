@@ -1,8 +1,6 @@
 package com.hp.pay.support.utils;
 
 import cn.hutool.core.codec.Base64;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.io.resource.Resource;
@@ -10,8 +8,6 @@ import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.*;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.HmacAlgorithm;
-import com.hp.pay.support.enums.PaymentConstants;
-import com.hp.pay.support.model.CertificateModel;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.crypto.BadPaddingException;
@@ -27,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.cert.*;
 import java.util.*;
@@ -366,13 +361,13 @@ public final class PaymentSupport  {
             return null;
         }
         CertificateModel model = new CertificateModel();
-        model.setItself(certificate);
-        model.setIssuerDn(certificate.getIssuerDN());
-        model.setSubjectDn(certificate.getSubjectDN());
-        model.setVersion(certificate.getVersion());
-        model.setNotBefore(certificate.getNotBefore());
-        model.setNotAfter(certificate.getNotAfter());
-        model.setSerialNumber(certificate.getSerialNumber().toString(16));
+//        model.setItself(certificate);
+//        model.setIssuerDn(certificate.getIssuerDN());
+//        model.setSubjectDn(certificate.getSubjectDN());
+//        model.setVersion(certificate.getVersion());
+//        model.setNotBefore(certificate.getNotBefore());
+//        model.setNotAfter(certificate.getNotAfter());
+//        model.setSerialNumber(certificate.getSerialNumber().toString(16));
         return model;
     }
 
@@ -396,35 +391,36 @@ public final class PaymentSupport  {
      * @return true 有效 false 无效
      */
     public static boolean checkCertificateIsValid(CertificateModel model, String mchId, int offsetDay) {
-        if (null == model) {
-            return false;
-        }
-        Date notAfter = model.getNotAfter();
-        if (null == notAfter) {
-            return false;
-        }
-        // 证书颁发者
-        Principal issuerDn = model.getIssuerDn();
-        if (null == issuerDn || !issuerDn.getName().contains(PaymentConstants.ISSUER)) {
-            return false;
-        }
-        // 证书CN字段
-        if (StrUtil.isNotEmpty(mchId)) {
-            Principal subjectDn = model.getSubjectDn();
-            if (null == subjectDn || !subjectDn.getName().contains(PaymentConstants.CN.concat(mchId.trim()))) {
-                return false;
-            }
-        }
-        // 证书序列号固定40字节的字符串
-        String serialNumber = model.getSerialNumber();
-        if (StrUtil.isEmpty(serialNumber) || serialNumber.length() != PaymentConstants.SERIAL_NUMBER_LENGTH) {
-            return false;
-        }
-        // 偏移后的时间
-        DateTime dateTime = DateUtil.offsetDay(notAfter, offsetDay);
-        DateTime now = DateUtil.date();
-        int compare = DateUtil.compare(dateTime, now);
-        return compare >= 0;
+//        if (null == model) {
+//            return false;
+//        }
+//        Date notAfter = model.getNotAfter();
+//        if (null == notAfter) {
+//            return false;
+//        }
+//        // 证书颁发者
+//        Principal issuerDn = model.getIssuerDn();
+//        if (null == issuerDn || !issuerDn.getName().contains(PaymentConstants.ISSUER)) {
+//            return false;
+//        }
+//        // 证书CN字段
+//        if (StrUtil.isNotEmpty(mchId)) {
+//            Principal subjectDn = model.getSubjectDn();
+//            if (null == subjectDn || !subjectDn.getName().contains(PaymentConstants.CN.concat(mchId.trim()))) {
+//                return false;
+//            }
+//        }
+//        // 证书序列号固定40字节的字符串
+//        String serialNumber = model.getSerialNumber();
+//        if (StrUtil.isEmpty(serialNumber) || serialNumber.length() != PaymentConstants.SERIAL_NUMBER_LENGTH) {
+//            return false;
+//        }
+//        // 偏移后的时间
+//        DateTime dateTime = DateUtil.offsetDay(notAfter, offsetDay);
+//        DateTime now = DateUtil.date();
+//        int compare = DateUtil.compare(dateTime, now);
+//        return compare >= 0;
+         return false;
     }
 
     /**
