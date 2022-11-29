@@ -1,4 +1,4 @@
-package com.hp.alipay.auth;
+package com.hp.alipay.handler.auth;
 
 import com.alipay.api.domain.AlipayOpenAuthTokenAppModel;
 import com.alipay.api.request.AlipayOpenAuthTokenAppRequest;
