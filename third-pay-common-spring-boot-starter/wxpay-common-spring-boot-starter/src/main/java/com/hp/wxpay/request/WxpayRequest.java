@@ -2,6 +2,7 @@ package com.hp.wxpay.request;
 
 import com.hp.wxpay.domain.WxpayObject;
 import com.hp.wxpay.response.WxpayResponse;
+import org.springframework.http.HttpMethod;
 
 /**
  * @author HP 2022/11/17
@@ -12,7 +13,7 @@ public interface WxpayRequest<T extends WxpayResponse> {
 
     String getApiVersion();
 
-    String getHttpMethod();
+    HttpMethod getHttpMethod();
 
     String getFormat();
 
