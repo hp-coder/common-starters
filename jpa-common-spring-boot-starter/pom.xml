@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jpa-common-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -18,9 +18,15 @@
         <vavr.version>1.0.0-alpha-3</vavr.version>
         <hibernate-validator.version>6.0.19.Final</hibernate-validator.version>
         <querydsl.version>5.0.0</querydsl.version>
+        <hutool.version>5.8.5</hutool.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>

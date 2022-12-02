@@ -4,6 +4,7 @@ import com.hp.jpa.convertor.InstantLongConverter;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
@@ -13,7 +14,8 @@ import java.time.Instant;
 @Data
 public abstract class BaseJpaAggregate extends AbstractAggregateRoot<BaseJpaAggregate> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "snowflakeIdGenerator")
+    @GenericGenerator(name = "snowflakeIdGenerator", strategy = "com.hp.jpa.id.SnowflakeIdGenerator")
     @Setter(AccessLevel.PROTECTED)
     @Column(name = "id")
     private Long id;
