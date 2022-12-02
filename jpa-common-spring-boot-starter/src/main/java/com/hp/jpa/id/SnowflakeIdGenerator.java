@@ -18,16 +18,10 @@ public class SnowflakeIdGenerator implements IdentifierGenerator {
 
     public static long DATACENTER_ID = 1;
 
-    private final Snowflake snowflake = IdUtil.getSnowflake(WORKER_ID, DATACENTER_ID);
-
     @PostConstruct
     public void init() {
-        WORKER_ID = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr());
+        WORKER_ID = NetUtil.ipv4ToLong(NetUtil.getLocalhostStr())%32;
         log.info("当前机器的workId:{}", WORKER_ID);
-    }
-
-    public synchronized long snowflakeId() {
-        return snowflake.nextId();
     }
 
     public synchronized long snowflakeId(long workerId, long datacenterId) {
