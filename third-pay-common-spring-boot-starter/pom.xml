@@ -16,7 +16,7 @@
         <module>pay-common-support</module>
     </modules>
 
-    <artifactId>thrid-pay-common-spring-boot-starter</artifactId>
+    <artifactId>third-pay-common-spring-boot-starter</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
