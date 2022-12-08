@@ -2,7 +2,6 @@ package com.hp.sync.listener;
 
 import com.alibaba.fastjson2.JSON;
 import com.hp.sync.CanalMessage;
-import com.hp.sync.SyncMessage;
 import com.hp.sync.converter.CanalConverter;
 import com.hp.sync.support.Constants;
 import lombok.RequiredArgsConstructor;
@@ -45,14 +44,8 @@ public class CanalListener {
             log.info("处理Canal消息：表：{}, PK：{}, DML：{}", canalMessage.getTable(), canalMessage.getPkNames(), canalMessage.getType());
         }
         final String table = canalMessage.getTable();
-        final Optional<List<SyncMessage>> optional =
-                Optional.ofNullable(CanalConverter.converter(table))
-                        .map(converter -> converter.convert(canalMessage));
-        if (!optional.isPresent()) {
-            return;
-        }
-        for (SyncMessage syncDTO : optional.get()) {
-            rabbitTemplate.convertAndSend(Constants.MQ.SYNC_ROUTING, syncDTO);
-        }
+        Optional.ofNullable(CanalConverter.converter(table))
+                .map(converter -> converter.convert(canalMessage))
+                .ifPresent(syncMessage -> rabbitTemplate.convertAndSend(Constants.MQ.SYNC_ROUTING, syncMessage));
     }
 }
