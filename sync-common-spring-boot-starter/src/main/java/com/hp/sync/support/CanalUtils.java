@@ -24,7 +24,7 @@ public final class CanalUtils {
         }
         return data.stream().map(map -> {
                     if (map.containsKey(pk)) {
-                        return ((Long) map.get(pk));
+                        return Long.parseLong((String) map.get(pk));
                     }
                     return null;
                 })

@@ -1,6 +1,6 @@
 package com.hp.sync.listener;
 
-import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson.JSON;
 import com.hp.sync.CanalMessage;
 import com.hp.sync.converter.CanalConverter;
 import com.hp.sync.support.Constants;
@@ -46,6 +46,6 @@ public class CanalListener {
         final String table = canalMessage.getTable();
         Optional.ofNullable(CanalConverter.converter(table))
                 .map(converter -> converter.convert(canalMessage))
-                .ifPresent(syncMessage -> rabbitTemplate.convertAndSend(Constants.MQ.SYNC_ROUTING, syncMessage));
+                .ifPresent(syncMessage -> rabbitTemplate.convertAndSend(Constants.MQ.SYNC_QUEUE, syncMessage));
     }
 }
