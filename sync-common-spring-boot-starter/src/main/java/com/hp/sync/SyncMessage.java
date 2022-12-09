@@ -11,13 +11,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SyncMessage implements Serializable {
+public class SyncMessage<T> implements Serializable {
     private static final long serialVersionUID = 3774135273878229520L;
     private String table;
     private Constants.DML type;
     private boolean isMain;
     private String pk;
-    private List<Long> pkValues;
+    private List<T> pkValues;
 
     public SyncMessage(String table, Constants.DML type) {
         this.table = table;

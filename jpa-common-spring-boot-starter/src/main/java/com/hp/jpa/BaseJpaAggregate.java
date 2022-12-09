@@ -20,12 +20,12 @@ public abstract class BaseJpaAggregate extends AbstractAggregateRoot<BaseJpaAggr
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = true, updatable = false)
     @Convert(converter = InstantLongConverter.class)
     @Setter(AccessLevel.PROTECTED)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = true)
     @Convert(converter = InstantLongConverter.class)
     @Setter(AccessLevel.PROTECTED)
     private Instant updatedAt;

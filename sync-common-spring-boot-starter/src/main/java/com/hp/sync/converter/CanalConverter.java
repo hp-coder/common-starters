@@ -20,8 +20,8 @@ public interface CanalConverter extends InitializingBean {
         return HOLDER.get(tableName);
     }
 
-    default SyncMessage convert(CanalMessage canalMessage) {
-        final Optional<SyncMessage> syncMessage = CanalUtils.canalToSync(canalMessage);
+    default SyncMessage<?> convert(CanalMessage canalMessage) {
+        final Optional<SyncMessage<Long>> syncMessage = CanalUtils.canalToSync(canalMessage);
         return syncMessage.orElse(null);
     }
 

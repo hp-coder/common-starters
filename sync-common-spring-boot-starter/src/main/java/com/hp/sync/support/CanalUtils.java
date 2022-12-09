@@ -33,12 +33,12 @@ public final class CanalUtils {
                 .collect(Collectors.toList());
     }
 
-    public static Optional<SyncMessage> canalToSync(CanalMessage canalMessage) {
+    public static Optional<SyncMessage<Long>> canalToSync(CanalMessage canalMessage) {
         final List<Long> pks = getPks(canalMessage);
         if (CollectionUtils.isEmpty(pks)) {
             return Optional.empty();
         }
-        final SyncMessage syncMessage = new SyncMessage(canalMessage.getTable(), Constants.DML.valueOf(canalMessage.getType()));
+        final SyncMessage<Long> syncMessage = new SyncMessage<>(canalMessage.getTable(), Constants.DML.valueOf(canalMessage.getType()));
         syncMessage.setPk(canalMessage.getPkNames().get(0));
         syncMessage.setPkValues(pks);
         return Optional.of(syncMessage);
