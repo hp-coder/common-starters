@@ -18,6 +18,7 @@ public class DingMsgUtils implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     public static void sendMsgByMobile(IDingMsg msg) {
+        Assert.notNull(applicationContext,"spring 上下文为空");
         Assert.notNull(msg, "消息不能为空");
         new DingBotMessageHandler()
                 .sendMsgThroughMobile(

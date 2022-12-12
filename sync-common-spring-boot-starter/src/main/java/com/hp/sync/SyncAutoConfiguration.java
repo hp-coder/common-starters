@@ -4,6 +4,7 @@ import com.hp.sync.config.SyncConfig;
 import com.hp.sync.listener.CanalListener;
 import com.hp.sync.listener.SyncListener;
 import com.hp.sync.support.Constants;
+import com.hp.sync.support.DingMsgUtils;
 import com.luban.dingding.component.application.IDingBot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
@@ -14,12 +15,14 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author HP 2022/12/7
  */
 @Slf4j
 @Configuration
+@Import(value = {DingMsgUtils.class})
 @EnableConfigurationProperties({SyncConfig.class})
 public class SyncAutoConfiguration {
 

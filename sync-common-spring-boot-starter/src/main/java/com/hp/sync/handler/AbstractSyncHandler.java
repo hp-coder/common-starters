@@ -46,6 +46,7 @@ public abstract class AbstractSyncHandler implements SyncHandler {
                     .level2Title("异常")
                     .text(stackTrace).build();
             DingMsgUtils.sendMsgByMobile(new DingMarkdownMsg(new DingMarkdownMsg.SampleMarkdown("数据同步异常", build)));
+            throw new RuntimeException("同步处理器异常，已通过钉钉机器人发送");
         }
     }
 

@@ -27,6 +27,7 @@ public class SyncListener {
                     .handle(syncMessage);
         } catch (Exception e) {
             log.error("同步处理器异常：{}", e.getLocalizedMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 }
