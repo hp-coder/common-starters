@@ -3,14 +3,8 @@ package com.hp.sync.handler;
 import com.alibaba.fastjson.JSON;
 import com.hp.sync.SyncMessage;
 import com.hp.sync.support.Constants;
-import com.hp.sync.support.DingMsgUtils;
-import com.luban.dingding.pojo.message.DingMarkdownMsg;
-import com.luban.dingding.utils.DingMarkdown;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * 表数据同步处理器
@@ -36,17 +30,7 @@ public abstract class AbstractSyncHandler implements SyncHandler {
             }
         } catch (Exception e) {
             log.error("同步异常：{}", JSON.toJSONString(syncMessage), e);
-            final String stackTrace = Arrays.stream(e.getStackTrace())
-                    .limit(100)
-                    .map(StackTraceElement::toString)
-                    .collect(Collectors.joining("  \n  "));
-            final String build = DingMarkdown.builder()
-                    .level2Title("同步消息")
-                    .text(JSON.toJSONString(syncMessage))
-                    .level2Title("异常")
-                    .text(stackTrace).build();
-            DingMsgUtils.sendMsgByMobile(new DingMarkdownMsg(new DingMarkdownMsg.SampleMarkdown("数据同步异常", build)));
-            throw new RuntimeException("同步处理器异常，已通过钉钉机器人发送");
+            throw new RuntimeException("同步处理器异常", e);
         }
     }
 
