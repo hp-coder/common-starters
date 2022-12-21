@@ -1,7 +1,8 @@
-package com.hp.codegen.processor.vo;
+package com.hp.codegen.processor.dto;
 
 import com.google.auto.service.AutoService;
 import com.hp.codegen.processor.AbstractCodeGenProcessor;
+import com.hp.codegen.processor.vo.Ignore;
 import com.hp.codegen.spi.CodeGenProcessor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -21,38 +22,35 @@ import java.util.Set;
  * @date 2022/10/24
  */
 @AutoService(CodeGenProcessor.class)
-public class GenVoProcessor extends AbstractCodeGenProcessor {
+public class GenDtoProcessor extends AbstractCodeGenProcessor {
 
-    public static final String SUFFIX = "VO";
+    public static final String SUFFIX = "DTO";
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
         Set<VariableElement> fields = findFields(typeElement, v -> Objects.isNull(v.getAnnotation(Ignore.class)));
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractBaseJpaVO.class)
+                .superclass(AbstractBaseJpaDTO.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Data.class);
         generateGettersAndSettersWithLombok(builder, fields);
-        MethodSpec.Builder constructorSpecBuilder = MethodSpec.constructorBuilder()
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
                 .addParameter(TypeName.get(typeElement.asType()), "source")
-                .addModifiers(Modifier.PUBLIC);
-        constructorSpecBuilder.addStatement("super(source)");
-        fields.forEach(f -> constructorSpecBuilder.addStatement("Optional.ofNullable(source.get$L()).ifPresent(this::set$L)", getFieldMethodName(f), getFieldMethodName(f)));
-        builder.addMethod(MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PROTECTED)
-                .build());
-        builder.addMethod(constructorSpecBuilder.build());
+                .addModifiers(Modifier.PUBLIC)
+                .returns(void.class);
+        fields.forEach(f -> methodBuilder.addStatement("Optional.ofNullable(this.get$L()).ifPresent(source::set$L)", getFieldMethodName(f), getFieldMethodName(f)));
+        builder.addMethod(methodBuilder.build());
         generateJavaFile(generatePackage(typeElement), builder);
     }
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
-        return GenVo.class;
+        return GenDto.class;
     }
 
     @Override
     public String generatePackage(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenVo.class).pkgName();
+        return typeElement.getAnnotation(GenDto.class).pkgName();
     }
 }

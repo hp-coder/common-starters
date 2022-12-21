@@ -1,10 +1,11 @@
-package com.hp.codegen.processor.vo;
+package com.hp.codegen.processor.request;
 
 import com.google.auto.service.AutoService;
 import com.hp.codegen.processor.AbstractCodeGenProcessor;
+import com.hp.codegen.processor.response.GenResponse;
+import com.hp.codegen.processor.vo.AbstractBaseJpaVO;
+import com.hp.codegen.processor.vo.Ignore;
 import com.hp.codegen.spi.CodeGenProcessor;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import lombok.Data;
 
@@ -21,9 +22,9 @@ import java.util.Set;
  * @date 2022/10/24
  */
 @AutoService(CodeGenProcessor.class)
-public class GenVoProcessor extends AbstractCodeGenProcessor {
+public class GenRequestProcessor extends AbstractCodeGenProcessor {
 
-    public static final String SUFFIX = "VO";
+    public static final String SUFFIX = "Request";
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
@@ -34,25 +35,17 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Data.class);
         generateGettersAndSettersWithLombok(builder, fields);
-        MethodSpec.Builder constructorSpecBuilder = MethodSpec.constructorBuilder()
-                .addParameter(TypeName.get(typeElement.asType()), "source")
-                .addModifiers(Modifier.PUBLIC);
-        constructorSpecBuilder.addStatement("super(source)");
-        fields.forEach(f -> constructorSpecBuilder.addStatement("Optional.ofNullable(source.get$L()).ifPresent(this::set$L)", getFieldMethodName(f), getFieldMethodName(f)));
-        builder.addMethod(MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PROTECTED)
-                .build());
-        builder.addMethod(constructorSpecBuilder.build());
-        generateJavaFile(generatePackage(typeElement), builder);
+        String packageName = generatePackage(typeElement);
+        generateJavaSourceFile(packageName, typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
     }
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
-        return GenVo.class;
+        return GenRequest.class;
     }
 
     @Override
     public String generatePackage(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenVo.class).pkgName();
+        return typeElement.getAnnotation(GenRequest.class).pkgName();
     }
 }

@@ -1,19 +1,38 @@
 package com.hp.codegen.test.domain;
 
+import com.hp.codegen.processor.controller.GenController;
+import com.hp.codegen.processor.dto.GenDto;
+import com.hp.codegen.processor.mapper.GenMapper;
+import com.hp.codegen.processor.repository.GenRepository;
+import com.hp.codegen.processor.request.GenRequest;
+import com.hp.codegen.processor.response.GenResponse;
+import com.hp.codegen.processor.service.GenService;
+import com.hp.codegen.processor.service.GenServiceImpl;
 import com.hp.codegen.processor.vo.GenVo;
-import com.hp.codegen.test.domain.vo.TestOrderVO;
+import com.hp.jpa.BaseJpaAggregate;
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * @author HP
  * @date 2022/10/24
  */
-@GenVo(pkgName = "com.hp.codegen.test.domain.vo")
+@GenResponse(pkgName = "com.hp.codegen.test.domain.response")
+@GenVo(pkgName = "com.hp.codegen.test.domain.response")
+@GenDto(pkgName = "com.hp.codegen.test.domain.request")
+@GenRequest(pkgName = "com.hp.codegen.test.domain.request")
+@GenController(pkgName = "com.hp.codegen.test.domain.controller")
+@GenService(pkgName = "com.hp.codegen.test.domain.service")
+@GenServiceImpl(pkgName = "com.hp.codegen.test.domain.service.impl")
+@GenRepository(pkgName = "com.hp.codegen.test.domain.respository")
+@GenMapper(pkgName = "com.hp.codegen.test.domain.mapper")
+@Entity
+@Table
 @Data
-public class TestOrder implements Serializable {
+public class TestOrder extends BaseJpaAggregate implements Serializable {
     private String skuName;
 
     private Long templateId;
@@ -26,19 +45,7 @@ public class TestOrder implements Serializable {
 
     private String measureUnit;
 
-    private TestOrderVO testOrderVO;
-
-    public static void main(String[] args) {
-        final char[] data = {'1','2'};
-        char[] same = data;
-        final char[] back = Arrays.copyOf(data, data.length);
-        System.out.println("data = " + data);
-        System.out.println("same = " + same);
-        System.out.println("back = " + back);
-        System.out.println("data = " + Arrays.toString(data));
-        System.out.println("back = " + Arrays.toString(back));
-        data[0] = '3';
-        System.out.println("data = " + Arrays.toString(data));
-        System.out.println("back = " + Arrays.toString(back));
-    }
+    public void init(){}
+    public void valid(){}
+    public void invalid(){}
 }
