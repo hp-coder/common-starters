@@ -35,8 +35,10 @@ public abstract class AbstractSyncHandler implements SyncHandler {
     }
 
     protected void handleTruncate(SyncMessage syncMessage) {
-
+        doReload(syncMessage);
     }
+
+    public abstract void doReload(SyncMessage message);
 
     protected void handleSave(SyncMessage syncMessage) {
         if (CollectionUtils.isEmpty(syncMessage.getPkValues())) {

@@ -21,7 +21,7 @@ public class DefaultSyncHandler extends AbstractSyncHandler{
     }
 
     @Override
-    protected void handleTruncate(SyncMessage syncMessage) {
-        log.info("Default sync handler: handleTruncate invoked.");
+    public void doReload(SyncMessage message) {
+        log.info("Default sync handler: doReload invoked.");
     }
 }
