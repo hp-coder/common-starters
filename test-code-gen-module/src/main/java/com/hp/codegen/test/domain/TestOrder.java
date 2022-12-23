@@ -27,7 +27,7 @@ import java.io.Serializable;
 @GenController(pkgName = "com.hp.codegen.test.domain.controller")
 @GenService(pkgName = "com.hp.codegen.test.domain.service")
 @GenServiceImpl(pkgName = "com.hp.codegen.test.domain.service.impl")
-@GenRepository(pkgName = "com.hp.codegen.test.domain.respository")
+@GenRepository(pkgName = "com.hp.codegen.test.domain.repository")
 @GenMapper(pkgName = "com.hp.codegen.test.domain.mapper")
 @Entity
 @Table

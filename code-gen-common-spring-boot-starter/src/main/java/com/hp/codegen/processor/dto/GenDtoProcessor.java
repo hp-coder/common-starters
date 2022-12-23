@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService;
 import com.hp.codegen.processor.AbstractCodeGenProcessor;
 import com.hp.codegen.processor.vo.Ignore;
 import com.hp.codegen.spi.CodeGenProcessor;
+import com.luban.common.jpa.dto.AbstractBaseJpaDTO;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -14,8 +15,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+
+
 
 /**
  * @author HP
@@ -39,7 +41,7 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
                 .addParameter(TypeName.get(typeElement.asType()), "source")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
-        fields.forEach(f -> methodBuilder.addStatement("Optional.ofNullable(this.get$L()).ifPresent(source::set$L)", getFieldMethodName(f), getFieldMethodName(f)));
+        fields.forEach(f -> methodBuilder.addStatement("$T.ofNullable(this.get$L()).ifPresent(source::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
         builder.addMethod(methodBuilder.build());
         generateJavaFile(generatePackage(typeElement), builder);
     }

@@ -19,6 +19,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.luban</groupId>
+            <artifactId>luban-common-jpa</artifactId>
+            <version>3.6.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>
             <version>1.0-rc5</version>
@@ -28,11 +33,6 @@
             <groupId>com.squareup</groupId>
             <artifactId>javapoet</artifactId>
             <version>1.13.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.luban</groupId>
-            <artifactId>luban-common-core</artifactId>
-            <version>3.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -49,5 +49,18 @@
             <version>1.3.1.Final</version>
         </dependency>
     </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
