@@ -5,7 +5,7 @@ import com.hp.codegen.processor.AbstractCodeGenProcessor;
 import com.hp.codegen.processor.response.GenResponse;
 import com.hp.codegen.processor.vo.Ignore;
 import com.hp.codegen.spi.CodeGenProcessor;
-import com.luban.common.jpa.vo.AbstractBaseJpaVO;
+import com.luban.common.jpa.dto.AbstractBaseJpaDTO;
 import com.squareup.javapoet.TypeSpec;
 import lombok.Data;
 
@@ -31,7 +31,7 @@ public class GenRequestProcessor extends AbstractCodeGenProcessor {
         Set<VariableElement> fields = findFields(typeElement, v -> Objects.isNull(v.getAnnotation(Ignore.class)));
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractBaseJpaVO.class)
+                .superclass(AbstractBaseJpaDTO.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Data.class);
         generateGettersAndSettersWithLombok(builder, fields);

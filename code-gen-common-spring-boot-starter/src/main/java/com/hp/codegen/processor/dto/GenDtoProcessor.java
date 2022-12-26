@@ -15,7 +15,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 
 
@@ -44,6 +46,7 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
         fields.forEach(f -> methodBuilder.addStatement("$T.ofNullable(this.get$L()).ifPresent(source::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
         builder.addMethod(methodBuilder.build());
         generateJavaFile(generatePackage(typeElement), builder);
+//        generateJavaSourceFile(generatePackage(typeElement),typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
     }
 
     @Override

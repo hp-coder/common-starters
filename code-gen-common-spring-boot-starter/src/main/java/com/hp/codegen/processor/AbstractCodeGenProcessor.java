@@ -87,33 +87,6 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
             builder.addField(field);
         });
     }
-//    public void generateGettersAndSettersWithLombokAndConverter(TypeSpec.Builder builder, Set<VariableElement> variableElements){
-//        builder.addAnnotation(Data.class);
-//        builder.addAnnotation(AnnotationSpec.builder(Accessors.class)
-//                .addMember("chain", "$L", true).build());
-//        for (VariableElement ve : variableElements) {
-//            TypeName typeName;
-//            if (Objects.nonNull(ve.getAnnotation(TypeConverter.class))) {
-//                //这里处理下泛型的情况，比如List<String> 这种，TypeConverter FullName 用逗号分隔"java.lang.List
-//                String fullName = ve.getAnnotation(TypeConverter.class).toTypeFullName();
-//                Iterable<String> classes = Splitter.on(",").split(fullName);
-//                int size = Iterables.size(classes);
-//                if (size > 1) {
-//                    //泛型生成像这样
-//                    //ParameterizedTypeName.get(ClassName.get(JsonObject.class), ClassName.get(String.class))
-//                    typeName = ParameterizedTypeName.get(ClassName.bestGuess(Iterables.get(classes, 0)), ClassName.bestGuess(Iterables.get(classes, 1)));
-//                } else {
-//                    typeName = ClassName.bestGuess(ve.getAnnotation(TypeConverter.class).toTypeFullName());
-//                }
-//            } else {
-//                typeName = TypeName.get(ve.asType());
-//            }
-//            FieldSpec.Builder fieldSpec = FieldSpec
-//                    .builder(typeName, ve.getSimpleName().toString(), Modifier.PRIVATE);
-//            builder.addField(fieldSpec.build());
-//        }
-//    }
-
 
     public void generateGettersAndSetters(TypeSpec.Builder typeSpecBuilder, Set<VariableElement> variableElements) {
         ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Starting To Create Getters & Setters");
@@ -209,36 +182,16 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
         context.setRequestClassName(requestName);
         context.setControllerClassName(controllerName);
 
-        Optional.ofNullable(typeElement.getAnnotation(GenController.class)).ifPresent(anno -> {
-            context.setControllerPackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenDto.class)).ifPresent(anno -> {
-            context.setDtoPackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenVo.class)).ifPresent(anno -> {
-            context.setVoPackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenRepository.class)).ifPresent(anno -> {
-            context.setRepositoryPackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenMapper.class)).ifPresent(anno -> {
-            context.setMapperPackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenService.class)).ifPresent(anno -> {
-            context.setServicePackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenServiceImpl.class)).ifPresent(anno -> {
-            context.setImplPackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenRequest.class)).ifPresent(anno -> {
-            context.setRequestPackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenResponse.class)).ifPresent(anno -> {
-            context.setResponsePackageName(anno.pkgName());
-        });
-        Optional.ofNullable(typeElement.getAnnotation(GenFeign.class)).ifPresent(anno -> {
-            context.setFeignPackageName(anno.pkgName());
-        });
+        Optional.ofNullable(typeElement.getAnnotation(GenController.class)).ifPresent(anno -> context.setControllerPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenDto.class)).ifPresent(anno -> context.setDtoPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenVo.class)).ifPresent(anno -> context.setVoPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenRepository.class)).ifPresent(anno -> context.setRepositoryPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenMapper.class)).ifPresent(anno -> context.setMapperPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenService.class)).ifPresent(anno -> context.setServicePackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenServiceImpl.class)).ifPresent(anno -> context.setImplPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenRequest.class)).ifPresent(anno -> context.setRequestPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenResponse.class)).ifPresent(anno -> context.setResponsePackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenFeign.class)).ifPresent(anno -> context.setFeignPackageName(anno.pkgName()));
         return context;
     }
 
