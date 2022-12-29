@@ -2,6 +2,7 @@ package com.hp.codegen.processor.vo;
 
 import com.google.auto.service.AutoService;
 import com.hp.codegen.processor.AbstractCodeGenProcessor;
+import com.hp.codegen.processor.response.GenResponse;
 import com.hp.codegen.spi.CodeGenProcessor;
 import com.luban.common.jpa.vo.AbstractBaseJpaVO;
 import com.squareup.javapoet.MethodSpec;
@@ -44,7 +45,7 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
                 .addModifiers(Modifier.PROTECTED)
                 .build());
         builder.addMethod(constructorSpecBuilder.build());
-        generateJavaFile(generatePackage(typeElement), builder);
+        generateJavaSourceFile(generatePackage(typeElement),typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.hp.codegen.processor.dto;
 
 import com.google.auto.service.AutoService;
 import com.hp.codegen.processor.AbstractCodeGenProcessor;
+import com.hp.codegen.processor.response.GenResponse;
 import com.hp.codegen.processor.vo.Ignore;
 import com.hp.codegen.spi.CodeGenProcessor;
 import com.luban.common.jpa.dto.AbstractBaseJpaDTO;
@@ -45,8 +46,7 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
                 .returns(void.class);
         fields.forEach(f -> methodBuilder.addStatement("$T.ofNullable(this.get$L()).ifPresent(source::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
         builder.addMethod(methodBuilder.build());
-        generateJavaFile(generatePackage(typeElement), builder);
-//        generateJavaSourceFile(generatePackage(typeElement),typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
+        generateJavaSourceFile(generatePackage(typeElement),typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
     }
 
     @Override
