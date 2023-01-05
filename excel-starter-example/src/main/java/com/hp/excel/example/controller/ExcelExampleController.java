@@ -67,6 +67,7 @@ public class ExcelExampleController {
             response.setCharacterEncoding("UTF-8");
 
             final ExcelWriterBuilder excelWriterBuilder = EasyExcel.write(response.getOutputStream());
+            //点到SelectDataSheetWriteHandler里去
             excelWriterBuilder.registerWriteHandler(new SelectDataSheetWriteHandler(resolveExcelSelect(ExcelExample.class)));
             ExcelWriter excelWriter = excelWriterBuilder.build();
             WriteSheet writeSheet = EasyExcel

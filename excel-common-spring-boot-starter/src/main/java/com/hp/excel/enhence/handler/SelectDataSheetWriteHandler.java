@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 请照抄整个类*
  * @author HP
  * @date 2022/11/7
  */
@@ -42,8 +43,10 @@ public class SelectDataSheetWriteHandler implements SheetWriteHandler {
             // 设置下拉列表的行： 首行，末行，首列，末列
             if (StrUtil.isNotEmpty(v.getParentColumn())) {
                 final Map<String, List<String>> data = (Map<String, List<String>>) v.getSource();
+                //直接粘贴该工具类方法到你的项目中
                 ExcelUtil.addCascadeValidationToSheet(writeWorkbookHolder, writeSheetHolder, data, v.getParentColumnIndex(), k, v.getFirstRow(), v.getLastRow());
             } else {
+                //直接粘贴该工具类方法到你的项目中
                 ExcelUtil.addSelectValidationToSheet(sheet, helper, k, v);
             }
         });
