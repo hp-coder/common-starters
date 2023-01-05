@@ -9,7 +9,6 @@ import com.hp.excel.util.ExcelUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,6 @@ public class SelectDataSheetWriteHandler implements SheetWriteHandler {
     @Override
     public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
         // 这里可以对cell进行任何操作
-        final Workbook workbook = writeWorkbookHolder.getWorkbook();
         Sheet sheet = writeSheetHolder.getSheet();
         DataValidationHelper helper = sheet.getDataValidationHelper();
         selectedMap.forEach((k, v) -> {
