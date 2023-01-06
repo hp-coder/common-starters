@@ -41,9 +41,6 @@ public class ExcelExampleController {
     )
     @PostMapping("/template")
     public List<ExcelExample> template() {
-        System.out.println("===============");
-        System.out.println("===============");
-        System.out.println("===============");
         return Collections.singletonList(new ExcelExample());
     }
 
