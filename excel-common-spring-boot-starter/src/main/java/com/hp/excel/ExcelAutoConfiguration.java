@@ -3,7 +3,7 @@ package com.hp.excel;
 import com.hp.excel.aop.RequestExcelArgumentResolver;
 import com.hp.excel.aop.ResponseExcelReturnValueHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2022/11/7
  */
 @RequiredArgsConstructor
-@AutoConfiguration
+@Configuration
 @Import({ExcelHandlerConfiguration.class})
 public class ExcelAutoConfiguration {
 
