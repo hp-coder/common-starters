@@ -4,3 +4,8 @@ server:
 spring:
   application:
     name: excel-example
+  redis:
+    password: root
+    host: 192.168.0.192
+    port: 10600
+    database: 1

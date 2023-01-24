@@ -47,10 +47,6 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
             <version>${vavr.version}</version>

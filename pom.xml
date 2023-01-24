@@ -33,6 +33,8 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <guava.version>31.1-jre</guava.version>
+        <mapstruct-version>1.4.2.Final</mapstruct-version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     </properties>
 
     <dependencies>
