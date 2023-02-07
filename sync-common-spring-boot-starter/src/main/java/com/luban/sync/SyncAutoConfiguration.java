@@ -1,10 +1,10 @@
-package com.hp.sync;
+package com.luban.sync;
 
-import com.hp.sync.config.SyncConfig;
-import com.hp.sync.listener.CanalListener;
-import com.hp.sync.listener.SyncListener;
-import com.hp.sync.support.Constants;
-import com.hp.sync.support.DingMsgUtils;
+import com.luban.sync.config.SyncConfig;
+import com.luban.sync.listener.CanalListener;
+import com.luban.sync.listener.SyncListener;
+import com.luban.sync.support.Constants;
+import com.luban.sync.support.DingMsgUtils;
 import com.luban.dingding.component.application.IDingBot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;

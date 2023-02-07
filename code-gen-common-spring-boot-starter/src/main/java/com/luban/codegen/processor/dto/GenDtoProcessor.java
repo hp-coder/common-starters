@@ -1,9 +1,9 @@
-package com.hp.codegen.processor.dto;
+package com.luban.codegen.processor.dto;
 
 import com.google.auto.service.AutoService;
-import com.hp.codegen.processor.AbstractCodeGenProcessor;
-import com.hp.codegen.processor.vo.Ignore;
-import com.hp.codegen.spi.CodeGenProcessor;
+import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.processor.vo.Ignore;
+import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.jpa.dto.AbstractBaseJpaDTO;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;

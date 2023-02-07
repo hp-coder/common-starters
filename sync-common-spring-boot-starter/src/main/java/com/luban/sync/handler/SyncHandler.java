@@ -1,7 +1,7 @@
-package com.hp.sync.handler;
+package com.luban.sync.handler;
 
-import com.hp.sync.SyncMessage;
-import com.hp.sync.annotation.SyncTable;
+import com.luban.sync.SyncMessage;
+import com.luban.sync.annotation.SyncTable;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Map;

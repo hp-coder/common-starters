@@ -1,8 +1,8 @@
-package com.hp.codegen.processor.vo;
+package com.luban.codegen.processor.vo;
 
 import com.google.auto.service.AutoService;
-import com.hp.codegen.processor.AbstractCodeGenProcessor;
-import com.hp.codegen.spi.CodeGenProcessor;
+import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.jpa.vo.AbstractBaseJpaVO;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;

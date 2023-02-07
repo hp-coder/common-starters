@@ -1,10 +1,10 @@
-package com.hp.wxpay.parser;
+package com.luban.wxpay.parser;
 
 import cn.hutool.core.util.XmlUtil;
-import com.hp.wxpay.WxpayApiException;
-import com.hp.wxpay.WxpayDecryptor;
-import com.hp.wxpay.request.WxpayRequest;
-import com.hp.wxpay.response.WxpayResponse;
+import com.luban.wxpay.WxpayApiException;
+import com.luban.wxpay.WxpayDecryptor;
+import com.luban.wxpay.request.WxpayRequest;
+import com.luban.wxpay.response.WxpayResponse;
 
 /**
  * @author HP 2022/11/23

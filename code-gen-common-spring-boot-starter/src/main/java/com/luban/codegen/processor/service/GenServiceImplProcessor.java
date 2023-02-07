@@ -1,12 +1,12 @@
-package com.hp.codegen.processor.service;
+package com.luban.codegen.processor.service;
 
 
 import com.google.auto.service.AutoService;
 import com.google.common.base.CaseFormat;
-import com.hp.codegen.context.DefaultNameContext;
-import com.hp.codegen.processor.AbstractCodeGenProcessor;
-import com.hp.codegen.spi.CodeGenProcessor;
-import com.hp.codegen.util.StringUtils;
+import com.luban.codegen.context.DefaultNameContext;
+import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.codegen.util.StringUtils;
 import com.hp.jpa.EntityOperations;
 import com.luban.common.core.domain.PageRequestWrapper;
 import com.luban.common.core.enums.CodeEnum;

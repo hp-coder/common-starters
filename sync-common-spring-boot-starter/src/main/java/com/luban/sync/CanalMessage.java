@@ -1,4 +1,4 @@
-package com.hp.sync;
+package com.luban.sync;
 
 
 import com.alibaba.fastjson2.JSON;

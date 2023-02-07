@@ -1,4 +1,4 @@
-package com.hp.jpp;
+package com.luban.jpa;
 
 import java.util.Optional;
 import java.util.function.Consumer;

@@ -1,4 +1,4 @@
-package com.hp.mybatisplus;
+package com.luban.mybatisplus;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 

@@ -1,9 +1,9 @@
-package com.hp.codegen.processor.repository;
+package com.luban.codegen.processor.repository;
 
 
 import com.google.auto.service.AutoService;
-import com.hp.codegen.processor.AbstractCodeGenProcessor;
-import com.hp.codegen.spi.CodeGenProcessor;
+import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.spi.CodeGenProcessor;
 import com.hp.jpa.BaseRepository;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;

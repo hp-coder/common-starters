@@ -1,4 +1,4 @@
-package com.hp.codegen.processor.vo;
+package com.luban.codegen.processor.vo;
 
 import java.lang.annotation.*;
 

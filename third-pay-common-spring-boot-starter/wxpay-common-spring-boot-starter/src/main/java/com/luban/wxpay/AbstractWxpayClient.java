@@ -1,11 +1,11 @@
-package com.hp.wxpay;
+package com.luban.wxpay;
 
-import com.hp.wxpay.parser.ObjectJsonParser;
-import com.hp.wxpay.parser.ObjectXmlParser;
-import com.hp.wxpay.parser.WxpayParser;
-import com.hp.wxpay.request.WxpayRequest;
-import com.hp.wxpay.response.WxpayResponse;
-import com.hp.wxpay.support.WxpayConstant;
+import com.luban.wxpay.parser.ObjectJsonParser;
+import com.luban.wxpay.parser.ObjectXmlParser;
+import com.luban.wxpay.parser.WxpayParser;
+import com.luban.wxpay.request.WxpayRequest;
+import com.luban.wxpay.response.WxpayResponse;
+import com.luban.wxpay.support.WxpayConstant;
 
 import java.security.Principal;
 import java.security.cert.X509Certificate;

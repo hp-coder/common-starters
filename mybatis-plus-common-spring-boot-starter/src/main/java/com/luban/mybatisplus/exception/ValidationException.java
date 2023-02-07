@@ -1,4 +1,4 @@
-package com.hp.mybatisplus.exception;
+package com.luban.mybatisplus.exception;
 
 import lombok.Getter;
 

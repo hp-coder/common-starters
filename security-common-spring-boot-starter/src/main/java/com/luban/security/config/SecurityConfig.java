@@ -1,4 +1,4 @@
-package com.hp.security.config;
+package com.luban.security.config;
 
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 

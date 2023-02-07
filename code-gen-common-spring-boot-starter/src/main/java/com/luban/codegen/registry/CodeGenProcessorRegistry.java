@@ -1,7 +1,7 @@
-package com.hp.codegen.registry;
+package com.luban.codegen.registry;
 
 import com.google.common.collect.Maps;
-import com.hp.codegen.spi.CodeGenProcessor;
+import com.luban.codegen.spi.CodeGenProcessor;
 
 import java.lang.annotation.Annotation;
 import java.util.LinkedHashMap;

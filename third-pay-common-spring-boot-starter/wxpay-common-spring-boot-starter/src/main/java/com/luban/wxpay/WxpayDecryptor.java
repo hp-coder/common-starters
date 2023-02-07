@@ -1,4 +1,4 @@
-package com.hp.wxpay;
+package com.luban.wxpay;
 
 /**
  * @author HP 2022/11/23

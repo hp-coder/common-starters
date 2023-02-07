@@ -1,9 +1,9 @@
-package com.hp.sync.listener;
+package com.luban.sync.listener;
 
-import com.hp.sync.SyncMessage;
-import com.hp.sync.handler.DefaultSyncHandler;
-import com.hp.sync.handler.SyncHandler;
-import com.hp.sync.support.Constants;
+import com.luban.sync.SyncMessage;
+import com.luban.sync.handler.DefaultSyncHandler;
+import com.luban.sync.handler.SyncHandler;
+import com.luban.sync.support.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

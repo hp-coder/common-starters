@@ -1,6 +1,6 @@
-package com.hp.sync.handler;
+package com.luban.sync.handler;
 
-import com.hp.sync.SyncMessage;
+import com.luban.sync.SyncMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
-package com.hp.jpp;
+package com.luban.jpa;
 
 import com.google.common.base.Preconditions;
-import com.hp.jpp.group.CreateGroup;
+import com.luban.jpa.group.CreateGroup;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.CrudRepository;

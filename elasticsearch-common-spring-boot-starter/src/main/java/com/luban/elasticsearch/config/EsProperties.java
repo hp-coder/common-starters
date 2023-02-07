@@ -1,4 +1,4 @@
-package com.hp.elasticsearch.config;
+package com.luban.elasticsearch.config;
 
 
 import lombok.Getter;

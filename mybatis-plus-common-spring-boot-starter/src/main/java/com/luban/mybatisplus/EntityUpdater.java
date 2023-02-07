@@ -1,7 +1,7 @@
-package com.hp.mybatisplus;
+package com.luban.mybatisplus;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.hp.mybatisplus.group.UpdateGroup;
+import com.luban.mybatisplus.group.UpdateGroup;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;

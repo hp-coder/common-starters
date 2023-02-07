@@ -1,4 +1,4 @@
-package com.hp.codegen.processor.service;
+package com.luban.codegen.processor.service;
 
 import java.lang.annotation.*;
 

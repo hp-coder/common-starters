@@ -1,4 +1,4 @@
-package com.hp.security.jwt;
+package com.luban.security.jwt;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

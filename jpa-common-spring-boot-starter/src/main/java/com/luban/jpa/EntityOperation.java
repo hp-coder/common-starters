@@ -1,4 +1,4 @@
-package com.hp.jpp;
+package com.luban.jpa;
 
 /**
  * @author gim 2022/3/5 10:07 下午

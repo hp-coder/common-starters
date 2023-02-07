@@ -1,7 +1,7 @@
-package com.hp.wxpay.request;
+package com.luban.wxpay.request;
 
-import com.hp.wxpay.domain.WxpayObject;
-import com.hp.wxpay.response.WxpayResponse;
+import com.luban.wxpay.domain.WxpayObject;
+import com.luban.wxpay.response.WxpayResponse;
 import org.springframework.http.HttpMethod;
 
 /**

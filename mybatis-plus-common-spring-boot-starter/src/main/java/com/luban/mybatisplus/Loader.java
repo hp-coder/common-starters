@@ -1,4 +1,4 @@
-package com.hp.mybatisplus;
+package com.luban.mybatisplus;
 
 import java.io.Serializable;
 import java.util.function.Supplier;

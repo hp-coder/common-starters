@@ -10,7 +10,7 @@ import com.luban.alipay.context.AlipayContext;
 import com.luban.alipay.request.AlipayRequestBuilder;
 import com.luban.alipay.request.AlipayRequestUpdater;
 import com.luban.alipay.response.AlipayResponseBuilder;
-import com.hp.pay.support.utils.WebUtils;
+import com.luban.pay.support.utils.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 

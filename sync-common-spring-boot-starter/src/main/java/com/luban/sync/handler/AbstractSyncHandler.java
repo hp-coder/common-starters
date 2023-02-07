@@ -1,8 +1,8 @@
-package com.hp.sync.handler;
+package com.luban.sync.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.hp.sync.SyncMessage;
-import com.hp.sync.support.Constants;
+import com.luban.sync.SyncMessage;
+import com.luban.sync.support.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 

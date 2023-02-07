@@ -1,4 +1,4 @@
-package com.hp.codegen.util;
+package com.luban.codegen.util;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.Lists;

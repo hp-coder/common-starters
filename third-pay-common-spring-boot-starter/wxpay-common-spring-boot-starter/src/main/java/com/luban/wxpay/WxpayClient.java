@@ -1,7 +1,7 @@
-package com.hp.wxpay;
+package com.luban.wxpay;
 
-import com.hp.wxpay.request.WxpayRequest;
-import com.hp.wxpay.response.WxpayResponse;
+import com.luban.wxpay.request.WxpayRequest;
+import com.luban.wxpay.response.WxpayResponse;
 
 /**
  * @author HP 2022/11/22

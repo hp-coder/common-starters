@@ -1,4 +1,4 @@
-package com.hp.sync.annotation;
+package com.luban.sync.annotation;
 
 import java.lang.annotation.*;
 

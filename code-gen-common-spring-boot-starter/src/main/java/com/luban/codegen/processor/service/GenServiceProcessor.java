@@ -1,11 +1,11 @@
-package com.hp.codegen.processor.service;
+package com.luban.codegen.processor.service;
 
 
 import com.google.auto.service.AutoService;
-import com.hp.codegen.context.DefaultNameContext;
-import com.hp.codegen.processor.AbstractCodeGenProcessor;
-import com.hp.codegen.spi.CodeGenProcessor;
-import com.hp.codegen.util.StringUtils;
+import com.luban.codegen.context.DefaultNameContext;
+import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.codegen.util.StringUtils;
 import com.luban.common.core.domain.PageRequestWrapper;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;

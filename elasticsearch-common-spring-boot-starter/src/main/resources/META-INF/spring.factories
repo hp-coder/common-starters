@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.hp.elasticsearch.ElasticSearchAutoConfiguration
+com.luban.elasticsearch.ElasticSearchAutoConfiguration

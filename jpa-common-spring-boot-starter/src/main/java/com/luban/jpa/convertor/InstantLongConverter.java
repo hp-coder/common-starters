@@ -1,4 +1,4 @@
-package com.hp.jpp.convertor;
+package com.luban.jpa.convertor;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

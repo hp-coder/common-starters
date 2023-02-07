@@ -1,4 +1,4 @@
-package com.hp.jpp;
+package com.luban.jpa;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

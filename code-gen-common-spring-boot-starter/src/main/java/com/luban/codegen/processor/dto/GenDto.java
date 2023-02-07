@@ -1,4 +1,4 @@
-package com.hp.codegen.processor.dto;
+package com.luban.codegen.processor.dto;
 
 import java.lang.annotation.*;
 

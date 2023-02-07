@@ -1,4 +1,4 @@
-package com.hp.oss.config;
+package com.luban.oss.config;
 
 import lombok.Getter;
 import lombok.Setter;

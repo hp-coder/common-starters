@@ -1,7 +1,7 @@
-package com.hp.excel.annotation;
+package com.luban.excel.annotation;
 
 
-import com.hp.excel.head.HeadGenerator;
+import com.luban.excel.head.HeadGenerator;
 
 import java.lang.annotation.*;
 

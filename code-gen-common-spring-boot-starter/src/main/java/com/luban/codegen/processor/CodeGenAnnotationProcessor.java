@@ -1,9 +1,9 @@
-package com.hp.codegen.processor;
+package com.luban.codegen.processor;
 
 import com.google.auto.service.AutoService;
-import com.hp.codegen.context.ProcessingEnvironmentContextHolder;
-import com.hp.codegen.registry.CodeGenProcessorRegistry;
-import com.hp.codegen.spi.CodeGenProcessor;
+import com.luban.codegen.context.ProcessingEnvironmentContextHolder;
+import com.luban.codegen.registry.CodeGenProcessorRegistry;
+import com.luban.codegen.spi.CodeGenProcessor;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;

@@ -1,10 +1,10 @@
-package com.hp.codegen.processor.controller;
+package com.luban.codegen.processor.controller;
 
 import com.google.auto.service.AutoService;
-import com.hp.codegen.context.DefaultNameContext;
-import com.hp.codegen.processor.AbstractCodeGenProcessor;
-import com.hp.codegen.spi.CodeGenProcessor;
-import com.hp.codegen.util.StringUtils;
+import com.luban.codegen.context.DefaultNameContext;
+import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.codegen.util.StringUtils;
 import com.luban.common.core.enums.CodeEnum;
 import com.luban.common.core.web.domain.AjaxResult;
 import com.squareup.javapoet.*;

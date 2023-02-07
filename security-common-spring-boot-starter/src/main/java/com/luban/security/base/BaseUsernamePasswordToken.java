@@ -1,4 +1,4 @@
-package com.hp.security.base;
+package com.luban.security.base;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

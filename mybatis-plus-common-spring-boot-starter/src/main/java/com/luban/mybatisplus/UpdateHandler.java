@@ -1,4 +1,4 @@
-package com.hp.mybatisplus;
+package com.luban.mybatisplus;
 
 import java.util.function.Consumer;
 

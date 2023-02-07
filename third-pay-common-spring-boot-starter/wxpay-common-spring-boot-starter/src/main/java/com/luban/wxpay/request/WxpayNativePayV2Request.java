@@ -1,8 +1,8 @@
-package com.hp.wxpay.request;
+package com.luban.wxpay.request;
 
-import com.hp.wxpay.domain.WxpayObject;
-import com.hp.wxpay.response.WxpayNativePayV2Response;
-import com.hp.wxpay.support.WxpayConstant;
+import com.luban.wxpay.domain.WxpayObject;
+import com.luban.wxpay.response.WxpayNativePayV2Response;
+import com.luban.wxpay.support.WxpayConstant;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpMethod;

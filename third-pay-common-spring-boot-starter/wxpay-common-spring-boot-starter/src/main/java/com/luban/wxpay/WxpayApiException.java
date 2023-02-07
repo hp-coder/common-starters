@@ -1,4 +1,4 @@
-package com.hp.wxpay;
+package com.luban.wxpay;
 
 import lombok.Getter;
 

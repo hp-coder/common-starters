@@ -1,4 +1,4 @@
-package com.hp.sync.support;
+package com.luban.sync.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

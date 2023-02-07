@@ -1,6 +1,6 @@
-package com.hp.sync.support;
+package com.luban.sync.support;
 
-import com.hp.sync.config.SyncConfig;
+import com.luban.sync.config.SyncConfig;
 import com.luban.dingding.component.application.IDingBot;
 import com.luban.dingding.pojo.message.IDingMsg;
 import com.luban.dingding.service.message.DingBotMessageHandler;

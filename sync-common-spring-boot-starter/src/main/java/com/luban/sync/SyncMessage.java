@@ -1,6 +1,6 @@
-package com.hp.sync;
+package com.luban.sync;
 
-import com.hp.sync.support.Constants;
+import com.luban.sync.support.Constants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

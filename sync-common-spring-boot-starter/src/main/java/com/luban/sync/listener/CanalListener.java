@@ -1,9 +1,9 @@
-package com.hp.sync.listener;
+package com.luban.sync.listener;
 
 import com.alibaba.fastjson.JSON;
-import com.hp.sync.CanalMessage;
-import com.hp.sync.converter.CanalConverter;
-import com.hp.sync.support.Constants;
+import com.luban.sync.CanalMessage;
+import com.luban.sync.converter.CanalConverter;
+import com.luban.sync.support.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;

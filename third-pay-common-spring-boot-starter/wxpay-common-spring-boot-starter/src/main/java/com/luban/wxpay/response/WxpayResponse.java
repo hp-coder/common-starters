@@ -1,4 +1,4 @@
-package com.hp.wxpay.response;
+package com.luban.wxpay.response;
 
 import java.io.Serializable;
 

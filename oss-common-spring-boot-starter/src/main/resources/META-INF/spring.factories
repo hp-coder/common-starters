@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.hp.oss.OssAutoConfiguration
+com.luban.oss.OssAutoConfiguration

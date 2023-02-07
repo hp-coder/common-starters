@@ -1,9 +1,9 @@
-package com.hp.sync.converter;
+package com.luban.sync.converter;
 
-import com.hp.sync.CanalMessage;
-import com.hp.sync.SyncMessage;
-import com.hp.sync.annotation.SyncTable;
-import com.hp.sync.support.CanalUtils;
+import com.luban.sync.CanalMessage;
+import com.luban.sync.SyncMessage;
+import com.luban.sync.annotation.SyncTable;
+import com.luban.sync.support.CanalUtils;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Optional;

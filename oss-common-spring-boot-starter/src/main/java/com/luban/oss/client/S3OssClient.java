@@ -1,4 +1,4 @@
-package com.hp.oss.client;
+package com.luban.oss.client;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;

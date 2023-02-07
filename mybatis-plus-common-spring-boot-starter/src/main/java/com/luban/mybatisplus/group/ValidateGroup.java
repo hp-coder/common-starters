@@ -1,4 +1,4 @@
-package com.hp.mybatisplus.group;
+package com.luban.mybatisplus.group;
 
 /**
  * @author HP

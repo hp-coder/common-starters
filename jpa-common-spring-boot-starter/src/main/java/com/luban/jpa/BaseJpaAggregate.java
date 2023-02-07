@@ -1,6 +1,6 @@
-package com.hp.jpp;
+package com.luban.jpa;
 
-import com.hp.jpp.convertor.InstantLongConverter;
+import com.luban.jpa.convertor.InstantLongConverter;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;

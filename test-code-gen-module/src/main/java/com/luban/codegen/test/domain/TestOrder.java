@@ -1,14 +1,14 @@
-package com.hp.codegen.test.domain;
+package com.luban.codegen.test.domain;
 
-import com.hp.codegen.processor.controller.GenController;
-import com.hp.codegen.processor.dto.GenDto;
-import com.hp.codegen.processor.mapper.GenMapper;
-import com.hp.codegen.processor.repository.GenRepository;
-import com.hp.codegen.processor.request.GenRequest;
-import com.hp.codegen.processor.response.GenResponse;
-import com.hp.codegen.processor.service.GenService;
-import com.hp.codegen.processor.service.GenServiceImpl;
-import com.hp.codegen.processor.vo.GenVo;
+import com.luban.codegen.processor.controller.GenController;
+import com.luban.codegen.processor.dto.GenDto;
+import com.luban.codegen.processor.mapper.GenMapper;
+import com.luban.codegen.processor.repository.GenRepository;
+import com.luban.codegen.processor.request.GenRequest;
+import com.luban.codegen.processor.response.GenResponse;
+import com.luban.codegen.processor.service.GenService;
+import com.luban.codegen.processor.service.GenServiceImpl;
+import com.luban.codegen.processor.vo.GenVo;
 import com.hp.jpa.BaseJpaAggregate;
 import lombok.Data;
 

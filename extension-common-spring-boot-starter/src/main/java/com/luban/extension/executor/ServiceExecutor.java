@@ -1,4 +1,4 @@
-package com.hp.extension.executor;
+package com.luban.extension.executor;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

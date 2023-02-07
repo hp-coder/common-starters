@@ -1,4 +1,4 @@
-package com.hp.codegen.spi;
+package com.luban.codegen.spi;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.TypeElement;

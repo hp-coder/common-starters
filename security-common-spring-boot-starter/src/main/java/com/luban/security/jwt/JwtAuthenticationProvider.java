@@ -1,6 +1,6 @@
-package com.hp.security.jwt;
+package com.luban.security.jwt;
 
-import com.hp.security.base.BaseAuthenticationProvider;
+import com.luban.security.base.BaseAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 

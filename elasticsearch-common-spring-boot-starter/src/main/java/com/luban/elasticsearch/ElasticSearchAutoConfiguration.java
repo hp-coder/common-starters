@@ -1,9 +1,9 @@
-package com.hp.elasticsearch;
+package com.luban.elasticsearch;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
-import com.hp.elasticsearch.config.EsProperties;
+import com.luban.elasticsearch.config.EsProperties;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;

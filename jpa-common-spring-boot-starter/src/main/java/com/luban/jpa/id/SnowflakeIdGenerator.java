@@ -1,4 +1,4 @@
-package com.hp.jpp.id;
+package com.luban.jpa.id;
 
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.net.NetUtil;

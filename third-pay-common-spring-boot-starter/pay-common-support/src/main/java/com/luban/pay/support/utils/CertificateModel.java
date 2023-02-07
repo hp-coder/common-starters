@@ -1,4 +1,4 @@
-package com.hp.pay.support.utils;
+package com.luban.pay.support.utils;
 
 public class CertificateModel {
 }

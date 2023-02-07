@@ -1,4 +1,4 @@
-package com.hp.jpp.exception;
+package com.luban.jpa.exception;
 
 import lombok.Getter;
 

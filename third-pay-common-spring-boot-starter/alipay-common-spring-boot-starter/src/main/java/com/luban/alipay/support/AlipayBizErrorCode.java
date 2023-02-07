@@ -1,6 +1,6 @@
 package com.luban.alipay.support;
 
-import com.hp.pay.support.enums.BaseEnum;
+import com.luban.pay.support.enums.BaseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

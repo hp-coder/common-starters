@@ -1,13 +1,13 @@
-package com.hp.oss;
+package com.luban.oss;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.hp.oss.client.OssClient;
-import com.hp.oss.client.S3OssClient;
-import com.hp.oss.config.OssProperties;
+import com.luban.oss.client.OssClient;
+import com.luban.oss.client.S3OssClient;
+import com.luban.oss.config.OssProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

@@ -1,8 +1,8 @@
-package com.hp.mybatisplus;
+package com.luban.mybatisplus;
 
-import com.hp.mybatisplus.exception.ValidateResult;
-import com.hp.mybatisplus.exception.ValidationException;
-import com.hp.mybatisplus.group.ValidateGroup;
+import com.luban.mybatisplus.exception.ValidateResult;
+import com.luban.mybatisplus.exception.ValidationException;
+import com.luban.mybatisplus.group.ValidateGroup;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.ConstraintViolation;

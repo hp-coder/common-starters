@@ -1,4 +1,4 @@
-package com.hp.codegen.processor.mapper;
+package com.luban.codegen.processor.mapper;
 
 import java.lang.annotation.*;
 

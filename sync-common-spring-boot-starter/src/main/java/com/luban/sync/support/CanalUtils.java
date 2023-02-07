@@ -1,7 +1,7 @@
-package com.hp.sync.support;
+package com.luban.sync.support;
 
-import com.hp.sync.CanalMessage;
-import com.hp.sync.SyncMessage;
+import com.luban.sync.CanalMessage;
+import com.luban.sync.SyncMessage;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;

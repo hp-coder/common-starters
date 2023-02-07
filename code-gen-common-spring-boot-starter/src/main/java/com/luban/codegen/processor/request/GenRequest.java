@@ -1,4 +1,4 @@
-package com.hp.codegen.processor.request;
+package com.luban.codegen.processor.request;
 
 import java.lang.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.hp.extension.config;
+package com.luban.extension.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

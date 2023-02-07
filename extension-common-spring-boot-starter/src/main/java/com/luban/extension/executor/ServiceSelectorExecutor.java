@@ -1,4 +1,4 @@
-package com.hp.extension.executor;
+package com.luban.extension.executor;
 
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;

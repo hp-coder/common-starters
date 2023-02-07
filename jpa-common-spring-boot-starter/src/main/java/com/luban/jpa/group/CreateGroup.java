@@ -1,4 +1,4 @@
-package com.hp.jpp.group;
+package com.luban.jpa.group;
 
 /**
  * @author HP

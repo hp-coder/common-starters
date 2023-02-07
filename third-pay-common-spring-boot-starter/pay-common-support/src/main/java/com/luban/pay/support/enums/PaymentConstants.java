@@ -1,4 +1,4 @@
-package com.hp.pay.support.enums;
+package com.luban.pay.support.enums;
 
 
 public interface PaymentConstants {
