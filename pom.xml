@@ -24,7 +24,7 @@
         <version>2.7.2</version>
         <relativePath/>
     </parent>
-    <groupId>com.hp</groupId>
+    <groupId>com.luban</groupId>
     <artifactId>common-starters</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
