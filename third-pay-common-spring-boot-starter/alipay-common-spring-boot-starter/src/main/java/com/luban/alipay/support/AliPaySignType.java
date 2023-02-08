@@ -1,6 +1,6 @@
 package com.luban.alipay.support;
 
-public enum SignType {
+public enum AliPaySignType {
 	/**
 	 * MD5 加密
 	 */
@@ -14,7 +14,7 @@ public enum SignType {
 	 */
 	RSA("RSA");
 
-	SignType(String type) {
+	AliPaySignType(String type) {
 		this.type = type;
 	}
 

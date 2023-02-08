@@ -127,11 +127,11 @@ public class AlipaySupport {
     public static String buildRequestMySign(Map<String, String> params, String key, String signType) throws AlipayApiException {
         // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         String preStr = createLinkString(params);
-        if (SignType.MD5.getType().equals(signType)) {
+        if (AliPaySignType.MD5.getType().equals(signType)) {
             return SecureUtil.md5(preStr.concat(key));
-        } else if (SignType.RSA2.getType().equals(signType)) {
+        } else if (AliPaySignType.RSA2.getType().equals(signType)) {
             return AlipaySignature.rsa256Sign(preStr, key, AlipayConstants.CHARSET_UTF8);
-        } else if (SignType.RSA.getType().equals(signType)) {
+        } else if (AliPaySignType.RSA.getType().equals(signType)) {
             return AlipaySignature.rsaSign(preStr, key, AlipayConstants.CHARSET_UTF8);
         }
         return null;
