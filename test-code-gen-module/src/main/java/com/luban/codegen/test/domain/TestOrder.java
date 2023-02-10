@@ -9,7 +9,7 @@ import com.luban.codegen.processor.response.GenResponse;
 import com.luban.codegen.processor.service.GenService;
 import com.luban.codegen.processor.service.GenServiceImpl;
 import com.luban.codegen.processor.vo.GenVo;
-import com.hp.jpa.BaseJpaAggregate;
+import com.luban.jpa.BaseJpaAggregate;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -20,15 +20,15 @@ import java.io.Serializable;
  * @author HP
  * @date 2022/10/24
  */
-@GenResponse(pkgName = "com.hp.codegen.test.domain.response")
-@GenVo(pkgName = "com.hp.codegen.test.domain.response")
-@GenDto(pkgName = "com.hp.codegen.test.domain.request")
-@GenRequest(pkgName = "com.hp.codegen.test.domain.request")
-@GenController(pkgName = "com.hp.codegen.test.domain.controller")
-@GenService(pkgName = "com.hp.codegen.test.domain.service")
-@GenServiceImpl(pkgName = "com.hp.codegen.test.domain.service.impl")
-@GenRepository(pkgName = "com.hp.codegen.test.domain.repository")
-@GenMapper(pkgName = "com.hp.codegen.test.domain.mapper")
+@GenResponse(pkgName = "com.luban.codegen.test.domain.response")
+@GenVo(pkgName = "com.luban.codegen.test.domain.response")
+@GenDto(pkgName = "com.luban.codegen.test.domain.request")
+@GenRequest(pkgName = "com.luban.codegen.test.domain.request")
+@GenController(pkgName = "com.luban.codegen.test.domain.controller")
+@GenService(pkgName = "com.luban.codegen.test.domain.service")
+@GenServiceImpl(pkgName = "com.luban.codegen.test.domain.service.impl")
+@GenRepository(pkgName = "com.luban.codegen.test.domain.repository")
+@GenMapper(pkgName = "com.luban.codegen.test.domain.mapper")
 @Entity
 @Table
 @Data

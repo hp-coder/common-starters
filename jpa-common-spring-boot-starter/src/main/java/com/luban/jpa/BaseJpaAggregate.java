@@ -15,7 +15,7 @@ import java.time.Instant;
 public abstract class BaseJpaAggregate extends AbstractAggregateRoot<BaseJpaAggregate> {
     @Id
     @GeneratedValue(generator = "snowflakeIdGenerator")
-    @GenericGenerator(name = "snowflakeIdGenerator", strategy = "com.hp.jpa.id.SnowflakeIdGenerator")
+    @GenericGenerator(name = "snowflakeIdGenerator", strategy = "com.luban.jpa.id.SnowflakeIdGenerator")
     @Setter(AccessLevel.PROTECTED)
     @Column(name = "id")
     private Long id;

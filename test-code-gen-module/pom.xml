@@ -36,9 +36,6 @@
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
-                    <goal>compiler:compile</goal>
-                    <generatedSourcesDirectory>target/generated-sources/java</generatedSourcesDirectory>
-                    <generatedSourcesDirectory>target/generated-sources/annotations</generatedSourcesDirectory>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>com.luban</groupId>

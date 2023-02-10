@@ -7,7 +7,7 @@ import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
-import com.hp.jpa.EntityOperations;
+import com.luban.jpa.EntityOperations;
 import com.luban.common.core.domain.PageRequestWrapper;
 import com.luban.common.core.enums.CodeEnum;
 import com.luban.common.core.exception.BusinessException;
