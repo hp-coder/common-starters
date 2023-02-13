@@ -1,10 +1,10 @@
 package com.luban.codegen.processor.response;
 
 import com.google.auto.service.AutoService;
+import com.luban.codegen.model.AbstractBaseJpaVO;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.vo.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
-import com.luban.common.jpa.vo.AbstractBaseJpaVO;
 import com.squareup.javapoet.TypeSpec;
 import lombok.Data;
 

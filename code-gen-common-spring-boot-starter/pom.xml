@@ -20,8 +20,18 @@
     <dependencies>
         <dependency>
             <groupId>com.luban</groupId>
-            <artifactId>luban-common-jpa</artifactId>
-            <version>3.6.0</version>
+            <artifactId>common-base</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.luban</groupId>
+            <artifactId>jpa-common-spring-boot-starter</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.4.2.Final</version>
         </dependency>
         <dependency>
             <groupId>com.google.auto.service</groupId>

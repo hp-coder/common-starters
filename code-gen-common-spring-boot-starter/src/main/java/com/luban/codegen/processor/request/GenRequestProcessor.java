@@ -1,11 +1,11 @@
 package com.luban.codegen.processor.request;
 
 import com.google.auto.service.AutoService;
+import com.luban.codegen.model.AbstractBaseJpaDTO;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.response.GenResponse;
 import com.luban.codegen.processor.vo.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
-import com.luban.common.jpa.dto.AbstractBaseJpaDTO;
 import com.squareup.javapoet.TypeSpec;
 import lombok.Data;
 

@@ -6,7 +6,7 @@ import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
-import com.luban.common.core.domain.PageRequestWrapper;
+import com.luban.common.base.model.PageRequestWrapper;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;

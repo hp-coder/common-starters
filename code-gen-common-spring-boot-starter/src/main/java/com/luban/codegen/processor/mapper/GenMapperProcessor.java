@@ -5,10 +5,10 @@ import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
-import com.luban.common.core.mapper.DateMapper;
-import com.luban.common.core.mapper.GenericEnumMapper;
+import com.luban.common.base.mapper.DateMapper;
+import com.luban.common.base.mapper.GenericEnumMapper;
 import com.squareup.javapoet.*;
-import org.mapstruct.Mapper;
+import org.apache.catalina.mapper.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import javax.annotation.processing.RoundEnvironment;

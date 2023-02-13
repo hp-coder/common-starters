@@ -1,10 +1,10 @@
 package com.luban.codegen.processor.dto;
 
 import com.google.auto.service.AutoService;
+import com.luban.codegen.model.AbstractBaseJpaDTO;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.vo.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
-import com.luban.common.jpa.dto.AbstractBaseJpaDTO;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -46,7 +46,6 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
         fields.forEach(f -> methodBuilder.addStatement("$T.ofNullable(this.get$L()).ifPresent(source::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
         builder.addMethod(methodBuilder.build());
         generateJavaFile(generatePackage(typeElement),builder);
-//        generateJavaSourceFile(generatePackage(typeElement),typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
     }
 
     @Override

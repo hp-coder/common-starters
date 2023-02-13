@@ -16,6 +16,7 @@
         <module>third-pay-common-spring-boot-starter</module>
         <module>sync-common-spring-boot-starter</module>
         <module>excel-starter-example</module>
+        <module>common-base</module>
     </modules>
 
     <parent>
