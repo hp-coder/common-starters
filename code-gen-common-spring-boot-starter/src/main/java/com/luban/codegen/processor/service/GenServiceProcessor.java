@@ -36,17 +36,17 @@ public class GenServiceProcessor extends AbstractCodeGenProcessor {
                 .addModifiers(Modifier.PUBLIC);
         DefaultNameContext nameContext = getNameContext(typeElement);
         Optional<MethodSpec> createMethod = createMethod(typeElement, nameContext);
-        createMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        createMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> updateMethod = updateMethod(typeElement, nameContext);
-        updateMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        updateMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> validMethod = validMethod(typeElement);
-        validMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        validMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> invalidMethod = invalidMethod(typeElement);
-        invalidMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        invalidMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> findByIdMethod = findByIdMethod(nameContext);
-        findByIdMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        findByIdMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> findByPageMethod = findByPageMethod(nameContext);
-        findByPageMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        findByPageMethod.ifPresent(typeSpecBuilder::addMethod);
         generateJavaSourceFile(generatePackage(typeElement),
                 typeElement.getAnnotation(GenService.class).sourcePath(), typeSpecBuilder);
     }

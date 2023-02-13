@@ -64,22 +64,22 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                 .build();
         typeSpecBuilder.addField(repositoryField);
         Optional<MethodSpec> createMethod = createMethod(typeElement, nameContext, repositoryFieldName, classFieldName);
-        createMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        createMethod.ifPresent(typeSpecBuilder::addMethod);
 
         Optional<MethodSpec> updateMethod = updateMethod(typeElement, nameContext, repositoryFieldName);
-        updateMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        updateMethod.ifPresent(typeSpecBuilder::addMethod);
 
         Optional<MethodSpec> validMethod = validMethod(typeElement, repositoryFieldName);
-        validMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        validMethod.ifPresent(typeSpecBuilder::addMethod);
 
         Optional<MethodSpec> invalidMethod = invalidMethod(typeElement, repositoryFieldName);
-        invalidMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        invalidMethod.ifPresent(typeSpecBuilder::addMethod);
 
         Optional<MethodSpec> findByIdMethod = findByIdMethod(typeElement, nameContext, repositoryFieldName, classFieldName);
-        findByIdMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        findByIdMethod.ifPresent(typeSpecBuilder::addMethod);
 
         Optional<MethodSpec> findByPageMethod = findByPageMethod(typeElement, nameContext, repositoryFieldName);
-        findByPageMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        findByPageMethod.ifPresent(typeSpecBuilder::addMethod);
 
         generateJavaSourceFile(generatePackage(typeElement), typeElement.getAnnotation(GenServiceImpl.class).sourcePath(), typeSpecBuilder);
     }

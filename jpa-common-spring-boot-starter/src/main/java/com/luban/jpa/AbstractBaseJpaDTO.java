@@ -1,6 +1,5 @@
-package com.luban.codegen.model;
+package com.luban.jpa;
 
-import com.luban.jpa.BaseJpaAggregate;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -8,22 +7,22 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Data
-public class AbstractBaseJpaVO implements Serializable {
-    private static final long serialVersionUID = 2078591511770817021L;
+public class AbstractBaseJpaDTO implements Serializable {
+    private static final long serialVersionUID = 8133324612576327441L;
 
     private int version;
 
-    private String id;
+    private Long id;
 
     private String createdAt;
 
     private String updatedAt;
 
-    protected AbstractBaseJpaVO(){}
+    protected AbstractBaseJpaDTO(){}
 
-    protected AbstractBaseJpaVO(BaseJpaAggregate source) {
+    protected AbstractBaseJpaDTO(BaseJpaAggregate source) {
         this.setVersion(source.getVersion());
-        this.setId(String.valueOf(source.getId()));
+        this.setId(source.getId());
         this.setCreatedAt(source.getCreatedAt().atZone(ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         this.setUpdatedAt(source.getUpdatedAt().atZone(ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
     }

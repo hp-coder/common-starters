@@ -1,7 +1,7 @@
 package com.luban.codegen.processor.dto;
 
 import com.google.auto.service.AutoService;
-import com.luban.codegen.model.AbstractBaseJpaDTO;
+import com.luban.jpa.AbstractBaseJpaDTO;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.vo.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
