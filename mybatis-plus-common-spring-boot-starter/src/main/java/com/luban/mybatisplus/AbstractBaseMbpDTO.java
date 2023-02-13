@@ -7,7 +7,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Data
-public class AbstractBaseJMbpDTO implements Serializable {
+public class AbstractBaseMbpDTO implements Serializable {
 
     private static final long serialVersionUID = 1832817670069337558L;
     private Long id;
@@ -15,12 +15,12 @@ public class AbstractBaseJMbpDTO implements Serializable {
     private String createdAt;
 
     private String updatedAt;
-    
+
     private int version;
 
-    protected AbstractBaseJMbpDTO(){}
+    protected AbstractBaseMbpDTO(){}
 
-    protected AbstractBaseJMbpDTO(BaseMbpAggregate source) {
+    protected AbstractBaseMbpDTO(BaseMbpAggregate source) {
         this.setId(source.getId());
         this.setCreatedAt(source.getCreatedAt().atZone(ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         this.setUpdatedAt(source.getUpdatedAt().atZone(ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
