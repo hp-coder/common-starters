@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Data
-public abstract class BaseJpaAggregate {
+public abstract class BaseMbpAggregate {
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
