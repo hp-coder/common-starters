@@ -1,10 +1,9 @@
 package com.luban.security.base;
 
-import org.springframework.security.authentication.AuthenticationProvider;
 
 /**
- * @author HP
- * @date 2022/10/21
+ * @author hp
  */
-public abstract class BaseAuthenticationProvider implements AuthenticationProvider {
+public abstract class BaseAuthenticationProvider {
+
 }

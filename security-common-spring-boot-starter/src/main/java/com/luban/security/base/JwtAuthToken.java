@@ -1,20 +1,28 @@
-package com.luban.security.jwt;
+package com.luban.security.base;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
 /**
- * @author HP
- * @date 2022/10/21
+ * @author hp
  */
-public class JwtAuthenticationToken implements Authentication {
-
+public class JwtAuthToken implements Authentication {
+    private static final long serialVersionUID = 3307781535363682674L;
     private final String token;
+    @Setter
+    @Getter
+    private String userAgent;
 
-    public JwtAuthenticationToken(String token) {
+    public JwtAuthToken(String token) {
         this.token = token;
+    }
+    public JwtAuthToken(String token,String userAgent) {
+        this.token = token;
+        this.userAgent = userAgent;
     }
 
     @Override
@@ -24,7 +32,7 @@ public class JwtAuthenticationToken implements Authentication {
 
     @Override
     public Object getCredentials() {
-        return this.token;
+        return token;
     }
 
     @Override
