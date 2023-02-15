@@ -1,23 +1,23 @@
 package com.luban.security;
 
-import com.luban.security.config.SecurityConfig;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import com.luban.security.base.extension.DummyUserContextAware;
+import com.luban.security.base.extension.UserContextAware;
+import com.luban.security.config.SecurityCommonProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 /**
  * @author HP
- * @date 2022/10/21
  */
-@Configuration
-@ConditionalOnProperty(prefix = "luban.security", name = "enable", havingValue = "true")
+@EnableConfigurationProperties
+@Import(SecurityCommonProperties.class)
 public class SecurityAutoConfiguration {
 
-    @Configuration
-    @ComponentScan(value = {"com.luban.security.base","com.luban.security.config"})
-    @Import(value = {SecurityConfig.class})
-    public static class AdminSecurityConfig{
-
+    @ConditionalOnMissingBean(UserContextAware.class)
+    @Bean
+    public UserContextAware userContextAware(){
+        return new DummyUserContextAware();
     }
 }
