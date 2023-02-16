@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Getter
 @AllArgsConstructor
-public enum CodeEnum implements com.luban.common.base.enums.BaseEnum<CodeEnum> {
+public enum CodeEnum implements com.luban.common.base.enums.BaseEnum<CodeEnum,Integer> {
     Success(1, "操作成功"),
     Fail(0, "操作失败"),
     NotFindError(10001, "未查询到信息"),

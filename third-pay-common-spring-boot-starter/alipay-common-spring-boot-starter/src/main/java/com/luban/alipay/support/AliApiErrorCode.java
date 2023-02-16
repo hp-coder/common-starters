@@ -1,6 +1,6 @@
 package com.luban.alipay.support;
 
-import com.luban.pay.support.enums.BaseEnum;
+import com.luban.common.base.enums.BaseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
  */
 @Getter
 @AllArgsConstructor
-public enum AliApiErrorCode implements BaseEnum<AliApiErrorCode> {
+public enum AliApiErrorCode implements BaseEnum<AliApiErrorCode, String> {
     _10000("10000", "接口调用成功"),
     _20000("20000", "服务不可用"),
     _20001("20001", "授权权限不足"),

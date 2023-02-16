@@ -4,7 +4,7 @@ import com.luban.common.base.enums.BaseEnum;
 
 import java.util.Optional;
 
-public enum AuthErrorMsg implements BaseEnum<AuthErrorMsg> {
+public enum AuthErrorMsg implements BaseEnum<AuthErrorMsg,Integer> {
   /**
    * 认证
    */

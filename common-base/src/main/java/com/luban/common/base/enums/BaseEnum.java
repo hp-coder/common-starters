@@ -1,24 +1,26 @@
 package com.luban.common.base.enums;
 
-public interface BaseEnum<T extends Enum<T> & BaseEnum<T>> {
+import java.util.Objects;
 
-    Integer getCode();
+public interface BaseEnum<T extends Enum<T> & BaseEnum<T, E>, E> {
+
+    E getCode();
 
     String getName();
 
-    static <T extends Enum<T> & BaseEnum<T>> T parseByCode(Class<T> cls, Integer code) {
+    static <T extends Enum<T> & BaseEnum<T, E>, E> T parseByCode(Class<T> cls, E code) {
         if (code == null) {
             return null;
         }
         for (T t : cls.getEnumConstants()) {
-            if (t.getCode().intValue() == code.intValue()) {
+            if (Objects.equals(t.getCode(), code)) {
                 return t;
             }
         }
         return null;
     }
 
-    static <T extends Enum<T> & BaseEnum<T>> T parseByName(Class<T> cls, String name) {
+    static <T extends Enum<T> & BaseEnum<T, E>, E> T parseByName(Class<T> cls, String name) {
         if (name == null || name.length() == 0) {
             return null;
         }

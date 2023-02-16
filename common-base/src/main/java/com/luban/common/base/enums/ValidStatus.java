@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Getter
 @AllArgsConstructor
-public enum ValidStatus implements BaseEnum<ValidStatus> {
+public enum ValidStatus implements BaseEnum<ValidStatus,Integer> {
 
     VALID(1, "valid"),
     INVALID(0, "invalid");
