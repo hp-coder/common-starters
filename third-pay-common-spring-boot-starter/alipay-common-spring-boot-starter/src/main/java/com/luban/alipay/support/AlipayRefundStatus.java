@@ -1,5 +1,6 @@
 package com.luban.alipay.support;
 
+import com.luban.common.base.enums.BaseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,7 +13,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum AlipayRefundStatus implements BaseEnum<AlipayRefundStatus> {
+public enum AlipayRefundStatus implements BaseEnum<AlipayRefundStatus,String> {
     REFUND_SUCCESS("REFUND_SUCCESS", "退款处理成功"),
     ;
     private String code;

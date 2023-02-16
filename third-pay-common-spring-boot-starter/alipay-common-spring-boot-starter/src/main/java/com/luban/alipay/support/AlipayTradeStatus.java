@@ -1,5 +1,6 @@
 package com.luban.alipay.support;
 
+import com.luban.common.base.enums.BaseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
  */
 @Getter
 @AllArgsConstructor
-public enum AlipayTradeStatus implements BaseEnum<AlipayTradeStatus> {
+public enum AlipayTradeStatus implements BaseEnum<AlipayTradeStatus,String> {
 
     WAIT_BUYER_PAY("WAIT_BUYER_PAY", "交易创建，等待付款"),
     TRADE_CLOSED("TRADE_CLOSED", "交易关闭"),
