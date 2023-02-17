@@ -1,12 +1,12 @@
 package com.luban.mybatisplus;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.luban.mybatisplus.convertor.InstantLongConverter;
+import com.luban.mybatisplus.convertor.LocalDateTimeTypeConverter;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 public abstract class BaseMbpAggregate {
@@ -14,18 +14,22 @@ public abstract class BaseMbpAggregate {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
-    @TableField(value = "created_at",
+    @TableField(
+            value = "created_at",
             updateStrategy = FieldStrategy.IGNORED,
-            typeHandler = InstantLongConverter.class
+            update = "now()",
+            typeHandler = LocalDateTimeTypeConverter.class
     )
     @Setter(AccessLevel.PROTECTED)
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
-    @TableField(value = "updated_at",
-            typeHandler = InstantLongConverter.class
+    @TableField(
+            value = "updated_at",
+            update = "now()",
+            typeHandler = LocalDateTimeTypeConverter.class
     )
     @Setter(AccessLevel.PROTECTED)
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     @Version
     @TableField(value = "version")
