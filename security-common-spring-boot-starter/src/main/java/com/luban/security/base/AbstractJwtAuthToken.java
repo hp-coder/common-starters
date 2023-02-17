@@ -10,17 +10,17 @@ import java.util.Collection;
 /**
  * @author hp
  */
-public class JwtAuthToken implements Authentication {
+public abstract class AbstractJwtAuthToken implements Authentication {
     private static final long serialVersionUID = 3307781535363682674L;
-    private final String token;
+    protected final String token;
     @Setter
     @Getter
-    private String userAgent;
+    protected String userAgent;
 
-    public JwtAuthToken(String token) {
+    public AbstractJwtAuthToken(String token) {
         this.token = token;
     }
-    public JwtAuthToken(String token,String userAgent) {
+    public AbstractJwtAuthToken(String token, String userAgent) {
         this.token = token;
         this.userAgent = userAgent;
     }

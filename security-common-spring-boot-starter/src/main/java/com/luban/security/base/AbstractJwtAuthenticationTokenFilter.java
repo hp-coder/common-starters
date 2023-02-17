@@ -2,7 +2,6 @@ package com.luban.security.base;
 
 import com.google.common.base.Strings;
 import com.luban.security.config.SecurityCommonProperties;
-import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -22,29 +21,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author hp
  */
-public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-
-    public static final String HEADER_TOKEN_NAME = "token";
-    public static final String USER_AGENT = HttpHeaders.USER_AGENT;
-
+public abstract class AbstractJwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private final List<String> unAuthLoginUrls;
 
-    public JwtAuthenticationTokenFilter(SecurityCommonProperties properties) {
+    public AbstractJwtAuthenticationTokenFilter(SecurityCommonProperties properties) {
         this.unAuthLoginUrls = properties.getUnAuthLoginUrls();
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
-        String authorization = request.getHeader(HEADER_TOKEN_NAME);
-        String userAgent = request.getHeader(USER_AGENT);
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         AtomicBoolean skip = new AtomicBoolean(false);
         if (!CollectionUtils.isEmpty(unAuthLoginUrls)) {
             unAuthLoginUrls.stream().map(AntPathRequestMatcher::new).filter(matcher -> matcher.matches(request)).findAny().ifPresent(i -> skip.set(true));
         }
-        if (!Strings.isNullOrEmpty(authorization) && !skip.get()) {
-            JwtAuthToken token = new JwtAuthToken(authorization, userAgent);
-            SecurityContextHolder.getContext().setAuthentication(token);
+        if (!Strings.isNullOrEmpty(token(request)) && !skip.get()) {
+            SecurityContextHolder.getContext().setAuthentication(authentication(request));
         }
         chain.doFilter(request, response);
     }
+
+    protected abstract AbstractJwtAuthToken authentication(@NonNull HttpServletRequest request);
+
+    protected abstract String token(@NonNull HttpServletRequest request);
 }
