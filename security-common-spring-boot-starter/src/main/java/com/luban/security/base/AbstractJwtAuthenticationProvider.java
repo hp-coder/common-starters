@@ -2,6 +2,7 @@ package com.luban.security.base;
 
 import com.luban.common.base.enums.CodeEnum;
 import com.luban.security.base.extension.UserContextAware;
+import com.luban.security.exception.AbstractAuthenticationException;
 import com.luban.security.exception.CustomAuthenticationException;
 import com.luban.security.exception.ParseTokenException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +37,10 @@ public abstract class AbstractJwtAuthenticationProvider implements Authenticatio
         } else {
             try {
                 jwtUser = userContextAware.processToken(token);
+            } catch (AbstractAuthenticationException e) {
+                throw new CustomAuthenticationException(e.getCode(), e.getMessage());
             } catch (ParseTokenException e) {
-                throw new CustomAuthenticationException(e.getCode(), e.getMsg());
+                throw new CustomAuthenticationException(e.getCode(), e.getMessage());
             } catch (Exception e) {
                 throw new CustomAuthenticationException(CodeEnum.SystemError.getCode(), CodeEnum.SystemError.getName());
             }

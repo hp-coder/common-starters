@@ -1,14 +1,22 @@
 package com.luban.security.exception;
 
-import org.springframework.security.core.AuthenticationException;
+import com.luban.security.config.AuthErrorMsg;
 
 /**
  * @author hp
  */
-public class UserForceLoginOutException extends AuthenticationException {
+public class UserForceLoginOutException extends AbstractAuthenticationException {
     private static final long serialVersionUID = -1678391978181637002L;
 
+    public UserForceLoginOutException() {
+        super(AuthErrorMsg.forceLoginOut);
+    }
+
     public UserForceLoginOutException(String msg) {
-        super(msg);
+        super(AuthErrorMsg.forceLoginOut.getCode(), msg);
+    }
+
+    public UserForceLoginOutException(Integer code, String msg) {
+        super(code, msg);
     }
 }
