@@ -26,10 +26,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     public static final String HEADER_TOKEN_NAME = "token";
     public static final String USER_AGENT = "user-agent";
 
-    private final List<String> unAuthUrls;
+    private final List<String> unAuthLoginUrls;
 
     public JwtAuthenticationTokenFilter(SecurityCommonProperties properties) {
-        this.unAuthUrls = properties.getUnAuthLoginUrls();
+        this.unAuthLoginUrls = properties.getUnAuthLoginUrls();
     }
 
     @Override
@@ -37,8 +37,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String authorization = request.getHeader(HEADER_TOKEN_NAME);
         String userAgent = request.getHeader(USER_AGENT);
         AtomicBoolean skip = new AtomicBoolean(false);
-        if (!CollectionUtils.isEmpty(unAuthUrls)) {
-            unAuthUrls.stream().map(AntPathRequestMatcher::new).filter(matcher -> matcher.matches(request)).findAny().ifPresent(i -> skip.set(true));
+        if (!CollectionUtils.isEmpty(unAuthLoginUrls)) {
+            unAuthLoginUrls.stream().map(AntPathRequestMatcher::new).filter(matcher -> matcher.matches(request)).findAny().ifPresent(i -> skip.set(true));
         }
         if (!Strings.isNullOrEmpty(authorization) && !skip.get()) {
             JwtAuthToken token = new JwtAuthToken(authorization, userAgent);
