@@ -5,11 +5,15 @@ import lombok.Getter;
 
 import java.util.Optional;
 
+/**
+ * @author hp
+ */
 @Getter
 @AllArgsConstructor
 public enum CodeEnum implements com.luban.common.base.enums.BaseEnum<CodeEnum,Integer> {
-    Success(1, "操作成功"),
-    Fail(0, "操作失败"),
+    /***/
+    Success(200, "操作成功"),
+    Fail(500, "操作失败"),
     NotFindError(500, "未查询到信息"),
     SaveError(500, "保存信息失败"),
     UpdateError(500, "更新信息失败"),
@@ -22,8 +26,8 @@ public enum CodeEnum implements com.luban.common.base.enums.BaseEnum<CodeEnum,In
     TransferStatusError(500, "当前状态不正确，请勿重复提交"),
     NotGrant(500, "没有操作该功能的权限，请联系管理员");
 
-    private Integer code;
-    private String name;
+    private final Integer code;
+    private final String name;
 
     public static Optional<CodeEnum> of(Integer code) {
         return Optional.ofNullable(BaseEnum.parseByCode(CodeEnum.class, code));
