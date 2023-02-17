@@ -2,6 +2,7 @@ package com.luban.security.base;
 
 import com.google.common.base.Strings;
 import com.luban.security.config.SecurityCommonProperties;
+import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     public static final String HEADER_TOKEN_NAME = "token";
-    public static final String USER_AGENT = "user-agent";
+    public static final String USER_AGENT = HttpHeaders.USER_AGENT;
 
     private final List<String> unAuthLoginUrls;
 

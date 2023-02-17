@@ -21,7 +21,7 @@ import java.util.Objects;
 @Slf4j
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-  private final UserContextAware userContextAware;
+  protected UserContextAware userContextAware;
 
   public JwtAuthenticationProvider(UserContextAware userContextAware) {
       this.userContextAware = userContextAware;
