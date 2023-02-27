@@ -30,17 +30,21 @@ public abstract class AbstractJwtAuthenticationTokenFilter extends OncePerReques
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
-        AtomicBoolean skip = new AtomicBoolean(false);
-        if (!CollectionUtils.isEmpty(unAuthLoginUrls)) {
-            unAuthLoginUrls.stream().map(AntPathRequestMatcher::new).filter(matcher -> matcher.matches(request)).findAny().ifPresent(i -> skip.set(true));
-        }
-        if (!Strings.isNullOrEmpty(token(request)) && !skip.get()) {
+        if (!Strings.isNullOrEmpty(token(request)) && !skip(request)) {
             SecurityContextHolder.getContext().setAuthentication(authentication(request));
         }
         chain.doFilter(request, response);
     }
 
-    protected abstract AbstractJwtAuthToken authentication(@NonNull HttpServletRequest request);
-
     protected abstract String token(@NonNull HttpServletRequest request);
+
+    protected boolean skip(@NonNull HttpServletRequest request) {
+        AtomicBoolean skip = new AtomicBoolean(false);
+        if (!CollectionUtils.isEmpty(this.unAuthLoginUrls)) {
+            unAuthLoginUrls.stream().map(AntPathRequestMatcher::new).filter(matcher -> matcher.matches(request)).findAny().ifPresent(i -> skip.set(true));
+        }
+        return skip.get();
+    }
+
+    protected abstract AbstractJwtAuthToken authentication(@NonNull HttpServletRequest request);
 }
