@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 /**
  * @author hp 2023/2/17
@@ -23,16 +24,19 @@ public class LocalDateTimeTypeConverter implements TypeHandler<LocalDateTime> {
 
     @Override
     public LocalDateTime getResult(ResultSet rs, String columnName) throws SQLException {
-        return LocalDateTime.parse(rs.getString(columnName), FORMATTER);
+        final String string = rs.getString(columnName);
+        return Optional.ofNullable(string).map(i -> LocalDateTime.parse(i, FORMATTER)).orElse(null);
     }
 
     @Override
     public LocalDateTime getResult(ResultSet rs, int columnIndex) throws SQLException {
-        return LocalDateTime.parse(rs.getString(columnIndex), FORMATTER);
+        final String string = rs.getString(columnIndex);
+        return Optional.ofNullable(string).map(i -> LocalDateTime.parse(i, FORMATTER)).orElse(null);
     }
 
     @Override
     public LocalDateTime getResult(CallableStatement cs, int columnIndex) throws SQLException {
-        return LocalDateTime.parse(cs.getString(columnIndex), FORMATTER);
+        final String string = cs.getString(columnIndex);
+        return Optional.ofNullable(string).map(i -> LocalDateTime.parse(i, FORMATTER)).orElse(null);
     }
 }
