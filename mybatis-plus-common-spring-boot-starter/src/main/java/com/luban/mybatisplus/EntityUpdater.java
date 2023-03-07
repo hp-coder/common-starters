@@ -1,6 +1,7 @@
 package com.luban.mybatisplus;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.google.common.base.Preconditions;
 import com.luban.mybatisplus.group.UpdateGroup;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,8 @@ public class EntityUpdater<T> extends BaseEntityOperation implements Loader<T>, 
 
     @Override
     public Executor<T> update(Consumer<T> consumer) {
-        return null;
+        Preconditions.checkArgument(Objects.nonNull(entity), "entity is null");
+        consumer.accept(this.entity);
+        return this;
     }
 }
