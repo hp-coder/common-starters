@@ -17,7 +17,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
-        <vavr.version>1.0.0-alpha-3</vavr.version>
+        <vavr.version>0.9.0</vavr.version>
         <hibernate-validator.version>6.0.19.Final</hibernate-validator.version>
     </properties>
 
