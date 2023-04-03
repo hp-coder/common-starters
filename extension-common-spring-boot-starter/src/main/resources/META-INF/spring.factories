@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.luban.extension.config.ExtensionAutoConfiguration
+com.luban.extension.ExtensionAutoConfiguration
