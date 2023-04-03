@@ -17,6 +17,7 @@
         <module>sync-common-spring-boot-starter</module>
         <module>excel-starter-example</module>
         <module>common-base</module>
+        <module>join-in-memory-common-spring-boot-starter</module>
     </modules>
 
     <parent>
