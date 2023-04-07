@@ -3,6 +3,7 @@ package com.luban.common.base.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -13,10 +14,36 @@ import java.util.List;
 @Data
 public class PageRequestWrapper<T> {
 
-    private T bean;
-    private Integer pageSize;
     private Integer page;
+    private Integer pageSize;
+    private T bean;
     private List<OrderColumn> sorts;
+
+    public PageRequestWrapper(Integer page, Integer pageSize) {
+        this.page = page;
+        this.pageSize = pageSize;
+        validate();
+    }
+
+    public PageRequestWrapper(Integer page, Integer pageSize, T bean) {
+        this.page = page;
+        this.pageSize = pageSize;
+        this.bean = bean;
+        validate();
+    }
+
+    public PageRequestWrapper(Integer page, Integer pageSize, T bean, List<OrderColumn> sorts) {
+        this.page = page;
+        this.pageSize = pageSize;
+        this.bean = bean;
+        this.sorts = sorts;
+        validate();
+    }
+
+    private void validate() {
+        Assert.isTrue(page != null && page > 0, "页码异常");
+        Assert.isTrue(pageSize != null && pageSize > 0, "每页记录数异常");
+    }
 
     @AllArgsConstructor
     @Getter
