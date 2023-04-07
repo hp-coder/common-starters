@@ -3,6 +3,7 @@ package com.luban.joininmemory.support;
 import com.luban.joininmemory.JoinFieldExecutor;
 import com.luban.joininmemory.JoinFieldExecutorFactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -28,14 +29,15 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
     public <TYPE> List<JoinFieldExecutor<TYPE>> createForType(Class<TYPE> clazz) {
         final List<Field> fields = FieldUtils.getAllFieldsList(clazz);
         return fields.stream()
-                .filter(field -> field.isAnnotationPresent(annotationClass))
-                .map(field -> buildJoinFieldExecutor(clazz, field))
+                .map(field -> buildJoinFieldExecutor(clazz, field, AnnotatedElementUtils.findMergedAnnotation(field, annotationClass)))
                 .filter(Objects::nonNull)
                 .collect(toList());
     }
 
-    private <TYPE> JoinFieldExecutor<TYPE> buildJoinFieldExecutor(Class<TYPE> clazz, Field field) {
-        final A annotation = field.getAnnotation(annotationClass);
+    private <TYPE> JoinFieldExecutor<TYPE> buildJoinFieldExecutor(Class<TYPE> clazz, Field field, A annotation) {
+        if (annotation == null) {
+            return null;
+        }
         final DefaultJoinFieldExecutorAdaptor executorAdaptor = DefaultJoinFieldExecutorAdaptor.builder()
                 .name(createName(clazz, field, annotation))
                 .runLevel(createRunLevel(clazz, field, annotation))
@@ -49,9 +51,10 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
         return executorAdaptor;
     }
 
-    protected <DATA> BiConsumer<Object, Object> createLostFunction(Class<DATA> clazz, Field field, A annotation){
+    protected <DATA> BiConsumer<Object, Object> createLostFunction(Class<DATA> clazz, Field field, A annotation) {
         return null;
     }
+
     protected abstract <DATA> BiConsumer<Object, List<Object>> createFoundFunction(Class<DATA> clazz, Field field, A annotation);
 
     protected abstract <DATA> Function<Object, Object> createDataConverter(Class<DATA> clazz, Field field, A annotation);
@@ -64,7 +67,7 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
 
     protected abstract <DATA> int createRunLevel(Class<DATA> clazz, Field field, A annotation);
 
-    protected <DATA> String createName(Class<DATA> clazz, Field field, A annotation){
+    protected <DATA> String createName(Class<DATA> clazz, Field field, A annotation) {
         return "class[" + clazz.getSimpleName() + "]" +
                 "#field[" + field.getName() + "]" +
                 "-" + annotation.getClass().getSimpleName();
