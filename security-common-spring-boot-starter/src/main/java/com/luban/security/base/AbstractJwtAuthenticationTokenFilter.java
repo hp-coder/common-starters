@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbstractJwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private final List<String> unAuthLoginUrls;
+    protected String token;
 
     public AbstractJwtAuthenticationTokenFilter(SecurityCommonProperties properties) {
         this.unAuthLoginUrls = properties.getUnAuthLoginUrls();
@@ -30,7 +31,7 @@ public abstract class AbstractJwtAuthenticationTokenFilter extends OncePerReques
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
-        if (!Strings.isNullOrEmpty(token(request)) && !skip(request)) {
+        if (!Strings.isNullOrEmpty(token = token(request)) && !skip(request)) {
             SecurityContextHolder.getContext().setAuthentication(authentication(request));
         }
         chain.doFilter(request, response);
