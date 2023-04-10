@@ -8,7 +8,7 @@ import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.mapper.DateMapper;
 import com.luban.common.base.mapper.GenericEnumMapper;
 import com.squareup.javapoet.*;
-import org.apache.catalina.mapper.Mapper;
+import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import javax.annotation.processing.RoundEnvironment;

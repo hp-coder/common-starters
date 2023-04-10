@@ -45,9 +45,8 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
                 .addSuperinterface(
                         ClassName.get(nameContext.getServicePackageName(), nameContext.getServiceClassName()))
-                .addAnnotation(Transactional.class)
-                .addAnnotation(Service.class)
                 .addAnnotation(Slf4j.class)
+                .addAnnotation(Service.class)
                 .addAnnotation(RequiredArgsConstructor.class)
                 .addModifiers(Modifier.PUBLIC);
         if (StringUtils.containsNull(nameContext.getRepositoryPackageName())) {
@@ -99,6 +98,8 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
         boolean containsNull = StringUtils.containsNull(nameContext.getDtoClassName(), nameContext.getMapperPackageName());
         if (!containsNull) {
             return Optional.of(MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
+                    .addAnnotation(AnnotationSpec.builder(Transactional.class)
+                            .addMember("rollbackFor", "$L", "Exception.class").build())
                     .addParameter(
                             ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()),
                             "creator")
@@ -106,15 +107,15 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                     .addCode(
                             CodeBlock.of(
                                     "Optional<$T> $L = $T.doCreate($L)\n.create(() -> $T.INSTANCE.dtoToEntity(creator))\n"
-                                            + ".update(e -> e.init())\n"
+                                            + ".update($L::init)\n"
                                             + ".execute();\n",
                                     typeElement, classFieldName, EntityOperations.class, repositoryFieldName,
-                                    ClassName.get(nameContext.getMapperPackageName(),
-                                            nameContext.getMapperClassName()))
+                                    ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()),
+                                    typeElement.getSimpleName()
+                            )
                     )
                     .addCode(
-                            CodeBlock.of("return $L.isPresent() ? $L.get().getId() : 0;", classFieldName,
-                                    classFieldName)
+                            CodeBlock.of("return $L.map($L::getId).orElse(0L);", classFieldName, typeElement.getSimpleName())
                     )
                     .addJavadoc("createImpl")
                     .addAnnotation(Override.class)
@@ -128,13 +129,15 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
         boolean containsNull = StringUtils.containsNull(nameContext.getDtoPackageName());
         if (!containsNull) {
             return Optional.of(MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
+                    .addAnnotation(AnnotationSpec.builder(Transactional.class)
+                            .addMember("rollbackFor", "$L", "Exception.class").build())
                     .addParameter(
                             ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()),
                             "updater")
                     .addModifiers(Modifier.PUBLIC)
                     .addCode(
                             CodeBlock.of("$T.doUpdate($L)\n.loadById(updater.getId())\n"
-                                            + ".update(e -> updater.update$L(e))\n"
+                                            + ".update(updater::update$L)\n"
                                             + ".execute();",
                                     EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
                     )
@@ -148,12 +151,14 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
     private Optional<MethodSpec> validMethod(TypeElement typeElement, String repositoryFieldName) {
         return Optional.of(MethodSpec.methodBuilder("valid" + typeElement.getSimpleName())
                 .addParameter(Long.class, "id")
+                .addAnnotation(AnnotationSpec.builder(Transactional.class)
+                        .addMember("rollbackFor", "$L","Exception.class").build())
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
                         CodeBlock.of("$T.doUpdate($L)\n.loadById(id)\n"
-                                        + ".update(e -> e.valid())\n"
+                                        + ".update($L::valid)\n"
                                         + ".execute();",
-                                EntityOperations.class, repositoryFieldName)
+                                EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
                 )
                 .addJavadoc("valid")
                 .addAnnotation(Override.class)
@@ -163,12 +168,14 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
     private Optional<MethodSpec> invalidMethod(TypeElement typeElement, String repositoryFieldName) {
         return Optional.of(MethodSpec.methodBuilder("invalid" + typeElement.getSimpleName())
                 .addParameter(Long.class, "id")
+                .addAnnotation(AnnotationSpec.builder(Transactional.class)
+                        .addMember("rollbackFor", "$L", "Exception.class").build())
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
                         CodeBlock.of("$T.doUpdate($L)\n.loadById(id)\n"
-                                        + ".update(e -> e.invalid())\n"
+                                        + ".update($L::invalid)\n"
                                         + ".execute();",
-                                EntityOperations.class, repositoryFieldName)
+                                EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
                 )
                 .addJavadoc("invalid")
                 .addAnnotation(Override.class)
@@ -223,7 +230,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                     )
                     .addCode(
                             CodeBlock.of(
-                                    "return new $T<>(page.getContent().stream().map(entity -> new $T(entity))\n"
+                                    "return new $T<>(page.getContent().stream().map($T::new)\n"
                                             + "        .collect($T.toList()), page.getPageable(), page.getTotalElements());",
                                     PageImpl.class,
                                     ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()),

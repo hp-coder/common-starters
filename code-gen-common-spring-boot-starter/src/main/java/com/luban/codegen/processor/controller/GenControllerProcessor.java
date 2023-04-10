@@ -30,8 +30,8 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
         DefaultNameContext nameContext = getNameContext(typeElement);
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(nameContext.getControllerClassName())
-                .addAnnotation(RestController.class)
                 .addAnnotation(Slf4j.class)
+                .addAnnotation(RestController.class)
                 .addAnnotation(AnnotationSpec.builder(RequestMapping.class).addMember("value", "$S", StringUtils.camel(typeElement.getSimpleName().toString()) + "/v1").build())
                 .addAnnotation(RequiredArgsConstructor.class)
                 .addModifiers(Modifier.PUBLIC);
