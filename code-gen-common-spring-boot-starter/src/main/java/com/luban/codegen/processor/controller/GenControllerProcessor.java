@@ -74,7 +74,6 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                     ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
                     )
                     .addCode(CodeBlock.of("return AjaxResult.success($L.create$L(creator));", serviceFieldName, typeElement.getSimpleName().toString()))
-                    .addJavadoc("createRequest")
                     .returns(AjaxResult.class)
                     .build());
         }

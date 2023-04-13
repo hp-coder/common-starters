@@ -1,13 +1,11 @@
 package com.luban.codegen.processor.request;
 
 import com.google.auto.service.AutoService;
-import com.luban.jpa.AbstractBaseJpaDTO;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.response.GenResponse;
 import com.luban.codegen.processor.vo.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.squareup.javapoet.TypeSpec;
-import lombok.Data;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
@@ -31,10 +29,9 @@ public class GenRequestProcessor extends AbstractCodeGenProcessor {
         Set<VariableElement> fields = findFields(typeElement, v -> Objects.isNull(v.getAnnotation(Ignore.class)));
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractBaseJpaDTO.class)
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Data.class);
-        generateGettersAndSettersWithLombok(builder, fields);
+                .superclass(AbstractBaseRequest.class)
+                .addModifiers(Modifier.PUBLIC);
+        generateGettersAndSetters(builder, fields);
         String packageName = generatePackage(typeElement);
         generateJavaSourceFile(packageName, typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
     }

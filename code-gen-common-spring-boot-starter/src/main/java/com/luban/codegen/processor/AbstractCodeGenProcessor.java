@@ -23,7 +23,6 @@ import com.luban.codegen.processor.vo.GenVo;
 import com.luban.codegen.processor.vo.GenVoProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.squareup.javapoet.*;
-import lombok.experimental.Accessors;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
@@ -78,8 +77,6 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
     }
 
     public void generateGettersAndSettersWithLombok(TypeSpec.Builder builder, Set<VariableElement> variableElements) {
-        builder.addAnnotation(AnnotationSpec.builder(Accessors.class)
-                .addMember("chain", "$L", true).build());
         variableElements.forEach(_0 -> {
             final TypeName typeName = TypeName.get(_0.asType());
             final String fieldName = _0.getSimpleName().toString();

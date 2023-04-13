@@ -1,14 +1,12 @@
 package com.luban.codegen.processor.dto;
 
 import com.google.auto.service.AutoService;
-import com.luban.jpa.AbstractBaseJpaDTO;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.vo.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import lombok.Data;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
@@ -35,10 +33,9 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
         Set<VariableElement> fields = findFields(typeElement, v -> Objects.isNull(v.getAnnotation(Ignore.class)));
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractBaseJpaDTO.class)
-                .addModifiers(Modifier.PUBLIC)
-                .addAnnotation(Data.class);
-        generateGettersAndSettersWithLombok(builder, fields);
+                .superclass(AbstractBaseDTO.class)
+                .addModifiers(Modifier.PUBLIC);
+        generateGettersAndSetters(builder, fields);
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
                 .addParameter(TypeName.get(typeElement.asType()), "source")
                 .addModifiers(Modifier.PUBLIC)

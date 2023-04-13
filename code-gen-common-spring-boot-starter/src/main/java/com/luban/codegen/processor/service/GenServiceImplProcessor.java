@@ -115,9 +115,8 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                             )
                     )
                     .addCode(
-                            CodeBlock.of("return $L.map($L::getId).orElse(0L);", classFieldName, typeElement.getSimpleName())
+                            CodeBlock.of("return $L.map($L::getId).orElse(null);", classFieldName, typeElement.getSimpleName())
                     )
-                    .addJavadoc("createImpl")
                     .addAnnotation(Override.class)
                     .returns(Long.class).build());
         }
@@ -141,7 +140,6 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                                             + ".execute();",
                                     EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
                     )
-                    .addJavadoc("update")
                     .addAnnotation(Override.class)
                     .build());
         }
@@ -160,7 +158,6 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                                         + ".execute();",
                                 EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
                 )
-                .addJavadoc("valid")
                 .addAnnotation(Override.class)
                 .build());
     }
@@ -177,7 +174,6 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                                         + ".execute();",
                                 EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
                 )
-                .addJavadoc("invalid")
                 .addAnnotation(Override.class)
                 .build());
     }
@@ -199,7 +195,6 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                                     classFieldName,
                                     BusinessException.class, CodeEnum.class)
                     )
-                    .addJavadoc("findById")
                     .addAnnotation(Override.class)
                     .returns(ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()))
                     .build());
@@ -236,7 +231,6 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                                     ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()),
                                     Collectors.class)
                     )
-                    .addJavadoc("findByPage")
                     .addAnnotation(Override.class)
                     .returns(ParameterizedTypeName.get(ClassName.get(Page.class),
                             ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName())))
