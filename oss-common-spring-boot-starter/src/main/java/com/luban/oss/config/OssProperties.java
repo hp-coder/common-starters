@@ -1,7 +1,5 @@
 package com.luban.oss.config;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -11,8 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @date 2022/8/25
  */
 @ConfigurationProperties(prefix = "oss")
-@Setter
-@Getter
 public class OssProperties {
 
     private boolean enable = false;
@@ -31,4 +27,60 @@ public class OssProperties {
     private String region;
     private boolean pathStyleAccess = true;
     private String bucketName;
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public String getAccessKey() {
+        return accessKey;
+    }
+
+    public void setAccessKey(String accessKey) {
+        this.accessKey = accessKey;
+    }
+
+    public String getAccessSecret() {
+        return accessSecret;
+    }
+
+    public void setAccessSecret(String accessSecret) {
+        this.accessSecret = accessSecret;
+    }
+
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public boolean isPathStyleAccess() {
+        return pathStyleAccess;
+    }
+
+    public void setPathStyleAccess(boolean pathStyleAccess) {
+        this.pathStyleAccess = pathStyleAccess;
+    }
+
+    public String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        this.bucketName = bucketName;
+    }
 }

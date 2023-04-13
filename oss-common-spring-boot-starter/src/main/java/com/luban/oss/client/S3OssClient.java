@@ -5,7 +5,6 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
-import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,10 +16,13 @@ import java.net.URL;
  * @author HP
  * @date 2022/8/25
  */
-@RequiredArgsConstructor
 public class S3OssClient implements OssClient {
 
     private final AmazonS3 amazonS3;
+
+    public S3OssClient(AmazonS3 amazonS3) {
+        this.amazonS3 = amazonS3;
+    }
 
     @Override
     public void createBucket(String bucketName) {
