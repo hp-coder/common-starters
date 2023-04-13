@@ -2,7 +2,7 @@ package com.luban.jpa;
 
 import com.luban.jpa.convertor.InstantLongConverter;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -11,21 +11,21 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @MappedSuperclass
-@Data
+@Getter
 public abstract class BaseJpaAggregate extends AbstractAggregateRoot<BaseJpaAggregate> {
     @Id
     @GeneratedValue(generator = "snowflakeIdGenerator")
     @GenericGenerator(name = "snowflakeIdGenerator", strategy = "com.luban.jpa.id.SnowflakeIdGenerator")
-    @Setter(AccessLevel.PROTECTED)
+    @Setter
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "created_at", nullable = true, updatable = false)
+    @Column(name = "created_at", updatable = false)
     @Convert(converter = InstantLongConverter.class)
     @Setter(AccessLevel.PROTECTED)
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = true)
+    @Column(name = "updated_at")
     @Convert(converter = InstantLongConverter.class)
     @Setter(AccessLevel.PROTECTED)
     private Instant updatedAt;
