@@ -18,6 +18,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.luban</groupId>
+            <artifactId>common-base</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
