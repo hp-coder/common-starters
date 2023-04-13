@@ -3,8 +3,10 @@ package com.luban.common.base.mapper;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Optional;
 
 public class DateMapper {
     public Long asLong(Instant date) {
@@ -19,6 +21,18 @@ public class DateMapper {
             return Instant.ofEpochMilli(date);
         }
         return null;
+    }
+
+    public String instantToString(Instant instant){
+        return Optional.ofNullable(instant)
+                .map(i-> LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .orElse(null);
+    }
+
+    public Instant stringToInstant(String datetime){
+        return Optional.ofNullable(datetime)
+                .map(i-> LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.of("Asia/Shanghai")).toInstant())
+                .orElse(null);
     }
 
     public String asString(LocalDate date) {
