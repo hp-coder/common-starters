@@ -1,73 +1,66 @@
 package com.luban.common.base.mapper;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import java.util.Optional;
 
 public class DateMapper {
     public Long asLong(Instant date) {
-        if (Objects.nonNull(date)) {
-            return date.toEpochMilli();
-        }
-        return null;
+        return Optional.ofNullable(date).map(Instant::toEpochMilli).orElse(null);
     }
 
     public Instant asInstant(Long date) {
-        if (Objects.nonNull(date)) {
-            return Instant.ofEpochMilli(date);
-        }
-        return null;
+        return Optional.ofNullable(date).map(Instant::ofEpochMilli).orElse(null);
     }
 
-    public String instantToString(Instant instant){
+    public String instantToString(Instant instant) {
         return Optional.ofNullable(instant)
-                .map(i-> LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .map(i -> LocalDateTime.ofInstant(instant, ZoneId.of("Asia/Shanghai")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .orElse(null);
     }
 
-    public Instant stringToInstant(String datetime){
+    public Instant stringToInstant(String datetime) {
         return Optional.ofNullable(datetime)
-                .map(i-> LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.of("Asia/Shanghai")).toInstant())
+                .map(i -> LocalDateTime.parse(datetime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).atZone(ZoneId.of("Asia/Shanghai")).toInstant())
                 .orElse(null);
     }
 
     public String asString(LocalDate date) {
-        if (Objects.nonNull(date)) {
-            return date.format(DateTimeFormatter.ISO_LOCAL_DATE);
-        }
-        return null;
+        return Optional.ofNullable(date).map(d -> d.format(DateTimeFormatter.ISO_LOCAL_DATE)).orElse(null);
     }
 
     public LocalDate asLocalDate(String date) {
-        if (Objects.nonNull(date)) {
-            try {
-                return LocalDate.parse(date);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        return null;
+        return Optional.ofNullable(date).map(LocalDate::parse).orElse(null);
+    }
+
+    public Long localDateAsLong(LocalDate date) {
+        return Optional.ofNullable(date)
+                .map(d -> d.atTime(LocalTime.MIN).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .orElse(null);
+    }
+
+    public LocalDate longAsLocalDate(Long date) {
+        return Optional.ofNullable(date).map(d -> LocalDateTime.ofInstant(Instant.ofEpochMilli(date), ZoneId.systemDefault()).toLocalDate())
+                .orElse(null);
     }
 
     public String asString(LocalDateTime date) {
-        if (Objects.nonNull(date)) {
-            return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        }
-        return null;
+        return Optional.ofNullable(date).map(d -> d.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .orElse(null);
     }
 
     public LocalDateTime asLocalDateTime(String date) {
-        if (Objects.nonNull(date)) {
-            try {
-                return LocalDateTime.parse(date,DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        return null;
+        return Optional.ofNullable(date).map(d -> LocalDateTime.parse(d, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .orElse(null);
+    }
+
+    public Long localDateTimeAsLong(LocalDateTime date) {
+        return Optional.ofNullable(date).map(d -> d.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .orElse(null);
+    }
+
+    public LocalDateTime longAsLocalDateTime(Long date) {
+        return Optional.ofNullable(date).map(d -> LocalDateTime.ofInstant(Instant.ofEpochMilli(d),ZoneId.systemDefault()))
+                .orElse(null);
     }
 }
