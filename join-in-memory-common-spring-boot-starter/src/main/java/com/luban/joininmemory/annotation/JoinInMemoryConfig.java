@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 public @interface JoinInMemoryConfig {
     JoinInMemoryExecutorType executorType() default JoinInMemoryExecutorType.SERIAL;
 
-    String executorName() default "defaultExecutor";
+    String executorName() default "defaultJoinInMemoryExecutor";
 }
