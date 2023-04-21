@@ -2,7 +2,7 @@ package com.luban.codegen.processor.response;
 
 import com.google.auto.service.AutoService;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
-import com.luban.codegen.processor.vo.Ignore;
+import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.squareup.javapoet.TypeSpec;
 
@@ -25,12 +25,15 @@ public class GenResponseProcessor extends AbstractCodeGenProcessor {
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        Set<VariableElement> fields = findFields(typeElement, v -> Objects.isNull(v.getAnnotation(Ignore.class)));
+        Set<VariableElement> fields = findFields(typeElement, v ->
+                Objects.isNull(v.getAnnotation(Ignore.class)) &&
+                        Objects.isNull(v.getAnnotation(Deprecated.class))
+        );
         String sourceClassName = typeElement.getSimpleName() + RESPONSE_SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
                 .superclass(AbstractBaseResponse.class)
                 .addModifiers(Modifier.PUBLIC);
-        generateGettersAndSetters(builder, fields);
+        generateGettersAndSettersWithLombokAndConverter(builder,fields);
         String packageName = generatePackage(typeElement);
         generateJavaSourceFile(packageName, typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
     }

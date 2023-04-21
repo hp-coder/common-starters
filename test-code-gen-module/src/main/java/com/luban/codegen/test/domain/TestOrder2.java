@@ -1,5 +1,6 @@
 package com.luban.codegen.test.domain;
 
+import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.controller.GenController;
 import com.luban.codegen.processor.dto.GenDto;
 import com.luban.codegen.processor.mapper.GenMapper;
@@ -34,24 +35,9 @@ import java.io.Serializable;
 @Entity
 @Table
 @Data
-public class TestOrder extends BaseJpaAggregate implements Serializable {
+public class TestOrder2 extends BaseJpaAggregate implements Serializable {
 
-//    @FieldDesc("sku名称")
-//    private String skuName;
-//
-//    @FieldDesc("模版id")
-//    private Long templateId;
-//
-//    @FieldDesc("sku编码")
-//    private String code;
-//
-//    @FieldDesc("备注")
-//    private String remark;
-//
-//    @FieldDesc("税务分类编码")
-//    private String taxCategoryNo;
-
-    @Deprecated
+    @Ignore
     @FieldDesc("计量单位")
     private String measureUnit;
 

@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.vo;
+package com.luban.codegen.processor;
 
 import java.lang.annotation.*;
 
@@ -6,7 +6,7 @@ import java.lang.annotation.*;
  * @author HP
  * @date 2022/10/24
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Ignore {

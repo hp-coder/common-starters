@@ -2,7 +2,7 @@ package com.luban.codegen.processor.dto;
 
 import com.google.auto.service.AutoService;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
-import com.luban.codegen.processor.vo.Ignore;
+import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 
 
-
 /**
  * @author HP
  * @date 2022/10/24
@@ -30,19 +29,22 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        Set<VariableElement> fields = findFields(typeElement, v -> Objects.isNull(v.getAnnotation(Ignore.class)));
+        Set<VariableElement> fields = findFields(typeElement, v ->
+                Objects.isNull(v.getAnnotation(Ignore.class)) &&
+                        Objects.isNull(v.getAnnotation(Deprecated.class))
+        );
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
                 .superclass(AbstractBaseDTO.class)
                 .addModifiers(Modifier.PUBLIC);
-        generateGettersAndSetters(builder, fields);
+        generateGettersAndSettersWithLombok(builder, fields);
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
                 .addParameter(TypeName.get(typeElement.asType()), "source")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class);
         fields.forEach(f -> methodBuilder.addStatement("$T.ofNullable(this.get$L()).ifPresent(source::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
         builder.addMethod(methodBuilder.build());
-        generateJavaFile(generatePackage(typeElement),builder);
+        generateJavaFile(generatePackage(typeElement), builder);
     }
 
     @Override
