@@ -13,9 +13,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 
 /**
@@ -29,7 +29,7 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        Set<VariableElement> fields = findFields(typeElement, v ->
+        List<VariableElement> fields = findFields(typeElement, v ->
                 Objects.isNull(v.getAnnotation(Ignore.class)) &&
                         Objects.isNull(v.getAnnotation(Deprecated.class))
         );
@@ -37,7 +37,7 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
                 .superclass(AbstractBaseDTO.class)
                 .addModifiers(Modifier.PUBLIC);
-        generateGettersAndSettersWithLombok(builder, fields);
+        generateGettersAndSetters(builder, fields, null);
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
                 .addParameter(TypeName.get(typeElement.asType()), "source")
                 .addModifiers(Modifier.PUBLIC)

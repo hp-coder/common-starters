@@ -1,6 +1,6 @@
 package com.luban.codegen.processor;
 
-import com.google.auto.common.MoreTypes;
+import cn.hutool.core.collection.CollUtil;
 import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.context.ProcessingEnvironmentContextHolder;
 import com.luban.codegen.processor.api.GenFeign;
@@ -10,6 +10,7 @@ import com.luban.codegen.processor.dto.GenDto;
 import com.luban.codegen.processor.dto.GenDtoProcessor;
 import com.luban.codegen.processor.mapper.GenMapper;
 import com.luban.codegen.processor.mapper.GenMapperProcessor;
+import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.luban.codegen.processor.repository.GenRepository;
 import com.luban.codegen.processor.repository.GenRepositoryProcessor;
 import com.luban.codegen.processor.request.GenRequest;
@@ -24,13 +25,14 @@ import com.luban.codegen.processor.vo.GenVo;
 import com.luban.codegen.processor.vo.GenVoProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.annotations.FieldDesc;
-import com.luban.common.base.enums.BaseEnum;
 import com.squareup.javapoet.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.*;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
@@ -38,10 +40,9 @@ import javax.tools.Diagnostic;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -61,10 +62,10 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
     protected abstract void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment);
 
 
-    public Set<VariableElement> findFields(TypeElement element, Predicate<VariableElement> predicate) {
+    public List<VariableElement> findFields(TypeElement element, Predicate<VariableElement> predicate) {
         final List<? extends Element> enclosedElements = element.getEnclosedElements();
         final List<VariableElement> variableElements = ElementFilter.fieldsIn(enclosedElements);
-        return variableElements.stream().filter(predicate).collect(Collectors.toSet());
+        return variableElements.stream().filter(predicate).distinct().collect(Collectors.toList());
     }
 
     public TypeElement getSuperClass(TypeElement typeElement) {
@@ -78,38 +79,52 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
         return null;
     }
 
-    public void generateGettersAndSettersWithLombok(TypeSpec.Builder builder, Set<VariableElement> variableElements) {
-        builder.addAnnotation(Getter.class)
-                .addAnnotation(Setter.class);
-        variableElements.forEach(ve -> Optional.ofNullable(generateField(ve, null)).ifPresent(builder::addField));
-    }
-
-    public void generateGettersAndSettersWithLombokAndConverter(TypeSpec.Builder builder, Set<VariableElement> variableElements) {
-        builder.addAnnotation(Getter.class)
-                .addAnnotation(Setter.class);
-        //目前只处理通用枚举的转换, 其他特殊情况在客户端单独处理, 应该比较少
-        variableElements.forEach(ve -> Optional.ofNullable(generateField(ve, processBaseEnum(ve).get())).ifPresent(builder::addField));
-    }
-
-    public void generateGettersAndSetters(TypeSpec.Builder builder, Set<VariableElement> variableElements) {
-        ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Starting To Create Getters & Setters");
+    public void generateGettersAndSettersWithLombok(TypeSpec.Builder builder, Collection<VariableElement> variableElements, Collection<FieldSpecModifier> fieldSpecModifiers) {
+        ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Starting To Create Getters & Setters Using Lombok");
+        builder.addAnnotation(Data.class);
         variableElements.forEach(ve -> {
-            Optional.ofNullable(generateField(ve, null)).ifPresent(builder::addField);
-            generateGettersAndSetters(builder, ve);
+            TypeName typeName = null;
+            if (CollUtil.isNotEmpty(fieldSpecModifiers)) {
+                typeName = fieldSpecModifiers.stream()
+                        .filter(modifier -> modifier.isModifiable(ve))
+                        .map(modifier -> modifier.modify(ve))
+                        .findFirst()
+                        .orElse(null);
+            }
+            Optional.ofNullable(generateField(ve, typeName)).ifPresent(builder::addField);
         });
     }
 
-    protected void generateGettersAndSetters(TypeSpec.Builder builder, VariableElement ve) {
-        final TypeName typeName = TypeName.get(ve.asType());
+    public void generateGettersAndSetters(TypeSpec.Builder builder, Collection<VariableElement> variableElements, Collection<FieldSpecModifier> fieldSpecModifiers) {
+        ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.MANDATORY_WARNING, "Starting To Create Getters & Setters");
+
+        variableElements.forEach(ve -> {
+            TypeName typeName = null;
+            if (CollUtil.isNotEmpty(fieldSpecModifiers)) {
+                typeName = fieldSpecModifiers.stream()
+                        .filter(modifier -> modifier.isModifiable(ve))
+                        .map(modifier -> modifier.modify(ve))
+                        .findFirst()
+                        .orElse(null);
+            }
+            Optional.ofNullable(generateField(ve, typeName)).ifPresent(fieldSpec -> {
+                        builder.addField(fieldSpec);
+                        generateGettersAndSetters(builder, ve, fieldSpec.type);
+                    }
+            );
+        });
+    }
+
+    private void generateGettersAndSetters(TypeSpec.Builder builder, VariableElement ve, TypeName actualTypeName) {
         final String fieldName = ve.getSimpleName().toString();
         final String fieldMethodName = getFieldMethodName(ve);
         final MethodSpec getter = MethodSpec.methodBuilder("get" + fieldMethodName)
                 .addModifiers(Modifier.PUBLIC)
-                .returns(typeName)
+                .returns(actualTypeName)
                 .addStatement("return $L", fieldName).build();
 
         final MethodSpec setter = MethodSpec.methodBuilder("set" + fieldMethodName)
-                .addParameter(typeName, ve.getSimpleName().toString())
+                .addParameter(actualTypeName, ve.getSimpleName().toString())
                 .addModifiers(Modifier.PUBLIC)
                 .returns(void.class)
                 .addStatement("this.$L = $L", fieldName, fieldName).build();
@@ -118,6 +133,7 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
         builder.addMethod(setter);
     }
 
+
     protected FieldSpec generateField(VariableElement ve, TypeName typeName) {
         final TypeName actualTypeName = Optional.ofNullable(typeName).orElse(TypeName.get(ve.asType()));
         final FieldSpec.Builder builder = FieldSpec.builder(actualTypeName, ve.getSimpleName().toString(), Modifier.PRIVATE);
@@ -125,23 +141,6 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
                 builder.addAnnotation(AnnotationSpec.builder(FieldDesc.class).addMember("value", "$S", an.value()).build())
         );
         return builder.build();
-    }
-
-    protected AtomicReference<TypeName> processBaseEnum(VariableElement ve) {
-        AtomicReference<TypeName> typeName = new AtomicReference<>(null);
-        TypeMirror typeMirror = ve.asType();
-        final TypeElement typeElement1 = MoreTypes.asTypeElement(typeMirror);
-        if (typeElement1.getKind() == ElementKind.ENUM) {
-            final List<? extends TypeMirror> interfaces = typeElement1.getInterfaces();
-            interfaces.forEach(inf -> {
-                final DeclaredType declaredType = MoreTypes.asDeclared(inf);
-                if (MoreTypes.isTypeOf(BaseEnum.class, declaredType)) {
-                    final List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();
-                    typeName.set(ClassName.bestGuess(MoreTypes.asTypeElement(typeArguments.get(1)).getQualifiedName().toString()));
-                }
-            });
-        }
-        return typeName;
     }
 
     protected String getFieldMethodName(VariableElement ve) {

@@ -1,6 +1,6 @@
 # 自定义代码生成器
 
-> 目前如果根据 only4play 那种形式编写，实际也是硬编码只能生成 JPA 相关的代码，以及及其贴近其项目架构的基本类
+## 介绍
 
 - 使用 SPI 机制 + Google AutoService获取实现类
 - 使用 JavaPoet 编排具体类的内容
@@ -8,9 +8,113 @@
 - 如果需要前端代码则要利用模版引擎去做
 - 对于后期不需根据业务修改内容的类可以直接生成到target下
 
-processor包下的各类具体要如何生成，生成什么样的文件等，都需要根据实际项目情况确定，最好是项目都基于某些规定，在此规定下再进行代码生成器的开发
+## 开发
 
-还是期望能形成通用模块，例如同时能配置JPA和Mybatis等
+### 1. 说明
+由于使用的是在java编译时编排代码的方式, 如果是将类生成到`/target`目录下
 
+    例如模块中的VO, DTO类, 由于设计时此类直接对应数据模型不可修改, 所以生成到 /target/generated-source 中
+
+此目录下数据将被编译器和maven视为已经编译过, 不会二次编译
+
+所以不能添加需要被编译后再被引用的元素, 例如lombok的`@Data`等注解
+
+此时如果在上述目录下生成类带有此类注解, lombok并不会编译注解为对应方法
+
+最终将导致MapStruct在编译后生成实现类时, 无法找到对应属性的`getter`, `setter`方法, 导致转换时数据的丢失.
+
+
+### 2.使用
 引入模块maven坐标， mvn clean compile 加自动根据注解解析生成相关类文件；
 `注：可能需要将target/generated-source/annotations标记为generated sources root`
+```xml
+<properties>
+    <mapstruct.version>1.5.3.Final</mapstruct.version>
+    <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+    <code-gen-version>1.0.1-SNAPSHOT</code-gen-version>
+    <lombok.version>1.18.16</lombok.version>
+</properties>
+
+<dependencies>
+
+<dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct</artifactId>
+    <version>${mapstruct.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct-processor</artifactId>
+    <version>${mapstruct.version}</version>
+</dependency>
+
+<!-- lombok dependencies should not end up on classpath -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>com.luban</groupId>
+    <artifactId>code-gen-common-spring-boot-starter</artifactId>
+    <version>${code-gen-version}</version>
+</dependency>
+
+</dependencies>
+
+<build>
+<plugins>
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <encoding>UTF-8</encoding>
+            <compilerArgument>-Xlint:unchecked</compilerArgument>
+            <annotationProcessorPaths>
+                <path>
+                    <groupId>com.luban</groupId>
+                    <artifactId>code-gen-common-spring-boot-starter</artifactId>
+                    <version>${code-gen-version}</version>
+                </path>
+                <path>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                    <version>${lombok.version}</version>
+                </path>
+                <path>
+                    <groupId>org.mapstruct</groupId>
+                    <artifactId>mapstruct-processor</artifactId>
+                    <version>${mapstruct.version}</version>
+                </path>
+                <path>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok-mapstruct-binding</artifactId>
+                    <version>${lombok-mapstruct-binding.version}</version>
+                </path>
+            </annotationProcessorPaths>
+        </configuration>
+    </plugin>
+    <plugin>
+        <groupId>com.mysema.maven</groupId>
+        <artifactId>apt-maven-plugin</artifactId>
+        <version>1.1.3</version>
+        <executions>
+            <execution>
+                <id>querydsl</id>
+                <goals>
+                    <goal>process</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>target/generated-sources/java</outputDirectory>
+                    <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+</plugins>
+</build>
+```

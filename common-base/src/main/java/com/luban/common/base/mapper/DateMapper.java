@@ -2,6 +2,7 @@ package com.luban.common.base.mapper;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Optional;
 
 public class DateMapper {
@@ -60,7 +61,23 @@ public class DateMapper {
     }
 
     public LocalDateTime longAsLocalDateTime(Long date) {
-        return Optional.ofNullable(date).map(d -> LocalDateTime.ofInstant(Instant.ofEpochMilli(d),ZoneId.systemDefault()))
+        return Optional.ofNullable(date).map(d -> LocalDateTime.ofInstant(Instant.ofEpochMilli(d), ZoneId.systemDefault()))
                 .orElse(null);
+    }
+
+    public Date stringToDate(String string) {
+        return Optional.ofNullable(string).map(s -> Date.from(stringToInstant(s))).orElse(null);
+    }
+
+    public String dateToString(Date date) {
+        return Optional.ofNullable(date).map(d -> asString(longAsLocalDateTime(date.getTime()))).orElse(null);
+    }
+
+    public Date longToDate(Long l) {
+        return Optional.ofNullable(l).map(i -> Date.from(Instant.ofEpochMilli(i))).orElse(null);
+    }
+
+    public Long dateToLong(Date date) {
+        return Optional.ofNullable(date).map(Date::getTime).orElse(null);
     }
 }

@@ -12,11 +12,15 @@ import com.luban.codegen.processor.vo.GenVo;
 import com.luban.common.base.annotations.FieldDesc;
 import com.luban.common.base.enums.ValidStatus;
 import com.luban.jpa.BaseJpaAggregate;
+import com.luban.jpa.convertor.LocalDateTimeConverter;
+import com.luban.jpa.convertor.ValidStatusConverter;
 import lombok.Data;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author HP
@@ -36,29 +40,26 @@ import java.io.Serializable;
 @Data
 public class TestOrder extends BaseJpaAggregate implements Serializable {
 
-//    @FieldDesc("sku名称")
-//    private String skuName;
-//
-//    @FieldDesc("模版id")
-//    private Long templateId;
-//
-//    @FieldDesc("sku编码")
-//    private String code;
-//
-//    @FieldDesc("备注")
-//    private String remark;
-//
-//    @FieldDesc("税务分类编码")
-//    private String taxCategoryNo;
-
-    @Deprecated
-    @FieldDesc("计量单位")
-    private String measureUnit;
-
+    @Convert(converter = ValidStatusConverter.class)
     @FieldDesc("状态")
     private ValidStatus validStatus;
 
-    public void init(){}
-    public void valid(){}
-    public void invalid(){}
+    @Convert
+    @FieldDesc("没有实际converter")
+    private ValidStatus noConverter;
+
+    @Convert(converter = LocalDateTimeConverter.class)
+    @FieldDesc("时间")
+    private LocalDateTime date;
+
+    private Long testLong;
+
+    public void init() {
+    }
+
+    public void valid() {
+    }
+
+    public void invalid() {
+    }
 }

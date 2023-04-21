@@ -16,9 +16,16 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <code-gen-version>1.0.1-SNAPSHOT</code-gen-version>
+        <lombok.version>1.18.16</lombok.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.luban</groupId>
+            <artifactId>code-gen-common-spring-boot-starter</artifactId>
+            <version>${code-gen-version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -35,12 +42,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.luban</groupId>
-            <artifactId>code-gen-common-spring-boot-starter</artifactId>
-            <version>${code-gen-version}</version>
         </dependency>
     </dependencies>
 

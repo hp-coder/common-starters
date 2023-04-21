@@ -13,9 +13,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * @author HP
@@ -28,7 +28,7 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        Set<VariableElement> fields = findFields(typeElement, v ->
+        List<VariableElement> fields = findFields(typeElement, v ->
                 Objects.isNull(v.getAnnotation(Ignore.class)) &&
                         Objects.isNull(v.getAnnotation(Deprecated.class))
         );
@@ -36,7 +36,7 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
                 .superclass(AbstractBaseVO.class)
                 .addModifiers(Modifier.PUBLIC);
-        generateGettersAndSettersWithLombok(builder,fields);
+        generateGettersAndSetters(builder, fields, null);
         MethodSpec.Builder constructorSpecBuilder = MethodSpec.constructorBuilder().addParameter(TypeName.get(typeElement.asType()), "source").addModifiers(Modifier.PUBLIC);
         constructorSpecBuilder.addStatement("super(source)");
         fields.forEach(f -> constructorSpecBuilder.addStatement("$T.ofNullable(source.get$L()).ifPresent(this::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
