@@ -24,6 +24,7 @@ public class ExcelUtil {
         Sheet hiddenSheet = workbook.createSheet(hiddenSheetName);
         int rowIndex = 0;
         for (Map.Entry<String, List<String>> entry : options.entrySet()) {
+            System.out.println(entry.getKey());
             String parent = formatNameManager(entry.getKey());
             List<String> children = entry.getValue();
             if (CollUtil.isEmpty(children)) {
@@ -36,7 +37,15 @@ public class ExcelUtil {
                 cell = row.createCell(columnIndex++);
                 cell.setCellValue(child);
             }
-            char lastChildrenColumn = (char) ((int) 'A' + (children.size() == 0 ? 1 : children.size()) - 1);
+            String lastChildrenColumn;
+            final int columnSize = children.size();
+            if (columnSize > 26) {
+                char index = (char) ((int) 'A' + (columnSize / 26 - 1));
+                char subIndex = (char) ((int) 'A' + (columnSize % 26 - 1));
+                lastChildrenColumn = index + String.valueOf(subIndex);
+            } else {
+                lastChildrenColumn = String.valueOf((char) ((int) 'A' + (columnSize == 0 ? 1 : columnSize) - 1));
+            }
             createNameManager(workbook, parent, String.format(hiddenSheetName + "!$A$%s:$%s$%s", rowIndex, lastChildrenColumn, rowIndex));
             final DataValidationConstraint formulaListConstraint = helper.createFormulaListConstraint("INDIRECT($" + (char) ((int) 'A' + parentColumnIndex) + "2)");
             CellRangeAddressList regions = new CellRangeAddressList(fromRow, endRow, childColumnIndex, childColumnIndex);
@@ -47,7 +56,7 @@ public class ExcelUtil {
             validation.createErrorBox("提示", "请输入下拉选项中的内容");
             sheet.addValidationData(validation);
         }
-        hideSheet(workbook,1);
+        hideSheet(workbook, 1);
     }
 
     private static Name createNameManager(Workbook workbook, String nameName, String formula) {
