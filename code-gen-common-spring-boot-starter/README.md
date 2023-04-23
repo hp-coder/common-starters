@@ -25,7 +25,7 @@
 
 
 ### 2.使用
-引入模块maven坐标， mvn clean compile 加自动根据注解解析生成相关类文件；
+引入模块maven坐标， mvn clean compile 根据实体类配置的注解生成对应的类；
 `注：可能需要将target/generated-source/annotations标记为generated sources root`
 ```xml
 <properties>
