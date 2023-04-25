@@ -5,7 +5,6 @@
 - 使用 SPI 机制 + Google AutoService获取实现类
 - 使用 JavaPoet 编排具体类的内容
 - 对于JPA架构下的项目, Mapper将作为MapStruct功能的实现,与Mybatis的Mapper概念存在冲突, 为了兼容处理, 对于mybatis中的Mapper概念将在repository包中处理
-- 如果需要前端代码则要利用模版引擎去做
 - 对于后期不需根据业务修改内容的类可以直接生成到target下
 
 ## 开发
@@ -23,10 +22,19 @@
 
 最终将导致MapStruct在编译后生成实现类时, 无法找到对应属性的`getter`, `setter`方法, 导致转换时数据的丢失.
 
+### 2. 依赖
+mapstruct 和 lombok 能用最新就最新
 
-### 2.使用
-引入模块maven坐标， mvn clean compile 根据实体类配置的注解生成对应的类；
-`注：可能需要将target/generated-source/annotations标记为generated sources root`
+google的auto包目前已经满足需求, 但是由于编译时不想再引入特殊类型转换的注解, 在写request和response对象的时候用了其中的MoreTypes工具类
+导致改包的引用不能再为optional, 影响不大, 但如果调整需要注意.
+
+## 使用
+
+### 1. 依赖
+
+依赖及配置
+
+编译时有严格顺序要求: 代码生成器->lombok编译->mapstruct编译->lombok和mapstruct的处理
 ```xml
 <properties>
     <mapstruct.version>1.5.3.Final</mapstruct.version>
@@ -118,3 +126,5 @@
 </plugins>
 </build>
 ```
+
+
