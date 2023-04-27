@@ -33,7 +33,6 @@ public class AsposeAutoConfiguration implements ApplicationListener<ApplicationR
     public void onApplicationEvent(ApplicationReadyEvent event) {
         try {
             final LicenseLoader licenseLoader = this.xmlLicenseLoader();
-            System.out.println("loading licenses...");
             this.excelLicense(licenseLoader);
             this.wordLicense(licenseLoader);
         } catch (Exception e) {
