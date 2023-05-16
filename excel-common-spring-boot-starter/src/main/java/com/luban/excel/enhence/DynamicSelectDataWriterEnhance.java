@@ -1,27 +1,29 @@
 package com.luban.excel.enhence;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
+import com.google.common.collect.Maps;
 import com.luban.excel.annotation.ExcelSelect;
 import com.luban.excel.annotation.ResponseExcel;
 import com.luban.excel.dto.ExcelSelectDataColumn;
-import com.luban.excel.head.HeadGenerator;
 import com.luban.excel.enhence.handler.SelectDataSheetWriteHandler;
+import com.luban.excel.head.HeadGenerator;
 
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
  * @author HP
- * @date 2022/11/7
  */
 public class DynamicSelectDataWriterEnhance implements ExcelWriterBuilderEnhance {
 
@@ -37,41 +39,42 @@ public class DynamicSelectDataWriterEnhance implements ExcelWriterBuilderEnhance
     }
 
     private static <T> Map<Integer, ExcelSelectDataColumn> resolveExcelSelect(Class<T> dataClass) {
-        Map<Integer, ExcelSelectDataColumn> selectedMap = new HashMap<>(16);
-        Field[] fields = dataClass.getDeclaredFields();
-        for (int i = 0; i < fields.length; i++) {
-            Field field = fields[i];
-            ExcelSelect selected = field.getAnnotation(ExcelSelect.class);
-            ExcelProperty property = field.getAnnotation(ExcelProperty.class);
-            if (selected != null) {
-                ExcelSelectDataColumn excelSelectedResolve;
-                if (StrUtil.isNotEmpty(selected.parentColumn())) {
-                    excelSelectedResolve = new ExcelSelectDataColumn<Map<String, List<String>>>();
-                } else {
-                    excelSelectedResolve = new ExcelSelectDataColumn<List<String>>();
-                }
-                final Object source = excelSelectedResolve.resolveSource(selected);
-                if (Objects.nonNull(source)) {
-                    if (property != null) {
-                        excelSelectedResolve.setParentColumn(selected.parentColumn());
-                        excelSelectedResolve.setColumn(property.value()[0]);
-                        excelSelectedResolve.setSource(source);
-                        excelSelectedResolve.setFirstRow(selected.firstRow());
-                        excelSelectedResolve.setLastRow(selected.lastRow());
-                        int index = property.index();
-                        if (index >= 0) {
-                            selectedMap.put(index, excelSelectedResolve);
+        Map<Integer, ExcelSelectDataColumn> selectedMap = Maps.newHashMap();
+        final Field[] fields = ReflectUtil.getFields(dataClass);
+        AtomicInteger annotatedIndex = new AtomicInteger(1);
+        Arrays.stream(fields)
+                .forEach(f -> {
+                    ExcelSelect selected = f.getAnnotation(ExcelSelect.class);
+                    ExcelProperty property = f.getAnnotation(ExcelProperty.class);
+                    if (selected != null) {
+                        ExcelSelectDataColumn excelSelectedResolve;
+                        if (StrUtil.isNotEmpty(selected.parentColumn())) {
+                            excelSelectedResolve = new ExcelSelectDataColumn<Map<String, List<String>>>();
                         } else {
-                            index = i;
-                            selectedMap.put(index, excelSelectedResolve);
+                            excelSelectedResolve = new ExcelSelectDataColumn<List<String>>();
                         }
-                        excelSelectedResolve.setColumnIndex(index);
+                        final Object source = excelSelectedResolve.resolveSource(selected);
+                        if (Objects.nonNull(source)) {
+                            if (property != null) {
+                                final int headLayerCount = property.value().length;
+                                excelSelectedResolve.setParentColumn(selected.parentColumn());
+                                excelSelectedResolve.setColumn(property.value()[headLayerCount - 1]);
+                                excelSelectedResolve.setSource(source);
+                                excelSelectedResolve.setFirstRow(Math.max(selected.firstRow(), headLayerCount));
+                                excelSelectedResolve.setLastRow(selected.lastRow());
+                                int index = property.index() > -1 ? property.index() : annotatedIndex.getAndIncrement();
+                                selectedMap.put(index, excelSelectedResolve);
+                                excelSelectedResolve.setColumnIndex(index);
+                            }
+                        }
                     }
-                }
-            }
-        }
+                });
+
         if (CollUtil.isNotEmpty(selectedMap)) {
-            final Map<String, Integer> indexMap = selectedMap.values().stream().collect(Collectors.toMap(ExcelSelectDataColumn::getColumn, ExcelSelectDataColumn::getColumnIndex));
+            final Map<String, Integer> indexMap = selectedMap
+                    .values()
+                    .stream()
+                    .collect(Collectors.toMap(ExcelSelectDataColumn::getColumn, ExcelSelectDataColumn::getColumnIndex));
             selectedMap.forEach((k, v) -> {
                 if (indexMap.containsKey(v.getParentColumn())) {
                     v.setParentColumnIndex(indexMap.get(v.getParentColumn()));

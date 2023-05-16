@@ -10,13 +10,13 @@ import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.builder.ExcelWriterSheetBuilder;
 import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteSheet;
-import com.luban.excel.head.HeadMetaData;
 import com.luban.excel.annotation.ResponseExcel;
 import com.luban.excel.annotation.Sheet;
 import com.luban.excel.converter.LocalDateConverter;
 import com.luban.excel.converter.LocalDateTimeConverter;
 import com.luban.excel.enhence.ExcelWriterBuilderEnhance;
 import com.luban.excel.head.HeadGenerator;
+import com.luban.excel.head.HeadMetaData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaTypeFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.MimeType;
 import org.springframework.util.StringUtils;
@@ -61,7 +62,7 @@ public abstract class AbstractExcelSheetWriteHandler implements ExcelSheetWriteH
     public void export(Object o, HttpServletResponse response, ResponseExcel responseExcel) throws Exception {
         this.check(responseExcel);
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        String name = (String) ((RequestAttributes) Objects.requireNonNull(requestAttributes)).getAttribute("__EXCEL_NAME_KEY__", 0);
+        String name = (String) (Objects.requireNonNull(requestAttributes)).getAttribute("__EXCEL_NAME_KEY__", 0);
         if (StrUtil.isEmpty(name)) {
             name = responseExcel.name();
             if (StrUtil.isEmpty(name)) {
@@ -69,7 +70,7 @@ public abstract class AbstractExcelSheetWriteHandler implements ExcelSheetWriteH
             }
         }
         String fileName = String.format("%s%s", URLEncoder.encode(name, "UTF-8"), responseExcel.suffix().getValue());
-        String contentType = (String) MediaTypeFactory.getMediaType(fileName).map(MimeType::toString).orElse("application/vnd.ms-excel");
+        String contentType = MediaTypeFactory.getMediaType(fileName).map(MimeType::toString).orElse("application/vnd.ms-excel");
         response.setContentType(contentType);
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
         response.setHeader("Cache-Control", "no-cache");
@@ -80,7 +81,7 @@ public abstract class AbstractExcelSheetWriteHandler implements ExcelSheetWriteH
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 

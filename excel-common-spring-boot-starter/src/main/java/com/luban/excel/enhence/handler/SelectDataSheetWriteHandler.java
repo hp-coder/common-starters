@@ -7,14 +7,16 @@ import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.luban.excel.dto.ExcelSelectDataColumn;
 import com.luban.excel.util.ExcelUtil;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 请照抄整个类*
+ *
  * @author HP
  * @date 2022/11/7
  */
@@ -36,18 +38,42 @@ public class SelectDataSheetWriteHandler implements SheetWriteHandler {
      */
     @Override
     public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
-        // 这里可以对cell进行任何操作
-        Sheet sheet = writeSheetHolder.getSheet();
-        DataValidationHelper helper = sheet.getDataValidationHelper();
-        selectedMap.forEach((k, v) -> {
-            // 设置下拉列表的行： 首行，末行，首列，末列
-            if (StrUtil.isNotEmpty(v.getParentColumn())) {
-                final Map<String, List<String>> data = (Map<String, List<String>>) v.getSource();
+        //尽量少的创建sheet, 也可以只用一个额外的sheet放这些下拉数据
+        AtomicReference<Sheet> tmpSheet = new AtomicReference<>(null);
+        AtomicReference<Sheet> tmpCascadeSheet = new AtomicReference<>(null);
+        AtomicInteger tmpSheetStartCol = new AtomicInteger(0);
+        AtomicInteger tmpCascadeSheetStartCol = new AtomicInteger(0);
+
+        selectedMap.forEach((colIndex, model) -> {
+            if (StrUtil.isNotEmpty(model.getParentColumn())) {
                 //直接粘贴该工具类方法到你的项目中
-                ExcelUtil.addCascadeValidationToSheet(writeWorkbookHolder, writeSheetHolder, data, v.getParentColumnIndex(), k, v.getFirstRow(), v.getLastRow());
+                tmpCascadeSheet.set(
+                        ExcelUtil.addCascadeValidationToSheet(
+                                writeWorkbookHolder,
+                                writeSheetHolder,
+                                tmpCascadeSheet.get(),
+                                (Map<String, List<String>>) model.getSource(),
+                                tmpCascadeSheetStartCol,
+                                model.getParentColumnIndex(),
+                                colIndex,
+                                model.getFirstRow(),
+                                model.getLastRow()
+                        )
+                );
             } else {
                 //直接粘贴该工具类方法到你的项目中
-                ExcelUtil.addSelectValidationToSheet(sheet, helper, k, v);
+                tmpSheet.set(
+                        ExcelUtil.addSelectValidationToSheet(
+                                writeWorkbookHolder,
+                                writeSheetHolder,
+                                tmpSheet.get(),
+                                (List<String>) model.getSource(),
+                                tmpSheetStartCol,
+                                colIndex,
+                                model.getFirstRow(),
+                                model.getLastRow()
+                        )
+                );
             }
         });
     }
