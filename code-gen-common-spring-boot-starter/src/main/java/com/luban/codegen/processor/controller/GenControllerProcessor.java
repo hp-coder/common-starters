@@ -45,17 +45,15 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                 .build();
         typeSpecBuilder.addField(serviceField);
         Optional<MethodSpec> createMethod = createMethod(serviceFieldName, typeElement, nameContext);
-        createMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        createMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> updateMethod = updateMethod(serviceFieldName, typeElement, nameContext);
-        updateMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        updateMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> validMethod = validMethod(serviceFieldName, typeElement);
-        validMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        validMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> invalidMethod = inValidMethod(serviceFieldName, typeElement);
-        invalidMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        invalidMethod.ifPresent(typeSpecBuilder::addMethod);
         Optional<MethodSpec> findById = findById(serviceFieldName, nameContext);
-        findById.ifPresent(m -> typeSpecBuilder.addMethod(m));
-//        Optional<MethodSpec> findByPage = findByPage(serviceFieldName, nameContext);
-//        findByPage.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        findById.ifPresent(typeSpecBuilder::addMethod);
         generateJavaSourceFile(generatePackage(typeElement),
                 typeElement.getAnnotation(GenController.class).sourcePath(), typeSpecBuilder);
     }
@@ -80,14 +78,6 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
         return Optional.empty();
     }
 
-    /**
-     * 更新方法
-     *
-     * @param serviceFieldName
-     * @param typeElement
-     * @param nameContext
-     * @return
-     */
     private Optional<MethodSpec> updateMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
         boolean containsNull = StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getRequestClassName(), nameContext.getMapperPackageName());
         if (!containsNull) {
@@ -111,13 +101,6 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
         return Optional.empty();
     }
 
-    /**
-     * 启用
-     *
-     * @param serviceFieldName
-     * @param typeElement
-     * @return
-     */
     private Optional<MethodSpec> validMethod(String serviceFieldName, TypeElement typeElement) {
         return Optional.of(MethodSpec.methodBuilder("valid" + typeElement.getSimpleName())
                 .addParameter(ParameterSpec.builder(Long.class, "id").addAnnotation(PathVariable.class).build())
@@ -134,13 +117,6 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                 .build());
     }
 
-    /**
-     * 修复不返回方法的问题
-     *
-     * @param serviceFieldName
-     * @param typeElement
-     * @return
-     */
     private Optional<MethodSpec> inValidMethod(String serviceFieldName, TypeElement typeElement) {
         return Optional.of(MethodSpec.methodBuilder("invalid" + typeElement.getSimpleName())
                 .addParameter(ParameterSpec.builder(Long.class, "id").addAnnotation(PathVariable.class).build())

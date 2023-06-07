@@ -29,7 +29,7 @@
         <dependency>
             <groupId>com.luban</groupId>
             <artifactId>common-base</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${common-base.version}</version>
         </dependency>
     </dependencies>
 
