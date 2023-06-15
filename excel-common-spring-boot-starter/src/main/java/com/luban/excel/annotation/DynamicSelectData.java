@@ -4,9 +4,9 @@ package com.luban.excel.annotation;
 import com.luban.excel.handler.ColumnDynamicSelectDataHandler;
 import com.luban.excel.handler.DefaultColumnDynamicSelectDataHandler;
 import com.luban.excel.valid.DynamicSelectDataValidator;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.*;
 
 /**

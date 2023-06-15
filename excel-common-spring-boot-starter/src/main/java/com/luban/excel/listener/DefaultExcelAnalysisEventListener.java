@@ -3,9 +3,9 @@ package com.luban.excel.listener;
 import com.alibaba.excel.context.AnalysisContext;
 import com.luban.excel.util.ValidateUtil;
 import com.luban.excel.vo.ErrorMessage;
+import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.validation.ConstraintViolation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

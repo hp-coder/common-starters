@@ -14,11 +14,11 @@ import com.luban.common.base.enums.ValidStatus;
 import com.luban.jpa.BaseJpaAggregate;
 import com.luban.jpa.convertor.LocalDateTimeConverter;
 import com.luban.jpa.convertor.ValidStatusConverter;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Data;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

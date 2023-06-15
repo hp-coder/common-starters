@@ -2,8 +2,8 @@ package com.luban.jpa.convertor;
 
 import com.luban.common.base.enums.ValidStatus;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 /**
  * @author hp 2023/4/10

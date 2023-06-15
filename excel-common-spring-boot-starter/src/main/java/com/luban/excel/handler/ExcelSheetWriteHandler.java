@@ -3,7 +3,7 @@ package com.luban.excel.handler;
 
 import com.luban.excel.annotation.ResponseExcel;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 要么单页 要么多页*

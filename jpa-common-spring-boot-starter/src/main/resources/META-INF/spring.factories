@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.luban.jpa.JPAQueryFactoryAutoConfiguration
+com.luban.jpa.JpaQueryFactoryAutoConfiguration
