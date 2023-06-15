@@ -14,7 +14,7 @@
     <description>数据同步项目</description>
 
     <properties>
-        <luban-dingding.version>2.0-SNAPSHOT</luban-dingding.version>
+        <luban-dingding.version>3.0.0-SNAPSHOT</luban-dingding.version>
     </properties>
 
     <dependencies>
