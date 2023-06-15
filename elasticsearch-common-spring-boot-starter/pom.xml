@@ -5,17 +5,13 @@
     <parent>
         <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>elasticsearch-common-spring-boot-starter</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
+    <version>2.0.0-SNAPSHOT</version>
+    <description>主要是封装ElasticSearchClient</description>
 
     <dependencies>
         <dependency>

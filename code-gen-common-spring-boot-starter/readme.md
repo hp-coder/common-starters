@@ -127,4 +127,63 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
 </build>
 ```
 
+### 2. Entity模版
 
+> live template
+
+```shell
+import com.$PACK$.codegen.processor.controller.GenController;
+import com.$PACK$.codegen.processor.dto.GenDto;
+import com.$PACK$.codegen.processor.mapper.GenMapper;
+import com.$PACK$.codegen.processor.repository.GenRepository;
+import com.$PACK$.codegen.processor.request.GenRequest;
+import com.$PACK$.codegen.processor.response.GenResponse;
+import com.$PACK$.codegen.processor.service.GenService;
+import com.$PACK$.codegen.processor.service.GenServiceImpl;
+import com.$PACK$.codegen.processor.vo.GenVo;
+import com.$PACK$.jpa.BaseJpaAggregate;
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * @author $author$ 2023/4/10
+ */
+@GenRequest(pkgName = "$PACKAGE$.request")
+@GenResponse(pkgName = "$PACKAGE$.response")
+@GenDto(pkgName = "$PACKAGE$.request")
+@GenVo(pkgName = "$PACKAGE$.response")
+@GenController(pkgName = "$CONTROLLER$.controller")
+@GenService(pkgName = "$PACKAGE$.service")
+@GenServiceImpl(pkgName = "$PACKAGE$.service.impl")
+@GenRepository(pkgName = "$PACKAGE$.repository")
+@GenMapper(pkgName = "$PACKAGE$.mapper")
+@Entity
+@Table(name = "$TABLE_NAME$")
+@Data
+public class $ENTITY$ extends BaseJpaAggregate {
+
+    @Convert(converter = ValidStatusConverter.class)
+    @FieldDesc("状态")
+    private ValidStatus status;
+    
+    public void init(){
+        setStatus(ValidStatus.VALID);
+    }
+
+    public void valid(){
+        setStatus(ValidStatus.VALID);
+    }
+
+    public void invalid(){
+        setStatus(ValidStatus.INVALID);
+    }
+}
+```
+### 3. 编译
+
+```shell
+mvn clean compile
+```

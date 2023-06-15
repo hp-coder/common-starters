@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 public class LicenseLoaderTests {
     @Test
     public void test_loader() {
-
         final XmlLicenseLoader xmlLicenseLoader = new XmlLicenseLoader();
         final ExcelLicense excelLicense = new ExcelLicense();
         excelLicense.license(xmlLicenseLoader);

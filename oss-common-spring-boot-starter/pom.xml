@@ -5,23 +5,24 @@
     <parent>
         <groupId>com.luban</groupId>
         <artifactId>common-starters</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>oss-common-spring-boot-starter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <name>oss-common-spring-boot-starter</name>
+    <description>基于AmazonS3协议的通用OSS封装</description>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <aws-java-sdk-s3.version>1.12.267</aws-java-sdk-s3.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.12.267</version>
+            <version>${aws-java-sdk-s3.version}</version>
         </dependency>
     </dependencies>
 
