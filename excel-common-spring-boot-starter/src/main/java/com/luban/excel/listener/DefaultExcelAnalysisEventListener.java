@@ -3,10 +3,10 @@ package com.luban.excel.listener;
 import com.alibaba.excel.context.AnalysisContext;
 import com.luban.excel.util.ValidateUtil;
 import com.luban.excel.vo.ErrorMessage;
-import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.Lists;
 
-import java.util.ArrayList;
+import javax.validation.ConstraintViolation;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DefaultExcelAnalysisEventListener extends ExcelAnalysisEventListener<Object,List<Object>> {
 
-    private final List<Object> list = new ArrayList();
-    private final List<ErrorMessage> errorMessageList = new ArrayList();
+    private final List<Object> list = Lists.newArrayList();
+    private final List<ErrorMessage> errorMessageList = Lists.newArrayList();
     private long lineNum = 1L;
 
     @Override

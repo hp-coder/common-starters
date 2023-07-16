@@ -5,12 +5,12 @@
     <parent>
         <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>1.0.0-sp3-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>elasticsearch-common-spring-boot-starter</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>1.0.0-sp3-SNAPSHOT</version>
     <description>主要是封装ElasticSearchClient</description>
 
     <dependencies>

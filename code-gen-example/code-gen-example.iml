@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$/../code-gen-example" dumb="true">
+      <sourceFolder url="file://$MODULE_DIR$/../code-gen-example/target/generated-sources/annotations" isTestSource="false" generated="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../code-gen-example/target/generated-sources/java" isTestSource="false" generated="true" />
+    </content>
+  </component>
+  <component name="CheckStyle-IDEA-Module" serialisationVersion="2">
+    <option name="activeLocationsIds" />
+  </component>
+  <component name="MavenAnnotationProcessors">
+    <modules>
+      <module name="code-gen-common-spring-boot-starter" />
+    </modules>
+  </component>
+</module>

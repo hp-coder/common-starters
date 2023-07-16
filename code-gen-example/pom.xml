@@ -5,37 +5,26 @@
     <parent>
         <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>1.0.0-sp3-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>test-code-gen-module</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
-
-    <properties>
-        <code-gen-version>3.0.0-SNAPSHOT</code-gen-version>
-    </properties>
+    <artifactId>code-gen-example</artifactId>
+    <version>1.0.0-sp3-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.luban</groupId>
             <artifactId>code-gen-common-spring-boot-starter</artifactId>
-            <version>${code-gen-version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
-
-        <!-- lombok dependencies should not end up on classpath -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -47,17 +36,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <encoding>UTF-8</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>com.luban</groupId>
                             <artifactId>code-gen-common-spring-boot-starter</artifactId>
-                            <version>${code-gen-version}</version>
+                            <version>${code-gen-starter.version}</version>
                         </path>
                         <path>
                             <groupId>org.projectlombok</groupId>

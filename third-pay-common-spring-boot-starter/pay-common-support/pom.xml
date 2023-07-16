@@ -2,15 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>third-pay-common-spring-boot-starter</artifactId>
         <groupId>com.luban</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>1.0.0-sp3-SNAPSHOT</version>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
     <artifactId>pay-common-support</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>1.0.0-sp3-SNAPSHOT</version>
     <description>支付通用依赖</description>
 
     <dependencies>
@@ -19,13 +19,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.luban</groupId>
             <artifactId>common-base</artifactId>
-            <version>${common-base.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
         </dependency>
     </dependencies>
 
