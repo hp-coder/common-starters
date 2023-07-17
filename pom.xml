@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.luban</groupId>
         <artifactId>common-bom</artifactId>
-        <version>1.0.0-sp3-SNAPSHOT</version>
+        <version>1.0.0-sp2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -29,15 +29,15 @@
     </modules>
 
     <artifactId>common-starters</artifactId>
-    <version>1.0.0-sp3-SNAPSHOT</version>
+    <version>1.0.0-sp2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
         <!--in project-->
-        <common-base.version>1.0.0-sp3-SNAPSHOT</common-base.version>
-        <jpa-common-starter.version>1.0.0-sp3-SNAPSHOT</jpa-common-starter.version>
-        <code-gen-starter.version>1.0.0-sp3-SNAPSHOT</code-gen-starter.version>
-        <excel-common-starter.version>1.0.0-sp3-SNAPSHOT</excel-common-starter.version>
+        <common-base.version>1.0.0-sp2-SNAPSHOT</common-base.version>
+        <jpa-common-starter.version>1.0.0-sp2-SNAPSHOT</jpa-common-starter.version>
+        <code-gen-starter.version>1.0.0-sp2-SNAPSHOT</code-gen-starter.version>
+        <excel-common-starter.version>1.0.0-sp2-SNAPSHOT</excel-common-starter.version>
         <luban-dingding.version>4.0.0-SNAPSHOT</luban-dingding.version>
     </properties>
 

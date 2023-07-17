@@ -6,7 +6,7 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.luban.excel.annotation.ResponseExcel;
 import org.springframework.beans.factory.ObjectProvider;
 
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 

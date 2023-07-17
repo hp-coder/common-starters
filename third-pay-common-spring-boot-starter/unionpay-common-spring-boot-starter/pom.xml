@@ -6,10 +6,10 @@
     <parent>
         <artifactId>third-pay-common-spring-boot-starter</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp3-SNAPSHOT</version>
+        <version>1.0.0-sp2-SNAPSHOT</version>
     </parent>
 
     <artifactId>unionpay-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp3-SNAPSHOT</version>
+    <version>1.0.0-sp2-SNAPSHOT</version>
     <description>银联</description>
 </project>

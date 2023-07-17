@@ -2,7 +2,7 @@ package com.luban.excel;
 
 import com.luban.excel.aop.RequestExcelArgumentResolver;
 import com.luban.excel.aop.ResponseExcelReturnValueHandler;
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

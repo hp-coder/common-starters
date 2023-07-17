@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.Instant;
 
 @MappedSuperclass

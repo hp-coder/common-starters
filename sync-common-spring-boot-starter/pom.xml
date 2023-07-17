@@ -6,11 +6,11 @@
     <parent>
         <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp3-SNAPSHOT</version>
+        <version>1.0.0-sp2-SNAPSHOT</version>
     </parent>
 
     <artifactId>sync-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp3-SNAPSHOT</version>
+    <version>1.0.0-sp2-SNAPSHOT</version>
     <description>数据同步项目</description>
 
     <dependencies>

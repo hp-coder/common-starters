@@ -3,8 +3,8 @@ package com.luban.codegen.processor.modifier;
 import com.google.auto.common.MoreTypes;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Convert;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Convert;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.VariableElement;

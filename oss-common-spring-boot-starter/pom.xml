@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.luban</groupId>
         <artifactId>common-starters</artifactId>
-        <version>1.0.0-sp3-SNAPSHOT</version>
+        <version>1.0.0-sp2-SNAPSHOT</version>
     </parent>
 
     <artifactId>oss-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp3-SNAPSHOT</version>
+    <version>1.0.0-sp2-SNAPSHOT</version>
     <description>基于AmazonS3协议的通用OSS封装</description>
 
     <properties>
