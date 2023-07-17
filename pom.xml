@@ -38,7 +38,7 @@
         <jpa-common-starter.version>1.0.0-sp2-SNAPSHOT</jpa-common-starter.version>
         <code-gen-starter.version>1.0.0-sp2-SNAPSHOT</code-gen-starter.version>
         <excel-common-starter.version>1.0.0-sp2-SNAPSHOT</excel-common-starter.version>
-        <luban-dingding.version>4.0.0-SNAPSHOT</luban-dingding.version>
+        <luban-dingtalk.version>1.0.0-sp2-SNAPSHOT</luban-dingtalk.version>
     </properties>
 
     <dependencyManagement>
@@ -65,8 +65,8 @@
             </dependency>
             <dependency>
                 <groupId>com.luban</groupId>
-                <artifactId>luban-dingding</artifactId>
-                <version>${luban-dingding.version}</version>
+                <artifactId>luban-dingtalk</artifactId>
+                <version>${luban-dingtalk.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

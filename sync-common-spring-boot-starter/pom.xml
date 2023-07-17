@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.luban</groupId>
-            <artifactId>luban-dingding</artifactId>
+            <artifactId>luban-dingtalk</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
