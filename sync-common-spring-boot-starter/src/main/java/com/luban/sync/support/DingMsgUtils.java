@@ -1,8 +1,8 @@
 package com.luban.sync.support;
 
-import com.luban.dingding.component.application.IDingBot;
-import com.luban.dingding.pojo.message.IDingBotMsg;
-import com.luban.dingding.service.message.DingBotMessageHandler;
+import com.luban.dingtalk.component.application.IDingBot;
+import com.luban.dingtalk.pojo.message.IDingBotMsg;
+import com.luban.dingtalk.service.message.DingBotMessageHandler;
 import com.luban.sync.config.SyncConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
@@ -18,14 +18,10 @@ public class DingMsgUtils implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     public static void sendMsgByMobile(IDingBotMsg msg) {
-        Assert.notNull(applicationContext,"spring 上下文为空");
+        Assert.notNull(applicationContext, "spring 上下文为空");
         Assert.notNull(msg, "消息不能为空");
-        new DingBotMessageHandler()
-                .sendToUserByPhones(
-                        applicationContext.getBean(IDingBot.class),
-                        applicationContext.getBean(SyncConfig.class).getDingTalk().getDingTalkNotifyMobile(),
-                        msg
-                );
+        new DingBotMessageHandler(applicationContext.getBean(IDingBot.class))
+                .sendToUserByPhones(applicationContext.getBean(SyncConfig.class).getDingTalk().getDingTalkNotifyMobile(), msg);
     }
 
     @Override

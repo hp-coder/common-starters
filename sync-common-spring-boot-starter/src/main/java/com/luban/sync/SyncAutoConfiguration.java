@@ -5,7 +5,7 @@ import com.luban.sync.listener.CanalListener;
 import com.luban.sync.listener.SyncListener;
 import com.luban.sync.support.Constants;
 import com.luban.sync.support.DingMsgUtils;
-import com.luban.dingding.component.application.IDingBot;
+import com.luban.dingtalk.component.application.IDingBot;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -39,6 +39,16 @@ public class SyncAutoConfiguration {
     @Bean
     public IDingBot dingBot(SyncConfig syncConfig) {
         return new IDingBot() {
+            @Override
+            public String getCorpName() {
+                return null;
+            }
+
+            @Override
+            public String getCorpId() {
+                return null;
+            }
+
             @Override
             public String getAppName() {
                 return syncConfig.getDingTalk().getAppName();
