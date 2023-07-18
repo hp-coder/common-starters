@@ -9,5 +9,10 @@ Aspose针对word和excel处理的包或需要通过反编译破解,
 
 该插件主要是自动完成证书的认证, 并以此提供简单的工具类:
 
-- xlsToXlsx
-- wordToPdf
+xlsToXlsx
+
+Because the JS tool that can display the Excel in the browser only supports the xlsx format. 
+
+wordToPdf
+
+Most browsers support displaying PDF directly in the browser.

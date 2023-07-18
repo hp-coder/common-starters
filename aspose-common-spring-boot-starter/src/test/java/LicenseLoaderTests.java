@@ -1,5 +1,5 @@
-import com.luban.aspose.license.ExcelLicense;
-import com.luban.aspose.license.XmlLicenseLoader;
+import com.hp.aspose.license.ExcelLicense;
+import com.hp.aspose.license.XmlLicenseLoader;
 import org.junit.jupiter.api.Test;
 
 /**

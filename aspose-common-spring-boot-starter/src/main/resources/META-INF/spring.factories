@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.luban.aspose.AsposeAutoConfiguration
+com.hp.aspose.AsposeAutoConfiguration

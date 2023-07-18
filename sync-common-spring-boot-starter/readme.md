@@ -1,0 +1,3 @@
+not finished yet...
+
+Alibaba Canal + RocketMQ + Elasticsearch + Redis + DB

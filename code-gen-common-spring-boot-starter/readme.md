@@ -64,7 +64,7 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
 </dependency>
 
 <dependency>
-    <groupId>com.luban</groupId>
+    <groupId>com.hp</groupId>
     <artifactId>code-gen-common-spring-boot-starter</artifactId>
     <version>${code-gen-version}</version>
 </dependency>
@@ -84,7 +84,7 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
             <compilerArgument>-Xlint:unchecked</compilerArgument>
             <annotationProcessorPaths>
                 <path>
-                    <groupId>com.luban</groupId>
+                    <groupId>com.hp</groupId>
                     <artifactId>code-gen-common-spring-boot-starter</artifactId>
                     <version>${code-gen-version}</version>
                 </path>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>common-starters</artifactId>
-        <groupId>com.luban</groupId>
+        <groupId>com.hp</groupId>
         <version>1.0.0-sp2-SNAPSHOT</version>
     </parent>
 
@@ -24,7 +24,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>jpa-common-spring-boot-starter</artifactId>
         </dependency>
         <dependency>

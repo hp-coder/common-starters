@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>common-starters</artifactId>
-        <groupId>com.luban</groupId>
+        <groupId>com.hp</groupId>
         <version>1.0.0-sp2-SNAPSHOT</version>
     </parent>
 
@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>code-gen-common-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
@@ -43,7 +43,7 @@
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>com.luban</groupId>
+                            <groupId>com.hp</groupId>
                             <artifactId>code-gen-common-spring-boot-starter</artifactId>
                             <version>${code-gen-starter.version}</version>
                         </path>
