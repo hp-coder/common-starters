@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.hp</groupId>
         <artifactId>common-bom</artifactId>
@@ -9,7 +10,10 @@
         <relativePath/>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
+    <artifactId>common-starters</artifactId>
+    <version>1.0.0-sp2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
     <modules>
         <module>oss-common-spring-boot-starter</module>
         <module>elasticsearch-common-spring-boot-starter</module>
@@ -25,12 +29,9 @@
         <module>excel-starter-example</module>
         <module>common-base</module>
         <module>join-in-memory-common-spring-boot-starter</module>
+        <module>join-in-memory-example</module>
         <module>aspose-common-spring-boot-starter</module>
     </modules>
-
-    <artifactId>common-starters</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
     <properties>
         <!--in project-->
@@ -38,6 +39,7 @@
         <jpa-common-starter.version>1.0.0-sp2-SNAPSHOT</jpa-common-starter.version>
         <code-gen-starter.version>1.0.0-sp2-SNAPSHOT</code-gen-starter.version>
         <excel-common-starter.version>1.0.0-sp2-SNAPSHOT</excel-common-starter.version>
+        <join-in-memory-starter.version>1.0.0-sp2-SNAPSHOT</join-in-memory-starter.version>
         <dingtalk-module.version>1.0.0-sp2-SNAPSHOT</dingtalk-module.version>
     </properties>
 
@@ -62,6 +64,11 @@
                 <groupId>com.hp</groupId>
                 <artifactId>excel-common-spring-boot-starter</artifactId>
                 <version>${excel-common-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hp</groupId>
+                <artifactId>join-in-memory-common-spring-boot-starter</artifactId>
+                <version>${join-in-memory-starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.hp</groupId>

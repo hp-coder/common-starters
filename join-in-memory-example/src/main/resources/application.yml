@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: join-in-memory-demo
+  profiles:
+    active: test
