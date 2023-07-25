@@ -3,9 +3,9 @@ package com.luban.codegen.processor.modifier;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.google.auto.common.MoreTypes;
+import com.luban.mybatisplus.convertor.TypeHandlerCodeGenAdapter;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import org.apache.ibatis.type.TypeHandler;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.VariableElement;
@@ -23,8 +23,9 @@ public class MbpTypeHandlerFieldSpecModifier implements FieldSpecModifier {
 
     @Override
     public TypeName modify(VariableElement variableElement) {
-        // 针对 jpa的convert注解特殊处理, 拿到converter类和其接口泛型的第二个参数, 为实际返回类型
-        return ClassName.bestGuess(MoreTypes.asTypeElement(declaredType.getTypeArguments().get(0)).getQualifiedName().toString());
+        // 针对 mpb的typeHandler注解特殊处理, 拿到mbp插件TypeHandlerCodeGenAdapter类和其接口泛型的第二个参数, 为实际返回类型
+        return ClassName.bestGuess(MoreTypes.asTypeElement(declaredType.getTypeArguments().get(1))
+                .getQualifiedName().toString());
     }
 
     @Override
@@ -57,9 +58,9 @@ public class MbpTypeHandlerFieldSpecModifier implements FieldSpecModifier {
         final Optional<DeclaredType> any = MoreTypes.asTypeElement(typeMirror).getInterfaces()
                 .stream()
                 .map(MoreTypes::asDeclared)
-                .filter(dt -> MoreTypes.isTypeOf(TypeHandler.class, dt))
+                .filter(dt -> MoreTypes.isTypeOf(TypeHandlerCodeGenAdapter.class, dt))
                 .findAny();
         any.ifPresent(dt -> declaredType = dt);
-        return any.isPresent();
+        return Objects.nonNull(declaredType);
     }
 }
