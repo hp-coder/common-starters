@@ -232,7 +232,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                                     "final $T pageData = $L.selectPage(page, wrapper);\n",
                                     ParameterizedTypeName.get(
                                             ClassName.get(Page.class),
-                                            ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName())
+                                            ClassName.get(typeElement)
                                     ),
                                     repositoryFieldName
                             )
