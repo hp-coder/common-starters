@@ -8,13 +8,16 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.luban.excel.annotation.ExcelSelect;
+import com.luban.excel.annotation.RequestExcel;
 import com.luban.excel.annotation.ResponseExcel;
 import com.luban.excel.annotation.Sheet;
 import com.luban.excel.dto.ExcelSelectDataColumn;
 import com.luban.excel.enhence.DynamicSelectDataWriterEnhance;
-import com.luban.excel.example.model.ExcelExample;
 import com.luban.excel.enhence.handler.SelectDataSheetWriteHandler;
+import com.luban.excel.example.model.ExcelExample;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,6 +36,37 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 public class ExcelExampleController {
+
+    @PostMapping("/upload")
+    public String upload(
+            @RequestExcel(filename = "upload_file") List<DummyModel> dataSet
+    ) {
+        Assert.isTrue(CollUtil.isNotEmpty(dataSet), "dataSet is empty");
+        dataSet.forEach(System.out::println);
+        return "Successfully uploaded";
+    }
+
+    @Data
+    public static class DummyModel {
+        @ExcelProperty("公司名称")
+        private String a;
+        @ExcelProperty("适用集团标准控制点")
+        private String b;
+        @ExcelProperty("适用率")
+        private String c;
+        @ExcelProperty("不适用内控点")
+        private String d;
+        @ExcelProperty("个性化内控点")
+        private String e;
+        @ExcelProperty("IT固化率")
+        private String f;
+        @ExcelProperty("固化程度强")
+        private String g;
+        @ExcelProperty("固化程度中")
+        private String h;
+        @ExcelProperty("固化程度弱")
+        private String i;
+    }
 
     @ResponseExcel(
             name = "项目台账模板",
