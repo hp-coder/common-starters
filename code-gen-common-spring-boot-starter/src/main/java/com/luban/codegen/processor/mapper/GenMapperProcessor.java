@@ -1,6 +1,7 @@
 package com.luban.codegen.processor.mapper;
 
 import com.google.auto.service.AutoService;
+import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
@@ -15,17 +16,21 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * @Author: Gim
- * @Date: 2019/11/25 14:14
- * @Description:
+ * @author hp
  */
 @AutoService(value = CodeGenProcessor.class)
 public class GenMapperProcessor extends AbstractCodeGenProcessor {
 
     public static final String SUFFIX = "Mapper";
+
+    @Override
+    public boolean supportedOrm(Orm orm) {
+        return Arrays.asList(Orm.values()).contains(orm);
+    }
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
@@ -48,13 +53,13 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
         DefaultNameContext nameContext = getNameContext(typeElement);
 
         Optional<MethodSpec> dtoToEntityMethod = dtoToEntityMethod(typeElement, nameContext);
-        dtoToEntityMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        dtoToEntityMethod.ifPresent(typeSpecBuilder::addMethod);
 
         Optional<MethodSpec> request2DtoMethod = request2DtoMethod(nameContext);
-        request2DtoMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        request2DtoMethod.ifPresent(typeSpecBuilder::addMethod);
 
         Optional<MethodSpec> vo2ResponseMethod = vo2ResponseMethod(nameContext);
-        vo2ResponseMethod.ifPresent(m -> typeSpecBuilder.addMethod(m));
+        vo2ResponseMethod.ifPresent(typeSpecBuilder::addMethod);
 
         generateJavaSourceFile(generatePackage(typeElement),
                 typeElement.getAnnotation(GenMapper.class).sourcePath(), typeSpecBuilder);

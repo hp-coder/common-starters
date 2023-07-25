@@ -1,10 +1,11 @@
+
 package com.luban.codegen.processor.modifier;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.google.auto.common.MoreTypes;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import javax.persistence.AttributeConverter;
-import javax.persistence.Convert;
+import org.apache.ibatis.type.TypeHandler;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.VariableElement;
@@ -16,14 +17,14 @@ import java.util.Optional;
 /**
  * @author hp 2023/4/21
  */
-public class JpaConverterFieldSpecModifier implements FieldSpecModifier {
+public class MbpTypeHandlerFieldSpecModifier implements FieldSpecModifier {
 
     private DeclaredType declaredType;
 
     @Override
     public TypeName modify(VariableElement variableElement) {
         // 针对 jpa的convert注解特殊处理, 拿到converter类和其接口泛型的第二个参数, 为实际返回类型
-        return ClassName.bestGuess(MoreTypes.asTypeElement(declaredType.getTypeArguments().get(1)).getQualifiedName().toString());
+        return ClassName.bestGuess(MoreTypes.asTypeElement(declaredType.getTypeArguments().get(0)).getQualifiedName().toString());
     }
 
     @Override
@@ -32,12 +33,12 @@ public class JpaConverterFieldSpecModifier implements FieldSpecModifier {
         if (type.getKind().isPrimitive()) {
             return false;
         }
-        final Convert convert = ve.getAnnotation(Convert.class);
-        if (convert == null) {
+        final TableField tableField = ve.getAnnotation(TableField.class);
+        if (tableField == null) {
             return false;
         }
         final Optional<? extends AnnotationMirror> convertAnnotation = ve.getAnnotationMirrors().stream()
-                .filter(am -> MoreTypes.isTypeOf(Convert.class, am.getAnnotationType()))
+                .filter(am -> MoreTypes.isTypeOf(TableField.class, am.getAnnotationType()))
                 .findFirst();
         if (convertAnnotation.isEmpty()) {
             return false;
@@ -46,7 +47,7 @@ public class JpaConverterFieldSpecModifier implements FieldSpecModifier {
                 .getElementValues()
                 .entrySet()
                 .stream()
-                .filter(entry -> Objects.equals("converter", entry.getKey().getSimpleName().toString()))
+                .filter(entry -> Objects.equals("typeHandler", entry.getKey().getSimpleName().toString()))
                 .map(entry -> (TypeMirror) entry.getValue().getValue())
                 .findFirst();
         if (converter.isEmpty()){
@@ -56,7 +57,7 @@ public class JpaConverterFieldSpecModifier implements FieldSpecModifier {
         final Optional<DeclaredType> any = MoreTypes.asTypeElement(typeMirror).getInterfaces()
                 .stream()
                 .map(MoreTypes::asDeclared)
-                .filter(dt -> MoreTypes.isTypeOf(AttributeConverter.class, dt))
+                .filter(dt -> MoreTypes.isTypeOf(TypeHandler.class, dt))
                 .findAny();
         any.ifPresent(dt -> declaredType = dt);
         return any.isPresent();

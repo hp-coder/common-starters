@@ -10,7 +10,7 @@ import java.time.Instant;
  */
 @Getter
 @Setter
-public abstract class AbstractBaseDTO {
+public abstract class AbstractMbpBaseDTO {
 
     private Long id;
 

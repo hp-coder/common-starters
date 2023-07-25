@@ -11,7 +11,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface GenResponse {
     String pkgName();
-
     String sourcePath() default "src/main/java";
-
 }

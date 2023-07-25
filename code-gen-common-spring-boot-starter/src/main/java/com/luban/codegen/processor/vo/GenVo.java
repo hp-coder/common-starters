@@ -11,7 +11,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface GenVo {
     String pkgName();
-
     String sourcePath() default "src/main/java";
-
 }

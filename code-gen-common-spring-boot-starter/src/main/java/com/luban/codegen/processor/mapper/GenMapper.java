@@ -11,6 +11,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface GenMapper {
     String pkgName();
-
     String sourcePath() default "src/main/java";
 }

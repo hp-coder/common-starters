@@ -9,7 +9,7 @@ import javax.annotation.processing.ProcessingEnvironment;
  */
 public final class ProcessingEnvironmentContextHolder {
 
-    public static final ThreadLocal<ProcessingEnvironment> ENVIRONMENT_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<ProcessingEnvironment> ENVIRONMENT_THREAD_LOCAL = new ThreadLocal<>();
 
     public static void setEnvironment(ProcessingEnvironment environment) {
         ENVIRONMENT_THREAD_LOCAL.set(environment);

@@ -1,6 +1,7 @@
 package com.luban.codegen.processor.controller;
 
 import com.google.auto.service.AutoService;
+import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
@@ -16,6 +17,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -25,6 +27,11 @@ import java.util.Optional;
 public class GenControllerProcessor extends AbstractCodeGenProcessor {
 
     public static final String CONTROLLER_SUFFIX = "Controller";
+
+    @Override
+    public boolean supportedOrm(Orm orm) {
+        return Arrays.asList(Orm.values()).contains(orm);
+    }
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {

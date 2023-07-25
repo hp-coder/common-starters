@@ -36,7 +36,8 @@
         <!--in project-->
         <common-base.version>1.0.0-sp2-SNAPSHOT</common-base.version>
         <jpa-common-starter.version>1.0.0-sp2-SNAPSHOT</jpa-common-starter.version>
-        <code-gen-starter.version>1.0.0-sp2-SNAPSHOT</code-gen-starter.version>
+        <mybatis-plus-common-starter.version>1.0.0-sp2-SNAPSHOT</mybatis-plus-common-starter.version>
+        <code-gen-starter.version>1.0.1-sp2-SNAPSHOT</code-gen-starter.version>
         <excel-common-starter.version>1.0.0-sp2-SNAPSHOT</excel-common-starter.version>
         <luban-dingtalk.version>1.0.0-sp2-SNAPSHOT</luban-dingtalk.version>
     </properties>
@@ -52,6 +53,11 @@
                 <groupId>com.luban</groupId>
                 <artifactId>jpa-common-spring-boot-starter</artifactId>
                 <version>${jpa-common-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.luban</groupId>
+                <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>
+                <version>${mybatis-plus-common-starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.luban</groupId>

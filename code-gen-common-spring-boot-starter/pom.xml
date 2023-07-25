@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>code-gen-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.1-sp2-SNAPSHOT</version>
     <description>DDD-JPA风格代码生成器</description>
 
     <properties>
@@ -26,6 +26,12 @@
         <dependency>
             <groupId>com.luban</groupId>
             <artifactId>jpa-common-spring-boot-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.luban</groupId>
+            <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.google.auto.service</groupId>
