@@ -1,7 +1,6 @@
 package com.luban.mybatisplus.convertor;
 
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -9,12 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 
-/**
- * @author HP
- * @date 2022/10/19
- */
-
-public class InstantLongConverter implements TypeHandler<Instant> {
+public class InstantLongConverter implements TypeHandlerCodeGenAdapter<Instant, String> {
 
     @Override
     public void setParameter(PreparedStatement ps, int i, Instant instant, JdbcType jdbcType) throws SQLException {

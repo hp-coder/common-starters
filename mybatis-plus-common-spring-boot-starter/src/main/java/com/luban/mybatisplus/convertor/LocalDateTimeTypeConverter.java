@@ -1,7 +1,6 @@
 package com.luban.mybatisplus.convertor;
 
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -14,7 +13,7 @@ import java.util.Optional;
 /**
  * @author hp 2023/2/17
  */
-public class LocalDateTimeTypeConverter implements TypeHandler<LocalDateTime> {
+public class LocalDateTimeTypeConverter implements TypeHandlerCodeGenAdapter<LocalDateTime, String> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override

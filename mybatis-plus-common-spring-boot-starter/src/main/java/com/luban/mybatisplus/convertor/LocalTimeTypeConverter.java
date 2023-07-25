@@ -1,7 +1,6 @@
 package com.luban.mybatisplus.convertor;
 
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -14,8 +13,9 @@ import java.util.Optional;
 /**
  * @author hp 2023/3/31
  */
-public class LocalTimeTypeConverter implements TypeHandler<LocalTime> {
+public class LocalTimeTypeConverter implements TypeHandlerCodeGenAdapter<LocalTime, String> {
     protected String format = "HH:mm:ss";
+
     @Override
     public void setParameter(PreparedStatement ps, int i, LocalTime param, JdbcType jdbcType) throws SQLException {
         ps.setString(i, param.format(DateTimeFormatter.ofPattern(format)));

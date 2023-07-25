@@ -2,7 +2,6 @@ package com.luban.mybatisplus.convertor;
 
 import com.luban.common.base.enums.ValidStatus;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -12,7 +11,7 @@ import java.sql.SQLException;
 /**
  * @author hp
  */
-public class ValidStatusConverter implements TypeHandler<ValidStatus> {
+public class ValidStatusConverter implements TypeHandlerCodeGenAdapter<ValidStatus, Integer> {
 
     @Override
     public void setParameter(PreparedStatement ps, int i, ValidStatus validStatus, JdbcType jdbcType) throws SQLException {

@@ -1,7 +1,6 @@
 package com.luban.mybatisplus.convertor;
 
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.TypeHandler;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -14,7 +13,7 @@ import java.util.Optional;
 /**
  * @author hp 2023/3/31
  */
-public class LocalDateTypeConverter implements TypeHandler<LocalDate> {
+public class LocalDateTypeConverter implements TypeHandlerCodeGenAdapter<LocalDate, String> {
 
     @Override
     public void setParameter(PreparedStatement ps, int i, LocalDate parameter, JdbcType jdbcType) throws SQLException {
