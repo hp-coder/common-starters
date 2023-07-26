@@ -1,9 +1,13 @@
 package com.luban.codegen.processor.service;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.auto.service.AutoService;
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
@@ -45,6 +49,13 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
         DefaultNameContext nameContext = getNameContext(typeElement);
         String className = typeElement.getSimpleName() + IMPL_SUFFIX;
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
+                .superclass(
+                        ParameterizedTypeName.get(
+                                ClassName.get(ServiceImpl.class),
+                                ClassName.get(nameContext.getRepositoryPackageName(), nameContext.getRepositoryClassName()),
+                                ClassName.get(typeElement)
+                        )
+                )
                 .addSuperinterface(
                         ClassName.get(nameContext.getServicePackageName(), nameContext.getServiceClassName()))
                 .addAnnotation(Slf4j.class)
@@ -217,15 +228,21 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                     .addCode(
                             CodeBlock.of("$T page = new $T<>(query.getPage(), query.getPageSize());\n" +
                                             "page.setOptimizeCountSql(true);\n" +
-                                            "page.setOrders(Lists.newArrayList(OrderItem.desc(\"create_at\")));\n",
+                                            "page.setOrders($T.newArrayList($T.desc(\"create_at\")));\n",
                                     ParameterizedTypeName.get(
                                             ClassName.get(Page.class),
                                             ClassName.get(typeElement)
                                     ),
-                                    Page.class)
+                                    Page.class,
+                                    Lists.class,
+                                    OrderItem.class
+                            )
                     )
                     .addCode(
-                            CodeBlock.of("final LambdaQueryWrapper<$T> wrapper = new LambdaQueryWrapper<>();\n", typeElement)
+                            CodeBlock.of("final $T wrapper = new $T<>();\n",
+                                    ParameterizedTypeName.get(ClassName.get(LambdaQueryWrapper.class), ClassName.get(typeElement)),
+                                    LambdaQueryWrapper.class
+                            )
                     )
                     .addCode(
                             CodeBlock.of(

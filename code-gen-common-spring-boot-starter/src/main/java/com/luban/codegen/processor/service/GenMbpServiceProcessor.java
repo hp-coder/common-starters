@@ -2,6 +2,7 @@ package com.luban.codegen.processor.service;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.google.auto.service.AutoService;
 import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.DefaultNameContext;
@@ -17,6 +18,7 @@ import com.squareup.javapoet.TypeSpec;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import java.beans.PropertyEditorManager;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,7 +42,8 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
         String className = SERVICE_PREFIX + typeElement.getSimpleName() + SERVICE_SUFFIX;
         TypeSpec.Builder typeSpecBuilder = TypeSpec.interfaceBuilder(className)
-                .addModifiers(Modifier.PUBLIC);
+                .addModifiers(Modifier.PUBLIC)
+                .addSuperinterface(ParameterizedTypeName.get(ClassName.get(IService.class), ClassName.get(typeElement)));
         DefaultNameContext nameContext = getNameContext(typeElement);
         Optional<MethodSpec> createMethod = createMethod(typeElement, nameContext);
         createMethod.ifPresent(typeSpecBuilder::addMethod);
