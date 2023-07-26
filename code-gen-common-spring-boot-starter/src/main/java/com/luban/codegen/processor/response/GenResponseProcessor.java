@@ -6,6 +6,7 @@ import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.modifier.*;
 import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.common.base.model.Response;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -35,6 +36,7 @@ public class GenResponseProcessor extends AbstractCodeGenProcessor {
         String sourceClassName = typeElement.getSimpleName() + RESPONSE_SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
                 .superclass(AbstractBaseResponse.class)
+                .addSuperinterface(Response.class)
                 .addModifiers(Modifier.PUBLIC);
 
         final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(

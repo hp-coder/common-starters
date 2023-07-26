@@ -8,6 +8,8 @@ import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.modifier.*;
 import com.luban.codegen.processor.response.GenResponse;
 import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.common.base.model.Request;
+import com.luban.common.base.model.Response;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -42,6 +44,7 @@ public class GenMbpRequestProcessor extends AbstractCodeGenProcessor {
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
                 .superclass(AbstractMbpBaseRequest.class)
+                .addSuperinterface(Request.class)
                 .addModifiers(Modifier.PUBLIC);
         final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(
                 new DefaultToStringFieldSpecModifier(),

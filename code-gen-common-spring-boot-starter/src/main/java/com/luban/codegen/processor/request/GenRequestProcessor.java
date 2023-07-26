@@ -10,6 +10,7 @@ import com.luban.codegen.processor.modifier.JpaConverterFieldSpecModifier;
 import com.luban.codegen.processor.modifier.DefaultToStringFieldSpecModifier;
 import com.luban.codegen.processor.response.GenResponse;
 import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.common.base.model.Request;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -39,6 +40,7 @@ public class GenRequestProcessor extends AbstractCodeGenProcessor {
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
                 .superclass(AbstractBaseRequest.class)
+                .addSuperinterface(Request.class)
                 .addModifiers(Modifier.PUBLIC);
         final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(
                 new DefaultToStringFieldSpecModifier(),
