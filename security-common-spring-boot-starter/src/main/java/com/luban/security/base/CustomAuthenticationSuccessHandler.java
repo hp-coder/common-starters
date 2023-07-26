@@ -1,7 +1,7 @@
 package com.luban.security.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.luban.common.base.model.AjaxResult;
+import com.luban.common.base.model.Returns;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -31,7 +31,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         res.setToken(token.getPrincipal().toString());
         res.setUsername(token.getUsername());
         ObjectMapper objectMapper = new ObjectMapper();
-        response.getOutputStream().write(objectMapper.writeValueAsBytes(AjaxResult.success(res)));
+        response.getOutputStream().write(objectMapper.writeValueAsBytes(Returns.success(res)));
         clearAuthenticationAttributes(request);
     }
 
