@@ -77,40 +77,40 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
 
     private Optional<MethodSpec> dtoToEntityMethod(TypeElement typeElement, DefaultNameContext nameContext) {
         boolean containsNull = StringUtils.containsNull(nameContext.getDtoPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec
-                    .methodBuilder("dtoToEntity")
-                    .returns(ClassName.get(typeElement))
-                    .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "dto")
-                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                    .build());
+        if (containsNull) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        return Optional.of(MethodSpec
+                .methodBuilder("dtoToEntity")
+                .returns(ClassName.get(typeElement))
+                .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "dto")
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .build());
     }
 
     private Optional<MethodSpec> request2DtoMethod(DefaultNameContext nameContext) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getDtoPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec
-                    .methodBuilder("requestToDto")
-                    .addParameter(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request")
-                    .returns(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()))
-                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                    .build());
+        boolean containsNull = StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getRequestPackageName());
+        if (containsNull) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        return Optional.of(MethodSpec
+                .methodBuilder("requestToDto")
+                .addParameter(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request")
+                .returns(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()))
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .build());
     }
 
     private Optional<MethodSpec> vo2ResponseMethod(DefaultNameContext nameContext) {
         boolean containsNull = StringUtils.containsNull(nameContext.getResponsePackageName(), nameContext.getVoPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec
-                    .methodBuilder("voToResponse")
-                    .addParameter(ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()), "vo")
-                    .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
-                    .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                    .build());
+        if (containsNull) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        return Optional.of(MethodSpec
+                .methodBuilder("voToResponse")
+                .addParameter(ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()), "vo")
+                .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
+                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                .build());
     }
 }
