@@ -1,9 +1,10 @@
 package com.luban.codegen.constant;
 
-import com.luban.common.base.enums.BaseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Optional;
  */
 @Getter
 @AllArgsConstructor
-public enum Orm implements BaseEnum<Orm, String> {
+public enum Orm {
     /***/
     SPRING_DATA_JPA("jpa", "Spring Data JPA"),
     MYBATIS_PLUS("mbp", "Mybatis-Plus"),
@@ -21,6 +22,8 @@ public enum Orm implements BaseEnum<Orm, String> {
     private final String name;
 
     public static Optional<Orm> of(String code) {
-        return Optional.ofNullable(BaseEnum.parseByCode(Orm.class, code));
+        return Arrays.stream(Orm.values())
+                        .filter(i -> Objects.equals(i.getCode(), code))
+                        .findFirst();
     }
 }

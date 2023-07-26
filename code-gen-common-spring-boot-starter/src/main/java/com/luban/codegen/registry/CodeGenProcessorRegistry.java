@@ -1,6 +1,5 @@
 package com.luban.codegen.registry;
 
-import cn.hutool.core.collection.CollUtil;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.luban.codegen.constant.Orm;
@@ -34,10 +33,11 @@ public final class CodeGenProcessorRegistry {
 
     public static CodeGenProcessor find(String annotationClassName, Orm supportedOrm) {
         final Set<? extends CodeGenProcessor> codeGenProcessors = PROCESSORS.get(annotationClassName);
-        if (CollUtil.isEmpty(codeGenProcessors)) {
+        if (codeGenProcessors == null || codeGenProcessors.size() == 0) {
             // By printing out error messages, the compilation process will be interrupted.
             ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, "未找到对应注解的处理器, 请检查代码生成器");
         }
+        assert codeGenProcessors != null;
         return codeGenProcessors.stream().filter(i -> i.supportedOrm(supportedOrm)).findFirst().orElseThrow();
     }
 
