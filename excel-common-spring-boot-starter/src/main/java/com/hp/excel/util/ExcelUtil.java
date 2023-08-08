@@ -168,8 +168,10 @@ public class ExcelUtil {
     private static String calculateColumnName(int actualColumn) {
         final int alphabeticalCount = 26;
         if (actualColumn > alphabeticalCount) {
-            char index = (char) ((int) 'A' + (actualColumn / alphabeticalCount - 1));
-            char subIndex = (char) ((int) 'A' + (actualColumn % alphabeticalCount - 1));
+            final int circle = actualColumn / alphabeticalCount;
+            final int step = actualColumn % alphabeticalCount;
+            char index = (char) ((int) 'A' + circle - 1);
+            char subIndex = (char) ((int) 'A' + (step == 0 ? step : step - 1));
             return index + String.valueOf(subIndex);
         } else {
             return String.valueOf((char) ((int) 'A' + (actualColumn == 0 ? 1 : actualColumn) - 1));
