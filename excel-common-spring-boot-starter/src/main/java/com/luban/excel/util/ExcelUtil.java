@@ -170,7 +170,6 @@ public class ExcelUtil {
         if (actualColumn > alphabeticalCount) {
             final int circle = actualColumn / alphabeticalCount;
             final int step = actualColumn % alphabeticalCount;
-
             char index = (char) ((int) 'A' + circle - 1);
             char subIndex = (char) ((int) 'A' + (step == 0 ? step : step - 1));
             return index + String.valueOf(subIndex);
