@@ -196,18 +196,4 @@ public class ExcelUtil {
         }
         return exponent;
     }
-
-    public static void main(String[] args) {
-//        System.out.println(calculateColumnName(708));
-//        System.out.println(calculateColumnName(747));
-        System.out.println(calculateColumnName(1378));
-        System.out.println(calculateColumnName(1370));
-        System.out.println(calculateColumnName(1330));
-        System.out.println(calculateColumnName(1066));
-        System.out.println(calculateColumnName(472));
-        System.out.println(calculateColumnName(39));
-        System.out.println(calculateColumnName(18));
-        System.out.println(calculateColumnName(16384));
-        System.out.println(calculateColumnName(12423));
-    }
 }
