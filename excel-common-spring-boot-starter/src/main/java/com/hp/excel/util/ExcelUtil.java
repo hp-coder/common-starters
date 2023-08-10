@@ -167,7 +167,7 @@ public class ExcelUtil {
         return name;
     }
 
-    public static String calculateColumnName(int columnCount) {
+    private static String calculateColumnName(int columnCount) {
         final int minimumExponent = minimumExponent(columnCount);
         final int base = 26, layers = (minimumExponent == 0 ? 1 : minimumExponent);
         final List<Character> sequence = Lists.newArrayList();
@@ -188,7 +188,7 @@ public class ExcelUtil {
         sequence.add(0, (char) (capitalAAsIndex + columnIndex));
     }
 
-    public static int minimumExponent(int source) {
+    private static int minimumExponent(int source) {
         final int base = 26;
         int exponent = 0;
         while (Math.pow(base, exponent) < source) {
