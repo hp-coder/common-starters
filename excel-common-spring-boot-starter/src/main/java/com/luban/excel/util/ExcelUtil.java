@@ -3,6 +3,7 @@ package com.luban.excel.util;
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import com.google.common.collect.Lists;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * @author HP
@@ -165,16 +167,33 @@ public class ExcelUtil {
         return name;
     }
 
-    private static String calculateColumnName(int actualColumn) {
-        final int alphabeticalCount = 26;
-        if (actualColumn > alphabeticalCount) {
-            final int circle = actualColumn / alphabeticalCount;
-            final int step = actualColumn % alphabeticalCount;
-            char index = (char) ((int) 'A' + circle - 1);
-            char subIndex = (char) ((int) 'A' + (step == 0 ? step : step - 1));
-            return index + String.valueOf(subIndex);
-        } else {
-            return String.valueOf((char) ((int) 'A' + (actualColumn == 0 ? 1 : actualColumn) - 1));
+    private static String calculateColumnName(int columnCount) {
+        final int minimumExponent = minimumExponent(columnCount);
+        final int base = 26, layers = (minimumExponent == 0 ? 1 : minimumExponent);
+        final List<Character> sequence = Lists.newArrayList();
+        int remain = columnCount;
+        for (int i = 0; i < layers; i++) {
+            int step = (int) (remain / Math.pow(base, i) % base);
+            step = step == 0 ? base : step;
+            buildColumnNameSequence(sequence, step);
+            remain = remain - step;
         }
+        return sequence.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining());
+    }
+
+    private static void buildColumnNameSequence(List<Character> sequence, int columnIndex) {
+        final int capitalAAsIndex = 64;
+        sequence.add(0, (char) (capitalAAsIndex + columnIndex));
+    }
+
+    private static int minimumExponent(int source) {
+        final int base = 26;
+        int exponent = 0;
+        while (Math.pow(base, exponent) < source) {
+            exponent++;
+        }
+        return exponent;
     }
 }
