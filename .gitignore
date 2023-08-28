@@ -10,3 +10,4 @@
 target
 /test-code-gen-module/test-code-gen-module.iml
 /common-base.iml
+*.iml
