@@ -1,8 +1,9 @@
-package com.luban.codegen.processor.repository;
+package com.luban.codegen.processor.repository.jpa;
 
 
 import com.google.auto.service.AutoService;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.processor.repository.GenRepository;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.jpa.BaseRepository;
 import com.squareup.javapoet.ClassName;

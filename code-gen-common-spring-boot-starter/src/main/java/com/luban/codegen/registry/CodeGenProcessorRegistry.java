@@ -33,7 +33,7 @@ public final class CodeGenProcessorRegistry {
 
     public static CodeGenProcessor find(String annotationClassName, Orm supportedOrm) {
         final Set<? extends CodeGenProcessor> codeGenProcessors = PROCESSORS.get(annotationClassName);
-        if (codeGenProcessors == null || codeGenProcessors.size() == 0) {
+        if (codeGenProcessors == null || codeGenProcessors.isEmpty()) {
             // By printing out error messages, the compilation process will be interrupted.
             ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, "未找到对应注解的处理器, 请检查代码生成器");
         }

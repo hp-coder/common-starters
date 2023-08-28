@@ -1,10 +1,11 @@
-package com.luban.codegen.processor.repository;
+package com.luban.codegen.processor.repository.mybatisplus;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.google.auto.service.AutoService;
 import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.processor.repository.GenRepository;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;

@@ -7,22 +7,22 @@ import com.luban.codegen.processor.api.GenFeign;
 import com.luban.codegen.processor.controller.GenController;
 import com.luban.codegen.processor.controller.GenControllerProcessor;
 import com.luban.codegen.processor.dto.GenDto;
-import com.luban.codegen.processor.dto.GenDtoProcessor;
+import com.luban.codegen.processor.dto.jpa.GenDtoProcessor;
 import com.luban.codegen.processor.mapper.GenMapper;
 import com.luban.codegen.processor.mapper.GenMapperProcessor;
 import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.luban.codegen.processor.repository.GenRepository;
-import com.luban.codegen.processor.repository.GenRepositoryProcessor;
+import com.luban.codegen.processor.repository.jpa.GenRepositoryProcessor;
 import com.luban.codegen.processor.request.GenRequest;
-import com.luban.codegen.processor.request.GenRequestProcessor;
+import com.luban.codegen.processor.request.jpa.GenRequestProcessor;
 import com.luban.codegen.processor.response.GenResponse;
-import com.luban.codegen.processor.response.GenResponseProcessor;
+import com.luban.codegen.processor.response.jpa.GenResponseProcessor;
 import com.luban.codegen.processor.service.GenService;
 import com.luban.codegen.processor.service.GenServiceImpl;
-import com.luban.codegen.processor.service.GenServiceImplProcessor;
-import com.luban.codegen.processor.service.GenServiceProcessor;
+import com.luban.codegen.processor.service.jpa.GenServiceImplProcessor;
+import com.luban.codegen.processor.service.jpa.GenServiceProcessor;
 import com.luban.codegen.processor.vo.GenVo;
-import com.luban.codegen.processor.vo.GenVoProcessor;
+import com.luban.codegen.processor.vo.jpa.GenVoProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.annotations.FieldDesc;
 import com.squareup.javapoet.*;
@@ -61,22 +61,21 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
 
     protected abstract void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment);
 
-
     public List<VariableElement> findFields(TypeElement element, Predicate<VariableElement> predicate) {
         final List<? extends Element> enclosedElements = element.getEnclosedElements();
         final List<VariableElement> variableElements = ElementFilter.fieldsIn(enclosedElements);
         return variableElements.stream().filter(predicate).distinct().collect(Collectors.toList());
     }
 
-    public TypeElement getSuperClass(TypeElement typeElement) {
+    public Optional<TypeElement> getSuperClass(TypeElement typeElement) {
         final TypeMirror superclass = typeElement.getSuperclass();
         if (superclass instanceof DeclaredType) {
             final Element element = ((DeclaredType) superclass).asElement();
             if (element instanceof TypeElement) {
-                return ((TypeElement) element);
+                return Optional.of(((TypeElement) element));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public void generateGettersAndSettersWithLombok(TypeSpec.Builder builder, Collection<VariableElement> variableElements, Collection<FieldSpecModifier> fieldSpecModifiers) {
@@ -133,7 +132,6 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
         builder.addMethod(setter);
     }
 
-
     protected FieldSpec generateField(VariableElement ve, TypeName typeName) {
         final TypeName actualTypeName = Optional.ofNullable(typeName).orElse(TypeName.get(ve.asType()));
         final FieldSpec.Builder builder = FieldSpec.builder(actualTypeName, ve.getSimpleName().toString(), Modifier.PRIVATE);
@@ -147,7 +145,6 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
         return ve.getSimpleName().toString().substring(0, 1).toUpperCase() + ve.getSimpleName()
                 .toString().substring(1);
     }
-
 
     protected void generateJavaFile(String packageName, TypeSpec.Builder typeSpecBuilder) {
         final JavaFile javaFile = JavaFile.builder(packageName, typeSpecBuilder.build())
@@ -218,6 +215,4 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
         Optional.ofNullable(typeElement.getAnnotation(GenFeign.class)).ifPresent(anno -> context.setFeignPackageName(anno.pkgName()));
         return context;
     }
-
-
 }

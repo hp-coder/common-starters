@@ -1,6 +1,7 @@
-package com.luban.codegen.processor.modifier;
+package com.luban.codegen.processor.modifier.jpa;
 
 import com.google.auto.common.MoreTypes;
+import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import javax.persistence.AttributeConverter;

@@ -1,10 +1,12 @@
-package com.luban.codegen.processor.dto;
+package com.luban.codegen.processor.vo.mybatisplus;
 
 import com.google.auto.service.AutoService;
 import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
+import com.luban.codegen.processor.vo.GenVo;
 import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.mybatisplus.BaseMbpAggregate;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -18,15 +20,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-
 /**
  * @author HP
  * @date 2022/10/24
  */
 @AutoService(CodeGenProcessor.class)
-public class GenMbpDtoProcessor extends AbstractCodeGenProcessor {
+public class GenMbpVoProcessor extends AbstractCodeGenProcessor {
 
-    public static final String SUFFIX = "DTO";
+    public static final String SUFFIX = "VO";
 
     @Override
     public boolean supportedOrm(Orm orm) {
@@ -41,25 +42,33 @@ public class GenMbpDtoProcessor extends AbstractCodeGenProcessor {
         );
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractMbpBaseDTO.class)
                 .addModifiers(Modifier.PUBLIC);
+        MethodSpec.Builder constructorSpecBuilder = MethodSpec.constructorBuilder().addParameter(TypeName.get(typeElement.asType()), "source").addModifiers(Modifier.PUBLIC);
+
+        getSuperClass(typeElement).ifPresent(superclass -> {
+            if (superclass.getQualifiedName().contentEquals(BaseMbpAggregate.class.getCanonicalName())) {
+                builder.superclass(AbstractMbpBaseVO.class);
+                constructorSpecBuilder.addStatement("super(source)");
+            }
+        });
+
         generateGettersAndSetters(builder, fields, null);
-        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
-                .addParameter(TypeName.get(typeElement.asType()), "source")
-                .addModifiers(Modifier.PUBLIC)
-                .returns(void.class);
-        fields.forEach(f -> methodBuilder.addStatement("$T.ofNullable(this.get$L()).ifPresent(source::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
-        builder.addMethod(methodBuilder.build());
+        fields.forEach(f -> constructorSpecBuilder.addStatement("$T.ofNullable(source.get$L()).ifPresent(this::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
+        builder.addMethod(constructorSpecBuilder.build());
+        // no args constructor
+        builder.addMethod(MethodSpec.constructorBuilder().addModifiers(Modifier.PROTECTED).build());
         generateJavaFile(generatePackage(typeElement), builder);
     }
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
-        return GenDto.class;
+        return GenVo.class;
     }
 
     @Override
     public String generatePackage(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenDto.class).pkgName();
+        return typeElement.getAnnotation(GenVo.class).pkgName();
     }
+
+
 }

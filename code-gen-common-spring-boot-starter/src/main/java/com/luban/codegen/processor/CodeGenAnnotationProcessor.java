@@ -28,11 +28,11 @@ public class CodeGenAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Orm supportedOrm;
         final Map<String, String> options = ProcessingEnvironmentContextHolder.getEnvironment().getOptions();
-        if (options != null && options.size() > 0) {
+        if (options != null && !options.isEmpty()) {
             final Messager messager = ProcessingEnvironmentContextHolder.getMessager();
             options.forEach((k, v) -> messager.printMessage(Diagnostic.Kind.MANDATORY_WARNING, String.format("code-gen获取到编译参数: %s=%s", k, v)));
             final String providedOrm = options.get(orm);
-            if (providedOrm != null && providedOrm.length() > 0) {
+            if (providedOrm != null && !providedOrm.isEmpty()) {
                 supportedOrm = Orm.of(providedOrm).orElse(defaultOrm);
             } else {
                 supportedOrm = defaultOrm;

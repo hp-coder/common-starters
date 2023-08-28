@@ -37,7 +37,7 @@
         <common-base.version>1.0.0-sp2-SNAPSHOT</common-base.version>
         <jpa-common-starter.version>1.0.0-sp2-SNAPSHOT</jpa-common-starter.version>
         <mybatis-plus-common-starter.version>1.0.0-sp2-SNAPSHOT</mybatis-plus-common-starter.version>
-        <code-gen-starter.version>1.0.1-sp2-SNAPSHOT</code-gen-starter.version>
+        <code-gen-starter.version>1.0.2-sp2-SNAPSHOT</code-gen-starter.version>
         <excel-common-starter.version>1.0.0-sp2-SNAPSHOT</excel-common-starter.version>
         <luban-dingtalk.version>1.0.0-sp2-SNAPSHOT</luban-dingtalk.version>
     </properties>

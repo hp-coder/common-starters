@@ -1,9 +1,12 @@
-package com.luban.codegen.processor.vo;
+package com.luban.codegen.processor.vo.jpa;
 
 import com.google.auto.service.AutoService;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
+import com.luban.codegen.processor.dto.jpa.AbstractBaseDTO;
+import com.luban.codegen.processor.vo.GenVo;
 import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.jpa.BaseJpaAggregate;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -34,11 +37,17 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
         );
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractBaseVO.class)
                 .addModifiers(Modifier.PUBLIC);
-        generateGettersAndSetters(builder, fields, null);
         MethodSpec.Builder constructorSpecBuilder = MethodSpec.constructorBuilder().addParameter(TypeName.get(typeElement.asType()), "source").addModifiers(Modifier.PUBLIC);
-        constructorSpecBuilder.addStatement("super(source)");
+
+        getSuperClass(typeElement).ifPresent(superclass -> {
+            if (superclass.getQualifiedName().contentEquals(BaseJpaAggregate.class.getCanonicalName())) {
+                builder.superclass(AbstractBaseDTO.class);
+                constructorSpecBuilder.addStatement("super(source)");
+            }
+        });
+
+        generateGettersAndSetters(builder, fields, null);
         fields.forEach(f -> constructorSpecBuilder.addStatement("$T.ofNullable(source.get$L()).ifPresent(this::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
         builder.addMethod(constructorSpecBuilder.build());
         // no args constructor

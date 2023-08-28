@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.dto;
+package com.luban.codegen.processor.dto.mybatisplus;
 
 import lombok.Getter;
 import lombok.Setter;

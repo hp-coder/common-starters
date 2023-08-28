@@ -1,30 +1,30 @@
-package com.luban.codegen.processor.vo;
+package com.luban.codegen.processor.vo.jpa;
 
-import com.luban.mybatisplus.BaseMbpAggregate;
+import com.luban.jpa.BaseJpaAggregate;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 /**
  * @author programmer
  */
 @Getter
 @Setter
-public abstract class AbstractMbpBaseVO {
+public abstract class AbstractBaseVO {
 
     private Long id;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     private Integer version;
 
-    protected AbstractMbpBaseVO() {
+    protected AbstractBaseVO() {
     }
 
-    protected AbstractMbpBaseVO(BaseMbpAggregate source) {
+    protected AbstractBaseVO(BaseJpaAggregate source) {
         this.setId(source.getId());
         this.setCreatedAt(source.getCreatedAt());
         this.setUpdatedAt(source.getUpdatedAt());

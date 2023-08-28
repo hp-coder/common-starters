@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.response;
+package com.luban.codegen.processor.response.mybatisplus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class AbstractBaseResponse {
+public abstract class AbstractMbpBaseResponse {
     private String id;
     private String createdAt;
     private String updatedAt;

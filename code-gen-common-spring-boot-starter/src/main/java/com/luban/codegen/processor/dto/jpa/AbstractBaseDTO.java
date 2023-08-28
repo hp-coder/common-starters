@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.dto;
+package com.luban.codegen.processor.dto.jpa;
 
 import lombok.Getter;
 import lombok.Setter;

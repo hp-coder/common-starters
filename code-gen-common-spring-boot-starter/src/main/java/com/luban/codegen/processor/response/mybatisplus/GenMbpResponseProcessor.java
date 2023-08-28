@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.response;
+package com.luban.codegen.processor.response.mybatisplus;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Lists;
@@ -8,9 +8,11 @@ import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.modifier.BaseEnumFieldSpecModifier;
 import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.luban.codegen.processor.modifier.LongToStringFieldSpecModifier;
-import com.luban.codegen.processor.modifier.MbpTypeHandlerFieldSpecModifier;
+import com.luban.codegen.processor.modifier.mybatisplus.MybatisplusTypeHandlerFieldSpecModifier;
+import com.luban.codegen.processor.response.GenResponse;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.model.Response;
+import com.luban.mybatisplus.BaseMbpAggregate;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -44,13 +46,18 @@ public class GenMbpResponseProcessor extends AbstractCodeGenProcessor {
         );
         String sourceClassName = typeElement.getSimpleName() + RESPONSE_SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractMbpBaseResponse.class)
                 .addSuperinterface(Response.class)
                 .addModifiers(Modifier.PUBLIC);
 
+        getSuperClass(typeElement).ifPresent(superclass -> {
+            if (superclass.getQualifiedName().contentEquals(BaseMbpAggregate.class.getCanonicalName())) {
+                builder.superclass(AbstractMbpBaseResponse.class);
+            }
+        });
+
         final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(
                 new LongToStringFieldSpecModifier(),
-                new MbpTypeHandlerFieldSpecModifier(),
+                new MybatisplusTypeHandlerFieldSpecModifier(),
                 new BaseEnumFieldSpecModifier()
         );
         generateGettersAndSettersWithLombok(builder, fields, fieldSpecModifiers);

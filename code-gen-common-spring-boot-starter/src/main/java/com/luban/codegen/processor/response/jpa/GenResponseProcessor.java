@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.request;
+package com.luban.codegen.processor.response.jpa;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Lists;
@@ -6,11 +6,12 @@ import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.modifier.BaseEnumFieldSpecModifier;
 import com.luban.codegen.processor.modifier.FieldSpecModifier;
-import com.luban.codegen.processor.modifier.JpaConverterFieldSpecModifier;
-import com.luban.codegen.processor.modifier.DefaultToStringFieldSpecModifier;
+import com.luban.codegen.processor.modifier.LongToStringFieldSpecModifier;
+import com.luban.codegen.processor.modifier.jpa.JpaConverterFieldSpecModifier;
 import com.luban.codegen.processor.response.GenResponse;
 import com.luban.codegen.spi.CodeGenProcessor;
-import com.luban.common.base.model.Request;
+import com.luban.common.base.model.Response;
+import com.luban.jpa.BaseJpaAggregate;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -27,9 +28,9 @@ import java.util.Objects;
  * @date 2022/10/24
  */
 @AutoService(CodeGenProcessor.class)
-public class GenRequestProcessor extends AbstractCodeGenProcessor {
+public class GenResponseProcessor extends AbstractCodeGenProcessor {
 
-    public static final String SUFFIX = "Request";
+    public static final String RESPONSE_SUFFIX = "Response";
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
@@ -37,13 +38,19 @@ public class GenRequestProcessor extends AbstractCodeGenProcessor {
                 Objects.isNull(v.getAnnotation(Ignore.class)) &&
                         Objects.isNull(v.getAnnotation(Deprecated.class))
         );
-        String sourceClassName = typeElement.getSimpleName() + SUFFIX;
+        String sourceClassName = typeElement.getSimpleName() + RESPONSE_SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractBaseRequest.class)
-                .addSuperinterface(Request.class)
+                .addSuperinterface(Response.class)
                 .addModifiers(Modifier.PUBLIC);
+
+        getSuperClass(typeElement).ifPresent(superclass -> {
+            if (superclass.getQualifiedName().contentEquals(BaseJpaAggregate.class.getCanonicalName())) {
+                builder.superclass(AbstractBaseResponse.class);
+            }
+        });
+
         final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(
-                new DefaultToStringFieldSpecModifier(),
+                new LongToStringFieldSpecModifier(),
                 new JpaConverterFieldSpecModifier(),
                 new BaseEnumFieldSpecModifier()
         );
@@ -54,11 +61,11 @@ public class GenRequestProcessor extends AbstractCodeGenProcessor {
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
-        return GenRequest.class;
+        return GenResponse.class;
     }
 
     @Override
     public String generatePackage(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenRequest.class).pkgName();
+        return typeElement.getAnnotation(GenResponse.class).pkgName();
     }
 }

@@ -1,8 +1,9 @@
 
-package com.luban.codegen.processor.modifier;
+package com.luban.codegen.processor.modifier.mybatisplus;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.google.auto.common.MoreTypes;
+import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.luban.mybatisplus.convertor.TypeHandlerCodeGenAdapter;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -17,7 +18,7 @@ import java.util.Optional;
 /**
  * @author hp 2023/4/21
  */
-public class MbpTypeHandlerFieldSpecModifier implements FieldSpecModifier {
+public class MybatisplusTypeHandlerFieldSpecModifier implements FieldSpecModifier {
 
     private DeclaredType declaredType;
 

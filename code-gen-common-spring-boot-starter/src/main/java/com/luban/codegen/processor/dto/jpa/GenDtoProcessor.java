@@ -1,9 +1,11 @@
-package com.luban.codegen.processor.dto;
+package com.luban.codegen.processor.dto.jpa;
 
 import com.google.auto.service.AutoService;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
+import com.luban.codegen.processor.dto.GenDto;
 import com.luban.codegen.spi.CodeGenProcessor;
+import com.luban.jpa.BaseJpaAggregate;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -35,8 +37,14 @@ public class GenDtoProcessor extends AbstractCodeGenProcessor {
         );
         String sourceClassName = typeElement.getSimpleName() + SUFFIX;
         TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .superclass(AbstractBaseDTO.class)
                 .addModifiers(Modifier.PUBLIC);
+
+        getSuperClass(typeElement).ifPresent(superclass -> {
+            if (superclass.getQualifiedName().contentEquals(BaseJpaAggregate.class.getCanonicalName())) {
+                builder.superclass(AbstractBaseDTO.class);
+            }
+        });
+
         generateGettersAndSetters(builder, fields, null);
         MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
                 .addParameter(TypeName.get(typeElement.asType()), "source")

@@ -1,4 +1,5 @@
-package com.luban.codegen.processor.request;
+
+package com.luban.codegen.processor.request.mybatisplus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class AbstractBaseRequest {
+public abstract class AbstractMbpBaseRequest {
     private Long id;
 }

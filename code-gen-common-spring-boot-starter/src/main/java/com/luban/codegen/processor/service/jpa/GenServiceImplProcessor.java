@@ -1,25 +1,26 @@
-package com.luban.codegen.processor.service;
+package com.luban.codegen.processor.service.jpa;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.auto.service.AutoService;
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.Lists;
-import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.processor.service.GenServiceImpl;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.enums.CodeEnum;
 import com.luban.common.base.exception.BusinessException;
 import com.luban.common.base.model.PageRequestWrapper;
-import com.luban.mybatisplus.EntityOperations;
+import com.luban.jpa.EntityOperations;
+import com.querydsl.core.BooleanBuilder;
 import com.squareup.javapoet.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Annotation;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,27 +35,15 @@ import java.util.stream.Collectors;
  * @author gim 获取名称时可以先获取上下文再取，不用一个个的取，这样更方便
  */
 @AutoService(value = CodeGenProcessor.class)
-public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
+public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
 
     public static final String IMPL_SUFFIX = "ServiceImpl";
-
-    @Override
-    public boolean supportedOrm(Orm orm) {
-        return Objects.equals(orm, Orm.MYBATIS_PLUS);
-    }
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
         DefaultNameContext nameContext = getNameContext(typeElement);
         String className = typeElement.getSimpleName() + IMPL_SUFFIX;
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
-                .superclass(
-                        ParameterizedTypeName.get(
-                                ClassName.get(ServiceImpl.class),
-                                ClassName.get(nameContext.getRepositoryPackageName(), nameContext.getRepositoryClassName()),
-                                ClassName.get(typeElement)
-                        )
-                )
                 .addSuperinterface(
                         ClassName.get(nameContext.getServicePackageName(), nameContext.getServiceClassName()))
                 .addAnnotation(Slf4j.class)
@@ -163,7 +151,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
         return Optional.of(MethodSpec.methodBuilder("valid" + typeElement.getSimpleName())
                 .addParameter(Long.class, "id")
                 .addAnnotation(AnnotationSpec.builder(Transactional.class)
-                        .addMember("rollbackFor", "$L", "Exception.class").build())
+                        .addMember("rollbackFor", "$L","Exception.class").build())
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
                         CodeBlock.of("$T.doUpdate($L)\n.loadById(id)\n"
@@ -199,7 +187,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                     .addParameter(Long.class, "id")
                     .addModifiers(Modifier.PUBLIC)
                     .addCode(
-                            CodeBlock.of("$T $L =  Optional.ofNullable($L.selectById(id));\n",
+                            CodeBlock.of("$T $L =  $L.findById(id);\n",
                                     ParameterizedTypeName.get(ClassName.get(Optional.class),
                                             ClassName.get(typeElement)), classFieldName, repositoryFieldName)
                     ).addCode(
@@ -226,48 +214,21 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                             "query")
                     .addModifiers(Modifier.PUBLIC)
                     .addCode(
-                            CodeBlock.of("$T page = new $T<>(query.getPage(), query.getPageSize());\n" +
-                                            "page.setOptimizeCountSql(true);\n" +
-                                            "page.setOrders($T.newArrayList($T.desc(\"create_at\")));\n",
-                                    ParameterizedTypeName.get(
-                                            ClassName.get(Page.class),
-                                            ClassName.get(typeElement)
-                                    ),
-                                    Page.class,
-                                    Lists.class,
-                                    OrderItem.class
-                            )
+                            CodeBlock.of("$T booleanBuilder = new $T();\n", BooleanBuilder.class,
+                                    BooleanBuilder.class)
                     )
                     .addCode(
-                            CodeBlock.of("final $T wrapper = new $T<>();\n",
-                                    ParameterizedTypeName.get(ClassName.get(LambdaQueryWrapper.class), ClassName.get(typeElement)),
-                                    LambdaQueryWrapper.class
-                            )
+                            CodeBlock.of("$T<$T> page = $L.findAll(booleanBuilder,\n"
+                                            + "        $T.of(query.getPage() - 1, query.getPageSize(), $T.by(\n"
+                                            + "            $T.DESC, \"createdAt\")));\n", Page.class, typeElement,
+                                    repositoryFieldName,
+                                    PageRequest.class, Sort.class, Direction.class)
                     )
                     .addCode(
                             CodeBlock.of(
-                                    "final $T pageData = $L.selectPage(page, wrapper);\n",
-                                    ParameterizedTypeName.get(
-                                            ClassName.get(Page.class),
-                                            ClassName.get(typeElement)
-                                    ),
-                                    repositoryFieldName
-                            )
-                    )
-                    .addCode(
-                            CodeBlock.of(
-                                    "final $T data = new $T<>(pageData.getCurrent(), pageData.getSize(), pageData.getTotal());\n" +
-                                            "data.setRecords(\n" +
-                                            "       pageData.getRecords().stream()\n" +
-                                            "               .map($T::new)\n" +
-                                            "               .collect($T.toList())\n" +
-                                            ");\n" +
-                                            "return data;",
-                                    ParameterizedTypeName.get(
-                                            ClassName.get(Page.class),
-                                            ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName())
-                                    ),
-                                    Page.class,
+                                    "return new $T<>(page.getContent().stream().map($T::new)\n"
+                                            + "        .collect($T.toList()), page.getPageable(), page.getTotalElements());",
+                                    PageImpl.class,
                                     ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()),
                                     Collectors.class)
                     )

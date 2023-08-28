@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.service;
+package com.luban.codegen.processor.service.mybatisplus;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -7,6 +7,7 @@ import com.google.auto.service.AutoService;
 import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
+import com.luban.codegen.processor.service.GenService;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.model.PageRequestWrapper;
