@@ -19,12 +19,22 @@ public @interface JoinInMemory {
     String keyFromSourceData();
 
     /**
+     * 转换数据源的key类型
+     */
+    String sourceDataKeyConverter();
+
+    /**
      * 从 joinData 中提取 key
      * 如：查询到用户所有订单后，通过userId，查询到关联的用户信息，用户信息中与订单关联的信息为其id
      * <p>
      * 用于构造Map映射关系的key值
      */
     String keyFromJoinData();
+
+    /**
+     * 转换数据源的key类型
+     */
+    String joinDataKeyConverter();
 
     /**
      * 批量数据抓取
