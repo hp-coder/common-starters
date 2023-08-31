@@ -21,7 +21,7 @@ public @interface JoinInMemory {
     /**
      * 转换数据源的key类型
      */
-    String sourceDataKeyConverter();
+    String sourceDataKeyConverter() default "";
 
     /**
      * 从 joinData 中提取 key
@@ -34,7 +34,7 @@ public @interface JoinInMemory {
     /**
      * 转换数据源的key类型
      */
-    String joinDataKeyConverter();
+    String joinDataKeyConverter() default "";
 
     /**
      * 批量数据抓取
