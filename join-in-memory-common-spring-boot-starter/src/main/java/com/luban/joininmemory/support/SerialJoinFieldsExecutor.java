@@ -1,11 +1,11 @@
 package com.luban.joininmemory.support;
 
-import com.google.common.base.Stopwatch;
+import com.luban.joininmemory.AfterJoinMethodExecutor;
 import com.luban.joininmemory.JoinFieldExecutor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StopWatch;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author hp 2023/3/27
@@ -13,8 +13,12 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SerialJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor<DATA> {
 
-    public SerialJoinFieldsExecutor(Class<DATA> clazz, List<JoinFieldExecutor<DATA>> executors) {
-        super(clazz, executors);
+    public SerialJoinFieldsExecutor(
+            Class<DATA> clazz,
+            List<JoinFieldExecutor<DATA>> joinFieldExecutors,
+            List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors
+    ) {
+        super(clazz, joinFieldExecutors, afterJoinMethodExecutors);
     }
 
     @Override
@@ -22,15 +26,35 @@ public class SerialJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor<D
         getJoinFieldExecutors()
                 .forEach(executor -> {
                     if (log.isDebugEnabled()) {
-                        Stopwatch stopwatch = Stopwatch.createStarted();
+                        StopWatch stopwatch = new StopWatch("Starting executing join tasks");
+                        stopwatch.start();
                         executor.execute(dataList);
                         stopwatch.stop();
-
-                        log.debug("run execute cost {} ms, executor is {}, data is {}.",
-                                stopwatch.elapsed(TimeUnit.MILLISECONDS), executor, dataList);
+                        log.debug("run execute cost {} ms, executor is {}, data is {}.", stopwatch.getTotalTimeMillis(), executor, dataList);
                     } else {
                         executor.execute(dataList);
                     }
                 });
+
+        if (log.isDebugEnabled()) {
+            StopWatch stopwatch = new StopWatch("Starting executing after join tasks");
+            stopwatch.start();
+            dataList.forEach(data ->
+                    getAfterJoinMethodExecutors()
+                            .forEach(
+                                    e -> e.execute(data)
+                            )
+            );
+            stopwatch.stop();
+            log.debug("run execute cost {} ms, data is {}.", stopwatch.getTotalTimeMillis(), dataList);
+        } else {
+            dataList.forEach(data ->
+                    getAfterJoinMethodExecutors()
+                            .forEach(
+                                    e -> e.execute(data)
+                            )
+            );
+        }
+
     }
 }

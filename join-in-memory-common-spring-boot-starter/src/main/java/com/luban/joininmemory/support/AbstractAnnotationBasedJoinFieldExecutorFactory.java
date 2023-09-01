@@ -38,17 +38,18 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
         if (annotation == null) {
             return null;
         }
-        final DefaultJoinFieldExecutorAdaptor executorAdaptor = DefaultJoinFieldExecutorAdaptor.builder()
+        return (DefaultJoinFieldExecutorAdaptor) DefaultJoinFieldExecutorAdaptor.builder()
                 .name(createName(clazz, field, annotation))
                 .runLevel(createRunLevel(clazz, field, annotation))
-                .keyFromSource(createKeyGeneratorFromData(clazz, field, annotation))
+                .keyFromSource(createKeyGeneratorFromSourceData(clazz, field, annotation))
+                .convertKeyFromSourceData(createKeyConverterFromSourceData(clazz, field, annotation))
                 .keyFromJoinData(createKeyGeneratorFromJoinData(clazz, field, annotation))
+                .convertKeyFromJoinData(createKeyConverterFromJoinData(clazz, field, annotation))
                 .joinDataLoader(createDataLoader(clazz, field, annotation))
                 .joinDataConverter(createDataConverter(clazz, field, annotation))
                 .foundCallback(createFoundFunction(clazz, field, annotation))
                 .lostCallback(createLostFunction(clazz, field, annotation))
                 .build();
-        return executorAdaptor;
     }
 
     protected <DATA> BiConsumer<Object, Object> createLostFunction(Class<DATA> clazz, Field field, A annotation) {
@@ -61,9 +62,13 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
 
     protected abstract <DATA> Function<Object, Object> createKeyGeneratorFromJoinData(Class<DATA> clazz, Field field, A annotation);
 
+    protected abstract <DATA> Function<Object, Object> createKeyConverterFromJoinData(Class<DATA> clazz, Field field, A annotation);
+
     protected abstract <DATA> Function<List<Object>, List<Object>> createDataLoader(Class<DATA> clazz, Field field, A annotation);
 
-    protected abstract <DATA> Function<Object, Object> createKeyGeneratorFromData(Class<DATA> clazz, Field field, A annotation);
+    protected abstract <DATA> Function<Object, Object> createKeyGeneratorFromSourceData(Class<DATA> clazz, Field field, A annotation);
+
+    protected abstract <DATA> Function<Object, Object> createKeyConverterFromSourceData(Class<DATA> clazz, Field field, A annotation);
 
     protected abstract <DATA> int createRunLevel(Class<DATA> clazz, Field field, A annotation);
 

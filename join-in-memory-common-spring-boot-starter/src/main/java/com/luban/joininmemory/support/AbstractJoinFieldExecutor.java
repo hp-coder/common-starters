@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
  * @author hp 2023/3/27
  */
 @Slf4j
-public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinFieldExecutor<SOURCE_DATA> {
+public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinFieldExecutor<SOURCE_DATA> {
 
     /**
      * 从原始数据中生成 JoinKey
@@ -23,7 +23,12 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA
      * @param data 原始数据对象
      * @return 关联属性值
      */
-    protected abstract JOIN_KEY joinKeyFromSource(SOURCE_DATA data);
+    protected abstract ROW_JOIN_KEY joinKeyFromSource(SOURCE_DATA data);
+
+    /**
+     * 提供对key的类型转换
+     */
+    protected abstract JOIN_KEY convertJoinKeyFromSourceData(ROW_JOIN_KEY joinKey);
 
     /**
      * 根据 JoinKey 批量获取 JoinData
@@ -39,7 +44,12 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA
      * @param joinData 关联属性数据
      * @return 关联属性数据形成map时的key值
      */
-    protected abstract JOIN_KEY joinKeyFromJoinData(JOIN_DATA joinData);
+    protected abstract ROW_JOIN_KEY joinKeyFromJoinData(JOIN_DATA joinData);
+
+    /**
+     * 提供对key的类型转换
+     */
+    protected abstract JOIN_KEY convertJoinKeyFromJoinData(ROW_JOIN_KEY joinKey);
 
     /**
      * 将 JoinData 转换为 JoinResult
@@ -72,6 +82,7 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA
         List<JOIN_KEY> joinKeys = sourceDataList.stream()
                 .filter(Objects::nonNull)
                 .map(this::joinKeyFromSource)
+                .map(this::convertJoinKeyFromSourceData)
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(toList());
@@ -84,12 +95,12 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA
         // 将 JoinData 以 Map 形式进行组织
         Map<JOIN_KEY, List<JOIN_DATA>> joinDataMap = joinDataList.stream()
                 .filter(Objects::nonNull)
-                .collect(groupingBy(this::joinKeyFromJoinData));
+                .collect(groupingBy(joinKey -> convertJoinKeyFromJoinData(joinKeyFromJoinData(joinKey))));
         log.debug("group by join key, result is {}", joinDataMap);
 
         sourceDataList.forEach(sourceData -> {
             // 从 SourceData 中 获取 JoinKey
-            JOIN_KEY joinKey = joinKeyFromSource(sourceData);
+            JOIN_KEY joinKey = convertJoinKeyFromSourceData(joinKeyFromSource(sourceData));
             if (joinKey == null) {
                 log.warn("join key from join data {} is null", sourceData);
             } else {

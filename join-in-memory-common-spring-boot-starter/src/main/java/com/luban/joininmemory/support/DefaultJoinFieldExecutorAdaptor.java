@@ -15,14 +15,16 @@ import java.util.function.Function;
 @Getter
 @Builder
 @Slf4j
-public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, RESULT> extends AbstractJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, RESULT> {
+public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, RAW_JOIN_KEY, JOIN_KEY, JOIN_DATA, RESULT> extends AbstractJoinFieldExecutor<SOURCE_DATA, RAW_JOIN_KEY, JOIN_KEY, JOIN_DATA, RESULT> {
 
     private final String name;
     private final int runLevel;
 
-    private final Function<SOURCE_DATA, JOIN_KEY> keyFromSource;
+    private final Function<SOURCE_DATA, RAW_JOIN_KEY> keyFromSource;
+    private final Function<RAW_JOIN_KEY, JOIN_KEY> convertKeyFromSourceData;
     private final Function<List<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader;
-    private final Function<JOIN_DATA, JOIN_KEY> keyFromJoinData;
+    private final Function<JOIN_DATA, RAW_JOIN_KEY> keyFromJoinData;
+    private final Function<RAW_JOIN_KEY, JOIN_KEY> convertKeyFromJoinData;
     private final Function<JOIN_DATA, RESULT> joinDataConverter;
     private final BiConsumer<SOURCE_DATA, List<RESULT>> foundCallback;
     private final BiConsumer<SOURCE_DATA, JOIN_KEY> lostCallback;
@@ -30,9 +32,11 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, R
 
     public DefaultJoinFieldExecutorAdaptor(String name,
                                            Integer runLevel,
-                                           Function<SOURCE_DATA, JOIN_KEY> keyFromSource,
+                                           Function<SOURCE_DATA, RAW_JOIN_KEY> keyFromSource,
+                                           Function<RAW_JOIN_KEY, JOIN_KEY> convertKeyFromSourceData,
                                            Function<List<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader,
-                                           Function<JOIN_DATA, JOIN_KEY> keyFromJoinData,
+                                           Function<JOIN_DATA, RAW_JOIN_KEY> keyFromJoinData,
+                                           Function<RAW_JOIN_KEY, JOIN_KEY> convertKeyFromJoinData,
                                            Function<JOIN_DATA, RESULT> joinDataConverter,
                                            BiConsumer<SOURCE_DATA, List<RESULT>> foundCallback,
                                            BiConsumer<SOURCE_DATA, JOIN_KEY> lostCallback) {
@@ -43,8 +47,10 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, R
         Preconditions.checkArgument(foundCallback != null);
         this.name = name;
         this.keyFromSource = keyFromSource;
+        this.convertKeyFromSourceData = convertKeyFromSourceData;
         this.joinDataLoader = joinDataLoader;
         this.keyFromJoinData = keyFromJoinData;
+        this.convertKeyFromJoinData = convertKeyFromJoinData;
         this.joinDataConverter = joinDataConverter;
         this.foundCallback = foundCallback;
         if (lostCallback != null) {
@@ -60,8 +66,13 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, R
     }
 
     @Override
-    protected JOIN_KEY joinKeyFromSource(SOURCE_DATA sourceData) {
+    protected RAW_JOIN_KEY joinKeyFromSource(SOURCE_DATA sourceData) {
         return this.keyFromSource.apply(sourceData);
+    }
+
+    @Override
+    protected JOIN_KEY convertJoinKeyFromSourceData(RAW_JOIN_KEY joinKey) {
+        return this.convertKeyFromSourceData.apply(joinKey);
     }
 
     @Override
@@ -70,8 +81,13 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, R
     }
 
     @Override
-    protected JOIN_KEY joinKeyFromJoinData(JOIN_DATA joinData) {
+    protected RAW_JOIN_KEY joinKeyFromJoinData(JOIN_DATA joinData) {
         return this.keyFromJoinData.apply(joinData);
+    }
+
+    @Override
+    protected JOIN_KEY convertJoinKeyFromJoinData(RAW_JOIN_KEY joinKey) {
+        return this.convertKeyFromJoinData.apply(joinKey);
     }
 
     @Override

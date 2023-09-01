@@ -1,5 +1,6 @@
 package com.luban.joininmemory;
 
+import com.luban.joininmemory.support.AfterJoinBasedAfterJoinMethodExecutorFactory;
 import com.luban.joininmemory.support.DefaultJoinFieldsExecutorFactory;
 import com.luban.joininmemory.support.DefaultJoinService;
 import com.luban.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory;
@@ -27,24 +28,36 @@ public class JoinInMemoryAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public JoinFieldsExecutorFactory joinFieldsExecutorFactory(Collection<? extends JoinFieldExecutorFactory> joinFieldExecutorFactories,
-                                                               Map<String, ExecutorService> executorServiceMap) {
-        return new DefaultJoinFieldsExecutorFactory(joinFieldExecutorFactories, executorServiceMap);
+    public JoinFieldsExecutorFactory joinFieldsExecutorFactory(
+            Collection<? extends JoinFieldExecutorFactory> joinFieldExecutorFactories,
+            Collection<? extends AfterJoinMethodExecutorFactory> afterJoinMethodExecutorFactories,
+            Map<String, ExecutorService> executorServiceMap
+    ) {
+        return new DefaultJoinFieldsExecutorFactory(
+                joinFieldExecutorFactories,
+                afterJoinMethodExecutorFactories,
+                executorServiceMap
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public JoinService joinService(JoinFieldsExecutorFactory joinFieldsExecutorFactory){
+    public JoinService joinService(JoinFieldsExecutorFactory joinFieldsExecutorFactory) {
         return new DefaultJoinService(joinFieldsExecutorFactory);
     }
 
     @Bean
-    public JoinInMemoryBasedJoinFieldExecutorFactory joinInMemoryBasedJoinItemExecutorFactory(ApplicationContext applicationContext){
+    public JoinInMemoryBasedJoinFieldExecutorFactory joinInMemoryBasedJoinItemExecutorFactory(ApplicationContext applicationContext) {
         return new JoinInMemoryBasedJoinFieldExecutorFactory(new BeanFactoryResolver(applicationContext));
     }
 
     @Bean
-    public ExecutorService defaultJoinInMemoryExecutor(){
+    public AfterJoinBasedAfterJoinMethodExecutorFactory afterJoinBasedAfterJoinMethodExecutorFactory() {
+        return new AfterJoinBasedAfterJoinMethodExecutorFactory();
+    }
+
+    @Bean
+    public ExecutorService defaultJoinInMemoryExecutor() {
         BasicThreadFactory basicThreadFactory = new BasicThreadFactory.Builder()
                 .namingPattern("JoinInMemory-Thread-%d")
                 .daemon(true)
