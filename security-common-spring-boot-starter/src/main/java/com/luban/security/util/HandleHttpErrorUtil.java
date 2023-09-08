@@ -2,14 +2,14 @@ package com.luban.security.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luban.security.exception.CustomAuthenticationException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 
 /**
@@ -30,11 +30,11 @@ public final class HandleHttpErrorUtil {
         AuthResponse authResponse = new AuthResponse();
         if (CustomAuthenticationException.class.isAssignableFrom(e.getClass())) {
             CustomAuthenticationException cusException = (CustomAuthenticationException) e;
-            authResponse.setCode(cusException.getCode());
-            authResponse.setMsg(cusException.getMessage());
+            authResponse.setStatus(cusException.getCode());
+            authResponse.setMessage(cusException.getMessage());
         } else {
-            authResponse.setCode(AUTH_ERROR_CODE);
-            authResponse.setMsg(e.getMessage());
+            authResponse.setStatus(AUTH_ERROR_CODE);
+            authResponse.setMessage(e.getMessage());
         }
         ObjectMapper objectMapper = new ObjectMapper();
         response.getOutputStream().write(objectMapper.writeValueAsBytes(authResponse));
@@ -43,8 +43,8 @@ public final class HandleHttpErrorUtil {
     @Data
     static class AuthResponse implements Serializable {
         private static final long serialVersionUID = -3474646849529247442L;
-        private Integer code;
-        private String msg;
-        private Object result;
+        private Integer status;
+        private String message;
+        private Object data;
     }
 }
