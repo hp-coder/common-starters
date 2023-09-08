@@ -129,7 +129,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                             )
                     )
                     .addCode(
-                            CodeBlock.of("return $L.map($L::getId).orElse(null);", classFieldName, typeElement.getSimpleName())
+                            CodeBlock.of("return $L.map($L::getId).orElseThrow(() -> new $T($T.SaveError));", classFieldName, typeElement.getSimpleName(), BusinessException.class, CodeEnum.class)
                     )
                     .addAnnotation(Override.class)
                     .returns(Long.class).build());

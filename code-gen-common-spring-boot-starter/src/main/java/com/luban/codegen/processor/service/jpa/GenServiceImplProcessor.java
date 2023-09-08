@@ -116,7 +116,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                             )
                     )
                     .addCode(
-                            CodeBlock.of("return $L.map($L::getId).orElse(null);", classFieldName, typeElement.getSimpleName())
+                            CodeBlock.of("return $L.map($L::getId).orElseThrow(() -> new $T($T.SaveError));", classFieldName, typeElement.getSimpleName(), BusinessException.class, CodeEnum.class)
                     )
                     .addAnnotation(Override.class)
                     .returns(Long.class).build());
@@ -151,7 +151,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
         return Optional.of(MethodSpec.methodBuilder("valid" + typeElement.getSimpleName())
                 .addParameter(Long.class, "id")
                 .addAnnotation(AnnotationSpec.builder(Transactional.class)
-                        .addMember("rollbackFor", "$L","Exception.class").build())
+                        .addMember("rollbackFor", "$L", "Exception.class").build())
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
                         CodeBlock.of("$T.doUpdate($L)\n.loadById(id)\n"
