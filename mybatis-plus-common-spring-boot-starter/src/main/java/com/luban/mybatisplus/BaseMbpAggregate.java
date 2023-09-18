@@ -17,7 +17,6 @@ public abstract class BaseMbpAggregate {
     @TableField(
             value = "created_at",
             updateStrategy = FieldStrategy.IGNORED,
-            update = "now()",
             typeHandler = LocalDateTimeTypeConverter.class
     )
     @Setter(AccessLevel.PROTECTED)
@@ -36,4 +35,12 @@ public abstract class BaseMbpAggregate {
     @Setter(AccessLevel.PRIVATE)
     private Integer version;
 
+    @TableField(value = "deleted")
+    @TableLogic
+    @Setter(AccessLevel.PRIVATE)
+    private Integer deleted;
+
+    public BaseMbpAggregate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
