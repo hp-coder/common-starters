@@ -2,9 +2,6 @@ package com.luban.security.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luban.common.base.model.Returns;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -12,6 +9,9 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -31,7 +31,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         res.setToken(token.getPrincipal().toString());
         res.setUsername(token.getUsername());
         ObjectMapper objectMapper = new ObjectMapper();
-        response.getOutputStream().write(objectMapper.writeValueAsBytes(Returns.success(res)));
+        response.getOutputStream().write(objectMapper.writeValueAsBytes(Returns.success().data(res)));
         clearAuthenticationAttributes(request);
     }
 
