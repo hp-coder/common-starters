@@ -3,7 +3,7 @@ package com.luban.wxpay.response;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
 /**
- * @author HP 2022/11/23
+ * @author hp
  */
 public class WxpayNativePayV3Response extends WxpayResponse {
     private static final long serialVersionUID = -1627868049929615856L;

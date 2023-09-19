@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author HP 2022/11/14
+ * @author hp
  */
 public abstract class AlipayContext<T extends AlipayObject, E extends AlipayRequest<? extends AlipayResponse>, R extends AlipayResponse> {
     public final AlipayClient alipayClient;

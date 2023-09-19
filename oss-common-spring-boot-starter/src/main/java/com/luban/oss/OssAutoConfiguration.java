@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 /**
  * 通用OSS服务
  *
- * @author HP
+ * @author hp
  * @date 2022/8/25
  */
 @Configuration

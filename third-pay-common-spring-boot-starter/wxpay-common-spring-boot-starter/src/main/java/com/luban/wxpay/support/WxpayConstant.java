@@ -1,7 +1,7 @@
 package com.luban.wxpay.support;
 
 /**
- * @author HP 2022/11/23
+ * @author hp
  */
 public final class WxpayConstant {
 

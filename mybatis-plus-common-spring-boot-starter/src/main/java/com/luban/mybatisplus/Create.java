@@ -3,7 +3,7 @@ package com.luban.mybatisplus;
 import java.util.function.Supplier;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/18
  */
 public interface Create<T> {

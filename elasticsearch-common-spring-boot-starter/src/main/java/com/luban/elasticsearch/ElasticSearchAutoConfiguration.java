@@ -21,7 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * @author HP
+ * @author hp
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(value = {CustomElasticsearchProperties.class, ElasticsearchProperties.class})

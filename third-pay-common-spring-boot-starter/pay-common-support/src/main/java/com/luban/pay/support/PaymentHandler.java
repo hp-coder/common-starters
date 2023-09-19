@@ -1,7 +1,7 @@
 package com.luban.pay.support;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 public interface PaymentHandler<R> {
 

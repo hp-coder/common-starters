@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/11/7
  */
 public class DefaultColumnDynamicSelectDataHandler implements ColumnDynamicSelectDataHandler<String, List<String>> {

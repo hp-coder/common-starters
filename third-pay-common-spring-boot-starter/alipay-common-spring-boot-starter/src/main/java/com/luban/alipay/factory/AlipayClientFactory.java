@@ -7,7 +7,7 @@ import com.alipay.api.DefaultAlipayClient;
 import com.luban.alipay.config.AlipayClientConfig;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 public final class AlipayClientFactory {
 

@@ -5,7 +5,7 @@ import com.alipay.api.AlipayResponse;
 import com.luban.pay.support.PaymentHandler;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 public interface AlipayHandler<T extends AlipayRequest<R>, R extends AlipayResponse> extends PaymentHandler<R> {
 

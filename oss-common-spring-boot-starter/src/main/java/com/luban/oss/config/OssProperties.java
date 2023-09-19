@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * OSS配置信息
  *
- * @author HP
+ * @author hp
  * @date 2022/8/25
  */
 @ConfigurationProperties(prefix = "oss")

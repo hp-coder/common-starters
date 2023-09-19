@@ -21,7 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.function.Supplier;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 @Slf4j
 public abstract class AbstractAlipayHandler<T extends AlipayObject, E extends AlipayRequest<R>, R extends AlipayResponse>

@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 /**
- * @author HP 2022/12/7
+ * @author hp
  */
 @Data
 @ConfigurationProperties(prefix = "sync")

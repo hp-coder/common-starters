@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 /**
- * @author HP 2022/11/14
+ * @author hp
  */
 public final class WebUtils {
     public static HttpServletRequest getRequest() {

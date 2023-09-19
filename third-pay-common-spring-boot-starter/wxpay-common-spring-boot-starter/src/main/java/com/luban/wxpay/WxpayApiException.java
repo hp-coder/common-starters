@@ -3,7 +3,7 @@ package com.luban.wxpay;
 import lombok.Getter;
 
 /**
- * @author HP 2022/11/22
+ * @author hp
  */
 @Getter
 public class WxpayApiException extends Exception {

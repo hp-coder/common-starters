@@ -1,7 +1,7 @@
 package com.luban.wxpay;
 
 /**
- * @author HP 2022/11/23
+ * @author hp
  */
 public interface WxpayDecryptor {
 

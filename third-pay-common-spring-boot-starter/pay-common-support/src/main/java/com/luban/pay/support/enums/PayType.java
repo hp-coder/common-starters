@@ -7,23 +7,25 @@ import lombok.Getter;
 import java.util.Optional;
 
 /**
- * @author HP 2022/11/15
+ * @author hp
  */
 @Getter
 @AllArgsConstructor
-public enum PayType implements BaseEnum<PayType, String> {
+public enum PayType implements BaseEnum<PayType, Integer> {
     /***/
-    WX("微信", "微信"),
-    ALI("支付宝", "支付宝"),
-    UNION("银联", "银联"),
-    JD("京东", "京东"),
-    OFFLINE("线下支付", "线下支付"),
+    WECHAT_PAY(1, "微信"),
+    ALIPAY(2, "支付宝"),
+    UNION_PAY(3, "银联"),
+    JD_PAY(4, "京东"),
+    OFFLINE(5, "线下支付"),
+    COIN(6, "线下支付"),
+    COUPON(7, "线下支付"),
     ;
 
-    private final String code;
+    private final Integer code;
     private final String name;
 
-    public static Optional<PayType> of(String code) {
+    public static Optional<PayType> of(Integer code) {
         return Optional.ofNullable(BaseEnum.parseByCode(PayType.class, code));
     }
 }

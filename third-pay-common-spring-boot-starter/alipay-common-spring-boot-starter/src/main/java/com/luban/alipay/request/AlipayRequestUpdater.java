@@ -8,7 +8,7 @@ import com.luban.alipay.handler.AlipayHandler;
 import java.util.Map;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 public interface AlipayRequestUpdater<T extends AlipayObject, E extends AlipayRequest<R>, R extends AlipayResponse> {
 

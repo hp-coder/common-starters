@@ -3,7 +3,7 @@ package com.luban.sync.annotation;
 import java.lang.annotation.*;
 
 /**
- * @author HP 2022/12/7
+ * @author hp
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

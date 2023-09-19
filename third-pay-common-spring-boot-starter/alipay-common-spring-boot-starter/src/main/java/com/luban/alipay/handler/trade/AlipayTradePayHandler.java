@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 public class AlipayTradePayHandler extends AbstractAlipayHandler<AlipayTradePayModel, AlipayTradePayRequest, AlipayTradePayResponse> {
 

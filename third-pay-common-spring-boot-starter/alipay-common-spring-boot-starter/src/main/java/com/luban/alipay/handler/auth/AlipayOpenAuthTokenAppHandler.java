@@ -9,7 +9,7 @@ import com.luban.alipay.handler.AbstractAlipayHandler;
 import java.util.function.Supplier;
 
 /**
- * @author HP 2022/11/14
+ * @author hp
  */
 public class AlipayOpenAuthTokenAppHandler extends AbstractAlipayHandler<AlipayOpenAuthTokenAppModel, AlipayOpenAuthTokenAppRequest, AlipayOpenAuthTokenAppResponse> {
     public AlipayOpenAuthTokenAppHandler(Supplier<AlipayContext<AlipayOpenAuthTokenAppModel, AlipayOpenAuthTokenAppRequest, AlipayOpenAuthTokenAppResponse>> supplier) {

@@ -47,7 +47,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/24
  */
 public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {

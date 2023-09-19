@@ -7,7 +7,7 @@ import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Annotation;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/24
  */
 public interface CodeGenProcessor extends OrmSupport {

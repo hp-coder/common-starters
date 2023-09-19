@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 @EnableSpringUtil
 @EnableConfigurationProperties({AlipayClientConfig.class})

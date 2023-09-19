@@ -12,7 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 
 /**
- * @author HP 2022/11/22
+ * @author hp
  */
 public abstract class AbstractWxpayClient implements WxpayClient {
 

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * @author HP 2023/1/5
+ * @author hp
  */
 @Component
 public class DynamicSelectDataHandler implements ColumnDynamicSelectDataHandler<String, List<String>> {

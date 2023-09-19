@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/18
  */
 public abstract class BaseEntityOperation implements EntityOperation {

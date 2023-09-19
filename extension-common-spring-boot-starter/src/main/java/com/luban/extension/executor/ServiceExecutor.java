@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/19
  */
 public interface ServiceExecutor {

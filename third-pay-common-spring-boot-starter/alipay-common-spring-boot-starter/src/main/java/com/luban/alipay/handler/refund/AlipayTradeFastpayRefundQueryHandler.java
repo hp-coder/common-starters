@@ -9,7 +9,7 @@ import com.luban.alipay.handler.AbstractAlipayHandler;
 import java.util.function.Supplier;
 
 /**
- * @author HP 2022/11/16
+ * @author hp
  */
 public class AlipayTradeFastpayRefundQueryHandler extends AbstractAlipayHandler<AlipayTradeFastpayRefundQueryModel, AlipayTradeFastpayRefundQueryRequest, AlipayTradeFastpayRefundQueryResponse> {
     public AlipayTradeFastpayRefundQueryHandler(Supplier<AlipayContext<AlipayTradeFastpayRefundQueryModel, AlipayTradeFastpayRefundQueryRequest, AlipayTradeFastpayRefundQueryResponse>> supplier) {

@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author HP 2022/12/7
+ * @author hp
  */
 public interface CanalConverter extends InitializingBean {
 

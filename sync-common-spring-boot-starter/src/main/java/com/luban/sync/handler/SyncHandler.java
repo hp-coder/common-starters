@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author HP 2022/12/7
+ * @author hp
  */
 public interface SyncHandler extends InitializingBean {
     Map<String, SyncHandler> HOLDER = new ConcurrentHashMap<>(16);

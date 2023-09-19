@@ -9,7 +9,7 @@ import com.luban.alipay.handler.AbstractAlipayHandler;
 import java.util.function.Supplier;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 public class AlipayTradePrecreateHandler extends AbstractAlipayHandler<AlipayTradePrecreateModel, AlipayTradePrecreateRequest, AlipayTradePrecreateResponse> {
 

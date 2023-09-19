@@ -3,7 +3,7 @@ package com.luban.codegen.processor.api;
 import java.lang.annotation.*;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/25
  */
 @Target(ElementType.TYPE)

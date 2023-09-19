@@ -6,7 +6,7 @@ import com.luban.wxpay.request.WxpayRequest;
 import com.luban.wxpay.response.WxpayResponse;
 
 /**
- * @author HP 2022/11/23
+ * @author hp
  */
 public interface WxpayParser<T extends WxpayResponse> {
 

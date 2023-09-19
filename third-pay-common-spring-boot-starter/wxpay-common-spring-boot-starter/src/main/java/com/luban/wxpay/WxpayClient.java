@@ -4,7 +4,7 @@ import com.luban.wxpay.request.WxpayRequest;
 import com.luban.wxpay.response.WxpayResponse;
 
 /**
- * @author HP 2022/11/22
+ * @author hp
  */
 public interface WxpayClient {
 

@@ -5,7 +5,7 @@ import com.luban.wxpay.response.WxpayResponse;
 import org.springframework.http.HttpMethod;
 
 /**
- * @author HP 2022/11/17
+ * @author hp
  */
 public interface WxpayRequest<T extends WxpayResponse> {
 

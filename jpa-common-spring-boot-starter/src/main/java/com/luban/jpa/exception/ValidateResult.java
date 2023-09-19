@@ -3,7 +3,7 @@ package com.luban.jpa.exception;
 import lombok.Getter;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/18
  */
 @Getter

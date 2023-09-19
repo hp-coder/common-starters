@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.io.Serializable;
 
 /**
- * @author HP 2022/11/14
+ * @author hp
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

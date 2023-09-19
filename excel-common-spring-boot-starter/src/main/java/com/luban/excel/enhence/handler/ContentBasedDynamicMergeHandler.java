@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  * 基于内容的动态自定义合并行处理器 *
  *
- * @author HP
+ * @author hp
  * @date 2022/11/8
  */
 @Slf4j

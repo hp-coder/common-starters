@@ -11,7 +11,7 @@ import java.lang.annotation.*;
  * 支持静态，动态字符串数据源*
  * 以及二级级联下拉列表数据源*
  *
- * @author HP
+ * @author hp
  * @date 2022/11/7
  */
 @Documented

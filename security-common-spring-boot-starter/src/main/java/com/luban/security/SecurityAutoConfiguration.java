@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 /**
- * @author HP
+ * @author hp
  */
 @EnableConfigurationProperties
 @Import(SecurityCommonProperties.class)

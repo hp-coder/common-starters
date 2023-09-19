@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 /**
  * 适用于 uniTransfer 查询*
- * @author HP 2022/11/14
+ * @author hp
  */
 public class AlipayFundTransCommonQueryHandler extends AbstractAlipayHandler<AlipayFundTransCommonQueryModel, AlipayFundTransCommonQueryRequest, AlipayFundTransCommonQueryResponse> {
 

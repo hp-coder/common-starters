@@ -1,7 +1,7 @@
 package com.luban.jpa.group;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/18
  */
 public interface ValidateGroup {

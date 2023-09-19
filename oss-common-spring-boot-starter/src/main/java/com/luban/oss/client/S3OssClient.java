@@ -13,7 +13,7 @@ import java.net.URL;
 /**
  * 亚马逊s3协议客户端
  *
- * @author HP
+ * @author hp
  * @date 2022/8/25
  */
 public class S3OssClient implements OssClient {

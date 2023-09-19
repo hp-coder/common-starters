@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * @author HP 2022/11/14
+ * @author hp
  */
 public class AlipayFundAccountQueryHandler extends AbstractAlipayHandler<AlipayFundAccountQueryModel, AlipayFundAccountQueryRequest, AlipayFundAccountQueryResponse> {
     public AlipayFundAccountQueryHandler(Supplier<AlipayContext<AlipayFundAccountQueryModel, AlipayFundAccountQueryRequest, AlipayFundAccountQueryResponse>> supplier) {

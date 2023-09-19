@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.function.Supplier;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/18
  */
 public interface Loader<T> {

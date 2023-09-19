@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  * 只有使用注解列且，所有注解列同上一行每列数据相同时，会记录或发生合并*
  * 所有使用该注解列的值必须和下行相同，否则不合并*
  *
- * @author HP 2022/11/8
+ * @author hp
  */
 @Documented
 @Inherited

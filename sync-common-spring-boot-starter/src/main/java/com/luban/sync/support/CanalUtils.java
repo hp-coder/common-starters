@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author HP 2022/12/8
+ * @author hp
  */
 public final class CanalUtils {
 

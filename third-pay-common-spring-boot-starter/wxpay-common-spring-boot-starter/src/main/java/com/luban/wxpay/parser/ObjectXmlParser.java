@@ -7,7 +7,7 @@ import com.luban.wxpay.request.WxpayRequest;
 import com.luban.wxpay.response.WxpayResponse;
 
 /**
- * @author HP 2022/11/23
+ * @author hp
  */
 public class ObjectXmlParser<T extends WxpayResponse> implements WxpayParser<T> {
     final Class<T> clazz;

@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/18
  */
 public interface Executor<T> {

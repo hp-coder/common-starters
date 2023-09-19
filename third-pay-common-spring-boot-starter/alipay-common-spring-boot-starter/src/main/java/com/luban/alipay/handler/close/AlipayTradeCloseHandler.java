@@ -9,7 +9,7 @@ import com.luban.alipay.handler.AbstractAlipayHandler;
 import java.util.function.Supplier;
 
 /**
- * @author HP 2022/11/14
+ * @author hp
  */
 public class AlipayTradeCloseHandler extends AbstractAlipayHandler<AlipayTradeCloseModel, AlipayTradeCloseRequest, AlipayTradeCloseResponse> {
     public AlipayTradeCloseHandler(Supplier<AlipayContext<AlipayTradeCloseModel, AlipayTradeCloseRequest, AlipayTradeCloseResponse>> supplier) {

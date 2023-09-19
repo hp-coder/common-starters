@@ -12,7 +12,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import java.util.Optional;
 
 /**
- * @author HP 2022/12/7
+ * @author hp
  */
 @Slf4j
 @RabbitListener(queues = Constants.MQ.SYNC_QUEUE)

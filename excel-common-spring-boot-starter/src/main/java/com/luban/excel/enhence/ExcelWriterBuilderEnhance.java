@@ -8,7 +8,7 @@ import com.luban.excel.head.HeadGenerator;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/11/7
  */
 public interface ExcelWriterBuilderEnhance {

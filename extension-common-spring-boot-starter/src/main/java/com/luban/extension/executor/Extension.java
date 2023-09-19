@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.lang.annotation.*;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/19
  */
 @Inherited

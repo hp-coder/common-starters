@@ -3,7 +3,7 @@ package com.luban.mybatisplus;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * @author HP
+ * @author hp
  * @date 2022/10/18
  */
 public abstract class EntityOperations {

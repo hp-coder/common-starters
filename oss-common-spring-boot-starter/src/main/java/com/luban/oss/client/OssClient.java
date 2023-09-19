@@ -10,7 +10,7 @@ import java.io.InputStream;
 /**
  * OSS客户端
  *
- * @author HP
+ * @author hp
  * @date 2022/8/25
  */
 public interface OssClient {

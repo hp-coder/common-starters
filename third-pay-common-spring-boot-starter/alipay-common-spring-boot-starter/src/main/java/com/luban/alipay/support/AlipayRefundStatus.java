@@ -9,7 +9,7 @@ import lombok.Getter;
  * * 可能出现退款查询时还没处理成功，后面又处理成功的情况，
  * * 建议商户在退款发起后间隔10秒以上再发起退款查询请求。*
  *
- * @author HP 2022/11/16
+ * @author hp
  */
 @Getter
 @AllArgsConstructor

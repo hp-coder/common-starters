@@ -5,7 +5,7 @@ import com.alipay.api.AlipayRequest;
 import com.alipay.api.AlipayResponse;
 
 /**
- * @author HP 2022/11/11
+ * @author hp
  */
 public interface AlipayRequestBuilder<T extends AlipayObject, E extends AlipayRequest<R>, R extends AlipayResponse> {
 
