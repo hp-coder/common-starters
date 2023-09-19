@@ -102,12 +102,12 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
             // 从 SourceData 中 获取 JoinKey
             JOIN_KEY joinKey = convertJoinKeyFromSourceData(joinKeyFromSource(sourceData));
             if (joinKey == null) {
-                log.warn("join key from join data {} is null", sourceData);
+                log.debug("join key from join data {} is null", sourceData);
             } else {
                 // 根据 JoinKey 获取 JoinData
                 List<JOIN_DATA> relations = joinDataMap.get(joinKey);
                 if (CollectionUtils.isEmpty(relations)) {
-                    log.warn("join data lost by join key {} for source data {}", joinKey, sourceData);
+                    log.debug("join data lost by join key {} for source data {}", joinKey, sourceData);
                     // 为获取到 JoinData，进行 notFound 回调
                     onNotFound(sourceData, joinKey);
                 } else {

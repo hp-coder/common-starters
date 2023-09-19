@@ -57,11 +57,11 @@ public class DefaultJoinFieldsExecutorFactory implements JoinFieldsExecutorFacto
             List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors
     ) {
         if (joinInMemoryConfig == null || joinInMemoryConfig.executorType() == JoinInMemoryExecutorType.SERIAL) {
-            log.info("JoinInMemory for {} uses parallel serial executor", clazz);
+            log.debug("JoinInMemory for {} uses parallel serial executor", clazz);
             return new SerialJoinFieldsExecutor<>(clazz, joinItemExecutors, afterJoinMethodExecutors);
         }
         if (joinInMemoryConfig.executorType() == JoinInMemoryExecutorType.PARALLEL) {
-            log.info("JoinInMemory for {} uses parallel executor, the executor pool is {}", clazz, joinInMemoryConfig.executorName());
+            log.debug("JoinInMemory for {} uses parallel executor, the executor pool is {}", clazz, joinInMemoryConfig.executorName());
             ExecutorService executor = executorServiceMap.get(joinInMemoryConfig.executorName());
             Preconditions.checkArgument(executor != null);
             return new ParallelJoinFieldsExecutor<>(clazz, joinItemExecutors, afterJoinMethodExecutors, executor);

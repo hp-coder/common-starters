@@ -34,7 +34,7 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
 
     @Override
     protected <DATA> BiConsumer<Object, List<Object>> createFoundFunction(Class<DATA> clazz, Field field, JoinInMemory annotation) {
-        log.info("the field about to be set is {}, a type of {}", field.getName(), clazz);
+        log.debug("the field about to be set is {}, a type of {}", field.getName(), clazz);
         boolean isCollection = Collection.class.isAssignableFrom(field.getType());
         return new DataSetter(field.getName(), isCollection);
     }
@@ -116,7 +116,7 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
                 if (size == 1) {
                     this.expression.setValue(data, result.get(0));
                 } else {
-                    log.warn("write join result to {} error, field is {}, data is {}", data, fieldName, result);
+                    log.debug("write join result to {} error, field is {}, data is {}", data, fieldName, result);
                 }
             }
         }

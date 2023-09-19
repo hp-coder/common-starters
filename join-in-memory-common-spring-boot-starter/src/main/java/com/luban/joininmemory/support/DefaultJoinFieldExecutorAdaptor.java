@@ -62,7 +62,7 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, RAW_JOIN_KEY, JOIN_KEY
     }
 
     private BiConsumer<SOURCE_DATA, JOIN_KEY> getDefaultLostFunction() {
-        return (data, joinKey) -> log.warn("failed to find join data by {} for {}", joinKey, data);
+        return (data, joinKey) -> log.debug("failed to find join data by {} for {}", joinKey, data);
     }
 
     @Override
