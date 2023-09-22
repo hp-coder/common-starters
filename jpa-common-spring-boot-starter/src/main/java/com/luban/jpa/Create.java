@@ -3,7 +3,7 @@ package com.luban.jpa;
 import java.util.function.Supplier;
 
 /**
- * @author gim 2022/1/28 9:55 下午
+ * @author hp
  */
 public interface Create<T> {
 

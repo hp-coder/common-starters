@@ -1,7 +1,7 @@
 package com.luban.mybatisplus;
 
 /**
- * @author gim 2022/3/5 10:07 下午
+ * @author hp
  */
 public interface EntityOperation {
 

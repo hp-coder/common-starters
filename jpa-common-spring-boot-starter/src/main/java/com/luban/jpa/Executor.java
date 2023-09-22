@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * @author gim 2022/1/28 9:07 下午
+ * @author hp
  */
 public interface Executor<T> {
 

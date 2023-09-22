@@ -3,7 +3,7 @@ package com.luban.jpa;
 import org.springframework.data.repository.CrudRepository;
 
 /**
- * @author gim 2022/3/5 9:52 下午
+ * @author hp
  */
 @SuppressWarnings("unchecked")
 public abstract class EntityOperations {

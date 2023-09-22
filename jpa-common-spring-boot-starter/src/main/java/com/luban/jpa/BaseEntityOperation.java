@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
- * @author gim 2022/3/5 10:07 下午
+ * @author hp
  */
 public abstract class BaseEntityOperation implements EntityOperation {
 

@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * @author gim 2022/3/5 9:54 下午
+ * @author hp
  */
 @Slf4j
 public class EntityCreator<T, ID> extends BaseEntityOperation implements Create<T>, UpdateHandler<T>, Executor<T> {

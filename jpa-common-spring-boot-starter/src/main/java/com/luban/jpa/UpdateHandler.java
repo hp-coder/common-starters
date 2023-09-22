@@ -3,7 +3,7 @@ package com.luban.jpa;
 import java.util.function.Consumer;
 
 /**
- * @author gim 2022/1/28 9:10 下午
+ * @author hp
  */
 public interface UpdateHandler<T>{
 
