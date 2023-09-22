@@ -50,7 +50,7 @@
                     <target>${maven.compiler.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
-                        <arg>-Aorm=mbp</arg>
+                        <arg>-Aorm=jpa</arg>
                     </compilerArgs>
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <annotationProcessorPaths>

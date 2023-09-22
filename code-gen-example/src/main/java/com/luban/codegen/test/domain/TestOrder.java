@@ -1,7 +1,6 @@
 package com.luban.codegen.test.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.luban.codegen.processor.controller.GenController;
 import com.luban.codegen.processor.dto.GenDto;
 import com.luban.codegen.processor.mapper.GenMapper;
@@ -13,14 +12,17 @@ import com.luban.codegen.processor.service.GenServiceImpl;
 import com.luban.codegen.processor.vo.GenVo;
 import com.luban.common.base.annotations.FieldDesc;
 import com.luban.common.base.enums.ValidStatus;
+import com.luban.jpa.BaseJpaAggregate;
 import com.luban.jpa.convertor.LocalDateTimeConverter;
-import com.luban.mybatisplus.BaseMbpAggregate;
+import com.luban.jpa.convertor.ValidStatusConverter;
 import com.luban.mybatisplus.convertor.LocalDateTimeTypeConverter;
-import com.luban.mybatisplus.convertor.ValidStatusConverter;
 import lombok.Data;
 
 import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * @author hp 2023/4/10
@@ -34,11 +36,13 @@ import java.time.LocalDateTime;
 @GenServiceImpl(pkgName = "com.luban.codegen.test.domain.service.impl")
 @GenRepository(pkgName = "com.luban.codegen.test.domain.repository")
 @GenMapper(pkgName = "com.luban.codegen.test.domain.mapper")
-@TableName(value="test_order")
+@Entity
+@Table(name = "test_order")
 @Data
-public class TestOrder extends BaseMbpAggregate {
+public class TestOrder extends BaseJpaAggregate {
 
-    @TableField(typeHandler = ValidStatusConverter.class)
+    @Convert(converter = ValidStatusConverter.class)
+    @TableField(typeHandler = com.luban.mybatisplus.convertor.ValidStatusConverter.class)
     @FieldDesc("状态")
     private ValidStatus status;
 
@@ -56,6 +60,16 @@ public class TestOrder extends BaseMbpAggregate {
     private LocalDateTime date;
 
     private Long testLong;
+
+    public boolean enabled() {
+        return Optional.ofNullable(getStatus())
+                .map(ValidStatus::valid)
+                .orElse(false);
+    }
+
+    public boolean disabled() {
+        return !enabled();
+    }
 
     public void init(){
         setStatus(ValidStatus.VALID);

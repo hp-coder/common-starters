@@ -16,5 +16,9 @@ public interface CodeGenProcessor extends OrmSupport {
 
     String generatePackage(TypeElement typeElement);
 
+    default String generatePath(TypeElement typeElement){
+        return null;
+    }
+
     void generate(TypeElement typeElement, RoundEnvironment roundEnvironment);
 }

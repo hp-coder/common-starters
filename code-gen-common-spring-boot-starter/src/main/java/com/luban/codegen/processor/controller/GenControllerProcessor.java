@@ -35,7 +35,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        DefaultNameContext nameContext = getNameContext(typeElement);
+        DefaultNameContext nameContext = getNameContext();
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(nameContext.getControllerClassName())
                 .addAnnotation(Slf4j.class)
                 .addAnnotation(RestController.class)
@@ -50,21 +50,32 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                 .builder(ClassName.get(nameContext.getServicePackageName(), nameContext.getServiceClassName()), serviceFieldName)
                 .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
+
         typeSpecBuilder.addField(serviceField);
-        Optional<MethodSpec> createMethod = createMethod(serviceFieldName, typeElement, nameContext);
-        createMethod.ifPresent(typeSpecBuilder::addMethod);
-        Optional<MethodSpec> updateMethod = updateMethod(serviceFieldName, typeElement, nameContext);
-        updateMethod.ifPresent(typeSpecBuilder::addMethod);
-        Optional<MethodSpec> validMethod = validMethod(serviceFieldName, typeElement);
-        validMethod.ifPresent(typeSpecBuilder::addMethod);
-        Optional<MethodSpec> invalidMethod = inValidMethod(serviceFieldName, typeElement);
-        invalidMethod.ifPresent(typeSpecBuilder::addMethod);
-        Optional<MethodSpec> findById = findById(serviceFieldName, nameContext);
-        findById.ifPresent(typeSpecBuilder::addMethod);
-        generateJavaSourceFile(generatePackage(typeElement),
-                typeElement.getAnnotation(GenController.class).sourcePath(), typeSpecBuilder);
+
+        createMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        updateMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        enableMethod(serviceFieldName, typeElement).ifPresent(typeSpecBuilder::addMethod);
+        disableMethod(serviceFieldName, typeElement).ifPresent(typeSpecBuilder::addMethod);
+        findById(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+
+        generateJavaSourceFile(generatePackage(typeElement), generatePath(typeElement), typeSpecBuilder);
     }
 
+    @Override
+    public Class<? extends Annotation> getAnnotation() {
+        return GenController.class;
+    }
+
+    @Override
+    public String generatePackage(TypeElement typeElement) {
+        return typeElement.getAnnotation(GenController.class).pkgName();
+    }
+
+    @Override
+    public String generatePath(TypeElement typeElement) {
+        return typeElement.getAnnotation(GenController.class).sourcePath();
+    }
 
     private Optional<MethodSpec> createMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
         boolean containsNull = StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getRequestPackageName(), nameContext.getMapperPackageName());
@@ -72,13 +83,13 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
             return Optional.of(MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
                     .addParameter(ParameterSpec.builder(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request").addAnnotation(
                             RequestBody.class).build())
-                    .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "create" + typeElement.getSimpleName()).build())
+                    .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "_create").build())
                     .addModifiers(Modifier.PUBLIC)
                     .addCode(
                             CodeBlock.of("$T creator = $T.INSTANCE.requestToDto(request);\n",
                                     ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
                     )
-                    .addCode(CodeBlock.of("return Returns.success($L.create$L(creator));", serviceFieldName, typeElement.getSimpleName().toString()))
+                    .addCode(CodeBlock.of("return Returns.success().data($L.create$L(creator));", serviceFieldName, typeElement.getSimpleName().toString()))
                     .returns(Returns.class)
                     .build());
         }
@@ -90,7 +101,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
         if (!containsNull) {
             return Optional.of(MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
                     .addParameter(ParameterSpec.builder(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request").addAnnotation(RequestBody.class).build())
-                    .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "update" + typeElement.getSimpleName()).build())
+                    .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "_update").build())
                     .addModifiers(Modifier.PUBLIC)
                     .addCode(
                             CodeBlock.of("$T updater = $T.INSTANCE.requestToDto(request);\n",
@@ -100,7 +111,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                             CodeBlock.of("$L.update$L(updater);\n", serviceFieldName, typeElement.getSimpleName().toString())
                     )
                     .addCode(
-                            CodeBlock.of("return $T.success($T.Success.getName());", Returns.class, CodeEnum.class)
+                            CodeBlock.of("return $T.success().data($T.Success.getName());", Returns.class, CodeEnum.class)
                     )
                     .returns(Returns.class)
                     .build());
@@ -108,69 +119,55 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
         return Optional.empty();
     }
 
-    private Optional<MethodSpec> validMethod(String serviceFieldName, TypeElement typeElement) {
-        return Optional.of(MethodSpec.methodBuilder("valid" + typeElement.getSimpleName())
+    private Optional<MethodSpec> enableMethod(String serviceFieldName, TypeElement typeElement) {
+        return Optional.of(MethodSpec.methodBuilder("enable" + typeElement.getSimpleName())
                 .addParameter(ParameterSpec.builder(Long.class, "id").addAnnotation(PathVariable.class).build())
-                .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "valid/{id}").build())
+                .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "enable/{id}").build())
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
-                        CodeBlock.of("$L.valid$L(id);\n",
+                        CodeBlock.of("$L.enable$L(id);\n",
                                 serviceFieldName, typeElement.getSimpleName().toString())
                 )
                 .addCode(
-                        CodeBlock.of("return $T.success($T.Success.getName());", Returns.class, CodeEnum.class)
+                        CodeBlock.of("return $T.success().data($T.Success.getName());", Returns.class, CodeEnum.class)
                 )
                 .returns(Returns.class)
                 .build());
     }
 
-    private Optional<MethodSpec> inValidMethod(String serviceFieldName, TypeElement typeElement) {
-        return Optional.of(MethodSpec.methodBuilder("invalid" + typeElement.getSimpleName())
+    private Optional<MethodSpec> disableMethod(String serviceFieldName, TypeElement typeElement) {
+        return Optional.of(MethodSpec.methodBuilder("disable" + typeElement.getSimpleName())
                 .addParameter(ParameterSpec.builder(Long.class, "id").addAnnotation(PathVariable.class).build())
-                .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "invalid/{id}").build())
+                .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "disable/{id}").build())
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
-                        CodeBlock.of("$L.invalid$L(id);\n",
+                        CodeBlock.of("$L.disable$L(id);\n",
                                 serviceFieldName, typeElement.getSimpleName().toString())
                 )
                 .addCode(
-                        CodeBlock.of("return $T.success($T.Success.getName());", Returns.class, CodeEnum.class)
+                        CodeBlock.of("return $T.success().data($T.Success.getName());", Returns.class, CodeEnum.class)
                 )
                 .returns(Returns.class)
                 .build());
     }
 
-    private Optional<MethodSpec> findById(String serviceFieldName, DefaultNameContext nameContext) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getVoPackageName(), nameContext.getResponsePackageName(), nameContext.getMapperPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec.methodBuilder("findById")
-                    .addParameter(ParameterSpec.builder(Long.class, "id").addAnnotation(PathVariable.class).build())
-                    .addAnnotation(AnnotationSpec.builder(GetMapping.class).addMember("value", "$S", "findById/{id}").build())
-                    .addModifiers(Modifier.PUBLIC)
-                    .addCode(
-                            CodeBlock.of("$T vo = $L.findById(id);\n", ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()), serviceFieldName)
-                    )
-                    .addCode(
-                            CodeBlock.of("$T response = $T.INSTANCE.voToResponse(vo);\n"
-                                    , ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()),
-                                    ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
-                    )
-                    .addCode(
-                            CodeBlock.of("return $T.success(response);", Returns.class)
-                    )
-                    .returns(Returns.class)
-                    .build());
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Class<? extends Annotation> getAnnotation() {
-        return GenController.class;
-    }
-
-    @Override
-    public String generatePackage(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenController.class).pkgName();
+    private Optional<MethodSpec> findById(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
+        return Optional.of(MethodSpec.methodBuilder("findById")
+                .addParameter(ParameterSpec.builder(Long.class, "id").addAnnotation(PathVariable.class).build())
+                .addAnnotation(AnnotationSpec.builder(GetMapping.class).addMember("value", "$S", "findById/{id}").build())
+                .addModifiers(Modifier.PUBLIC)
+                .addCode(
+                        CodeBlock.of("$T entity = $L.findById(id);\n", ClassName.get(typeElement), serviceFieldName)
+                )
+                .addCode(
+                        CodeBlock.of("$T response = $T.INSTANCE.entityToResponse(entity);\n"
+                                , ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()),
+                                ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
+                )
+                .addCode(
+                        CodeBlock.of("return $T.success().data(response);", Returns.class)
+                )
+                .returns(Returns.class)
+                .build());
     }
 }

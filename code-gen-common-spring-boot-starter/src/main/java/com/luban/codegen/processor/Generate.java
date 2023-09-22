@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.service;
+package com.luban.codegen.processor;
 
 import java.lang.annotation.*;
 
@@ -8,8 +8,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface GenServiceImpl {
+public @interface Generate {
     String pkgName();
     String sourcePath() default "src/main/java";
-    boolean overrideSource() default false;
 }

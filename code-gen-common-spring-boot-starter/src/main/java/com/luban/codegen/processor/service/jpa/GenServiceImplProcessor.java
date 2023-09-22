@@ -1,6 +1,7 @@
 package com.luban.codegen.processor.service.jpa;
 
 
+import cn.hutool.core.collection.CollUtil;
 import com.google.auto.service.AutoService;
 import com.google.common.base.CaseFormat;
 import com.luban.codegen.context.DefaultNameContext;
@@ -17,7 +18,6 @@ import com.squareup.javapoet.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -28,11 +28,13 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
- * @author gim 获取名称时可以先获取上下文再取，不用一个个的取，这样更方便
+ * @author hp
  */
 @AutoService(value = CodeGenProcessor.class)
 public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
@@ -41,47 +43,38 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        DefaultNameContext nameContext = getNameContext(typeElement);
-        String className = typeElement.getSimpleName() + IMPL_SUFFIX;
-        TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
+        final DefaultNameContext nameContext = getNameContext();
+        final String className = typeElement.getSimpleName() + IMPL_SUFFIX;
+        final TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(className)
                 .addSuperinterface(
                         ClassName.get(nameContext.getServicePackageName(), nameContext.getServiceClassName()))
                 .addAnnotation(Slf4j.class)
                 .addAnnotation(Service.class)
                 .addAnnotation(RequiredArgsConstructor.class)
+                .addAnnotation(AnnotationSpec.builder(Transactional.class).addMember("rollbackFor", "$L", "Exception.class").build())
                 .addModifiers(Modifier.PUBLIC);
         if (StringUtils.containsNull(nameContext.getRepositoryPackageName())) {
             return;
         }
-        String repositoryFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL,
+        final String repositoryFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL,
                 nameContext.getRepositoryClassName());
-        String classFieldName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL,
-                typeElement.getSimpleName().toString());
-        FieldSpec repositoryField = FieldSpec
+
+        final FieldSpec repositoryField = FieldSpec
                 .builder(ClassName.get(nameContext.getRepositoryPackageName(),
                         nameContext.getRepositoryClassName()), repositoryFieldName)
                 .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
         typeSpecBuilder.addField(repositoryField);
-        Optional<MethodSpec> createMethod = createMethod(typeElement, nameContext, repositoryFieldName, classFieldName);
-        createMethod.ifPresent(typeSpecBuilder::addMethod);
 
-        Optional<MethodSpec> updateMethod = updateMethod(typeElement, nameContext, repositoryFieldName);
-        updateMethod.ifPresent(typeSpecBuilder::addMethod);
+        createMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
+        updateMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
+        enableMethod(typeElement, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
+        disableMethod(typeElement, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
+        findByIdMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
+        findAllByIdMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
+        findByPageMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
 
-        Optional<MethodSpec> validMethod = validMethod(typeElement, repositoryFieldName);
-        validMethod.ifPresent(typeSpecBuilder::addMethod);
-
-        Optional<MethodSpec> invalidMethod = invalidMethod(typeElement, repositoryFieldName);
-        invalidMethod.ifPresent(typeSpecBuilder::addMethod);
-
-        Optional<MethodSpec> findByIdMethod = findByIdMethod(typeElement, nameContext, repositoryFieldName, classFieldName);
-        findByIdMethod.ifPresent(typeSpecBuilder::addMethod);
-
-        Optional<MethodSpec> findByPageMethod = findByPageMethod(typeElement, nameContext, repositoryFieldName);
-        findByPageMethod.ifPresent(typeSpecBuilder::addMethod);
-
-        generateJavaSourceFile(generatePackage(typeElement), typeElement.getAnnotation(GenServiceImpl.class).sourcePath(), typeSpecBuilder);
+        generateJavaSourceFile(generatePackage(typeElement), generatePath(typeElement), typeSpecBuilder);
     }
 
     @Override
@@ -94,148 +87,226 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
         return typeElement.getAnnotation(GenServiceImpl.class).pkgName();
     }
 
-    private Optional<MethodSpec> createMethod(TypeElement typeElement, DefaultNameContext nameContext,
-                                              String repositoryFieldName, String classFieldName) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getDtoClassName(), nameContext.getMapperPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
-                    .addAnnotation(AnnotationSpec.builder(Transactional.class)
-                            .addMember("rollbackFor", "$L", "Exception.class").build())
-                    .addParameter(
-                            ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()),
-                            "creator")
-                    .addModifiers(Modifier.PUBLIC)
-                    .addCode(
-                            CodeBlock.of(
-                                    "Optional<$T> $L = $T.doCreate($L)\n.create(() -> $T.INSTANCE.dtoToEntity(creator))\n"
-                                            + ".update($L::init)\n"
-                                            + ".execute();\n",
-                                    typeElement, classFieldName, EntityOperations.class, repositoryFieldName,
-                                    ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()),
-                                    typeElement.getSimpleName()
+    @Override
+    public String generatePath(TypeElement typeElement) {
+        return typeElement.getAnnotation(GenServiceImpl.class).sourcePath();
+    }
+
+    private Optional<MethodSpec> createMethod(
+            TypeElement typeElement,
+            DefaultNameContext nameContext,
+            String repositoryFieldName
+    ) {
+        if (!StringUtils.containsNull(nameContext.getDtoClassName(), nameContext.getMapperPackageName())) {
+            return Optional.of(
+                    MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
+                            .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "creator")
+                            .addModifiers(Modifier.PUBLIC)
+                            .addCode(
+                                    CodeBlock.of(
+                                            "return $T.doCreate($L)\n" +
+                                                    ".create(() -> $T.INSTANCE.dtoToEntity(creator))\n" +
+                                                    ".update($L::init)\n" +
+                                                    ".execute()\n" +
+                                                    ".map($L::getId)\n" +
+                                                    ".orElseThrow(() -> new $T($T.SaveError));",
+                                            ClassName.get(EntityOperations.class),
+                                            repositoryFieldName,
+                                            ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()),
+                                            typeElement.getSimpleName(),
+                                            typeElement.getSimpleName(),
+                                            ClassName.get(BusinessException.class),
+                                            ClassName.get(CodeEnum.class)
+                                    )
                             )
-                    )
-                    .addCode(
-                            CodeBlock.of("return $L.map($L::getId).orElseThrow(() -> new $T($T.SaveError));", classFieldName, typeElement.getSimpleName(), BusinessException.class, CodeEnum.class)
-                    )
-                    .addAnnotation(Override.class)
-                    .returns(Long.class).build());
+                            .addAnnotation(Override.class)
+                            .returns(Long.class)
+                            .build()
+            );
         }
         return Optional.empty();
     }
 
-    private Optional<MethodSpec> updateMethod(TypeElement typeElement, DefaultNameContext nameContext,
-                                              String repositoryFieldName) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getDtoPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
-                    .addAnnotation(AnnotationSpec.builder(Transactional.class)
-                            .addMember("rollbackFor", "$L", "Exception.class").build())
-                    .addParameter(
-                            ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()),
-                            "updater")
-                    .addModifiers(Modifier.PUBLIC)
-                    .addCode(
-                            CodeBlock.of("$T.doUpdate($L)\n.loadById(updater.getId())\n"
-                                            + ".update(updater::update$L)\n"
-                                            + ".execute();",
-                                    EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
-                    )
-                    .addAnnotation(Override.class)
-                    .build());
+    private Optional<MethodSpec> updateMethod(
+            TypeElement typeElement,
+            DefaultNameContext nameContext,
+            String repositoryFieldName
+    ) {
+        if (!StringUtils.containsNull(nameContext.getDtoPackageName())) {
+            return Optional.of(
+                    MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
+                            .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "updater")
+                            .addModifiers(Modifier.PUBLIC)
+                            .addCode(
+                                    CodeBlock.of(
+                                            "$T.doUpdate($L)\n.loadById(updater.getId())\n"
+                                                    + ".update(updater::update$L)\n"
+                                                    + ".execute();",
+                                            ClassName.get(EntityOperations.class),
+                                            repositoryFieldName,
+                                            typeElement.getSimpleName()
+                                    )
+                            )
+                            .addAnnotation(Override.class)
+                            .build()
+            );
         }
         return Optional.empty();
     }
 
-    private Optional<MethodSpec> validMethod(TypeElement typeElement, String repositoryFieldName) {
-        return Optional.of(MethodSpec.methodBuilder("valid" + typeElement.getSimpleName())
-                .addParameter(Long.class, "id")
-                .addAnnotation(AnnotationSpec.builder(Transactional.class)
-                        .addMember("rollbackFor", "$L", "Exception.class").build())
-                .addModifiers(Modifier.PUBLIC)
-                .addCode(
-                        CodeBlock.of("$T.doUpdate($L)\n.loadById(id)\n"
-                                        + ".update($L::valid)\n"
-                                        + ".execute();",
-                                EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
-                )
-                .addAnnotation(Override.class)
-                .build());
+    private Optional<MethodSpec> enableMethod(
+            TypeElement typeElement,
+            String repositoryFieldName
+    ) {
+        return Optional.of(
+                MethodSpec.methodBuilder("enable" + typeElement.getSimpleName())
+                        .addParameter(Long.class, "id")
+                        .addModifiers(Modifier.PUBLIC)
+                        .addCode(
+                                CodeBlock.of(
+                                        "$T.doUpdate($L)\n.loadById(id)\n"
+                                                + ".update($L::valid)\n"
+                                                + ".execute();",
+                                        ClassName.get(EntityOperations.class),
+                                        repositoryFieldName,
+                                        typeElement.getSimpleName()
+                                )
+                        )
+                        .addAnnotation(Override.class)
+                        .build()
+        );
     }
 
-    private Optional<MethodSpec> invalidMethod(TypeElement typeElement, String repositoryFieldName) {
-        return Optional.of(MethodSpec.methodBuilder("invalid" + typeElement.getSimpleName())
-                .addParameter(Long.class, "id")
-                .addAnnotation(AnnotationSpec.builder(Transactional.class)
-                        .addMember("rollbackFor", "$L", "Exception.class").build())
-                .addModifiers(Modifier.PUBLIC)
-                .addCode(
-                        CodeBlock.of("$T.doUpdate($L)\n.loadById(id)\n"
-                                        + ".update($L::invalid)\n"
-                                        + ".execute();",
-                                EntityOperations.class, repositoryFieldName, typeElement.getSimpleName())
-                )
-                .addAnnotation(Override.class)
-                .build());
+    private Optional<MethodSpec> disableMethod(
+            TypeElement typeElement,
+            String repositoryFieldName
+    ) {
+        return Optional.of(
+                MethodSpec.methodBuilder("disable" + typeElement.getSimpleName())
+                        .addParameter(Long.class, "id")
+                        .addModifiers(Modifier.PUBLIC)
+                        .addCode(
+                                CodeBlock.of(
+                                        "$T.doUpdate($L)\n.loadById(id)\n"
+                                                + ".update($L::invalid)\n"
+                                                + ".execute();",
+                                        ClassName.get(EntityOperations.class),
+                                        repositoryFieldName,
+                                        typeElement.getSimpleName()
+                                )
+                        )
+                        .addAnnotation(Override.class)
+                        .build()
+        );
     }
 
-    private Optional<MethodSpec> findByIdMethod(TypeElement typeElement,
-                                                DefaultNameContext nameContext, String repositoryFieldName, String classFieldName) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getVoPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec.methodBuilder("findById")
-                    .addParameter(Long.class, "id")
-                    .addModifiers(Modifier.PUBLIC)
-                    .addCode(
-                            CodeBlock.of("$T $L =  $L.findById(id);\n",
-                                    ParameterizedTypeName.get(ClassName.get(Optional.class),
-                                            ClassName.get(typeElement)), classFieldName, repositoryFieldName)
-                    ).addCode(
-                            CodeBlock.of("return new $T($L.orElseThrow(() -> new $T($T.NotFindError)));",
-                                    ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()),
-                                    classFieldName,
-                                    BusinessException.class, CodeEnum.class)
-                    )
-                    .addAnnotation(Override.class)
-                    .returns(ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()))
-                    .build());
+    private Optional<MethodSpec> findByIdMethod(
+            TypeElement typeElement,
+            DefaultNameContext nameContext,
+            String repositoryFieldName
+    ) {
+        if (!StringUtils.containsNull(nameContext.getVoPackageName())) {
+            return Optional.of(
+                    MethodSpec.methodBuilder("findById")
+                            .addParameter(Long.class, "id")
+                            .addModifiers(Modifier.PUBLIC)
+                            .addCode(
+                                    CodeBlock.of(
+                                            "return $L.findById(id).orElseThrow(() -> new $T($T.NotFindError));",
+                                            repositoryFieldName,
+                                            ClassName.get(BusinessException.class),
+                                            ClassName.get(CodeEnum.class)
+                                    )
+                            )
+                            .addAnnotation(Override.class)
+                            .returns(ClassName.get(typeElement))
+                            .build()
+            );
         }
         return Optional.empty();
     }
 
-    private Optional<MethodSpec> findByPageMethod(TypeElement typeElement,
-                                                  DefaultNameContext nameContext, String repositoryFieldName) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getDtoPackageName(),
-                nameContext.getVoPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec.methodBuilder("findByPage")
-                    .addParameter(ParameterizedTypeName.get(ClassName.get(PageRequestWrapper.class),
-                                    ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName())),
-                            "query")
-                    .addModifiers(Modifier.PUBLIC)
-                    .addCode(
-                            CodeBlock.of("$T booleanBuilder = new $T();\n", BooleanBuilder.class,
-                                    BooleanBuilder.class)
-                    )
-                    .addCode(
-                            CodeBlock.of("$T<$T> page = $L.findAll(booleanBuilder,\n"
-                                            + "        $T.of(query.getPage() - 1, query.getPageSize(), $T.by(\n"
-                                            + "            $T.DESC, \"createdAt\")));\n", Page.class, typeElement,
-                                    repositoryFieldName,
-                                    PageRequest.class, Sort.class, Direction.class)
-                    )
-                    .addCode(
-                            CodeBlock.of(
-                                    "return new $T<>(page.getContent().stream().map($T::new)\n"
-                                            + "        .collect($T.toList()), page.getPageable(), page.getTotalElements());",
-                                    PageImpl.class,
-                                    ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()),
-                                    Collectors.class)
-                    )
-                    .addAnnotation(Override.class)
-                    .returns(ParameterizedTypeName.get(ClassName.get(Page.class),
-                            ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName())))
-                    .build());
+    private Optional<MethodSpec> findAllByIdMethod(
+            TypeElement typeElement,
+            DefaultNameContext nameContext,
+            String repositoryFieldName
+    ) {
+        if (!StringUtils.containsNull(nameContext.getVoPackageName())) {
+            return Optional.of(
+                    MethodSpec.methodBuilder("findAllById")
+                            .addParameter(ParameterSpec.builder(ParameterizedTypeName.get(ClassName.get(Collection.class), ClassName.get(Long.class)), "ids").build())
+                            .addModifiers(Modifier.PUBLIC)
+                            .addCode(
+                                    CodeBlock.of(
+                                            "if ($T.isEmpty(ids)) { \n" +
+                                                    "   return $T.emptyList();\n" +
+                                                    "}\n",
+                                            ClassName.get(CollUtil.class),
+                                            ClassName.get(Collections.class)
+                                    )
+                            )
+                            .addCode(
+                                    CodeBlock.of(
+                                            "final $T list =  $L.findAllById(ids);\n",
+                                            ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(typeElement)),
+                                            repositoryFieldName
+                                    )
+                            )
+                            .addCode(
+                                    CodeBlock.of(
+                                            "if ($T.isEmpty(list)) { \n" +
+                                                    "   return $T.emptyList();\n" +
+                                                    "}\n",
+                                            ClassName.get(CollUtil.class),
+                                            ClassName.get(Collections.class)
+                                    )
+                            )
+                            .addCode(
+                                    CodeBlock.of("return list;")
+                            )
+                            .addAnnotation(Override.class)
+                            .returns(ParameterizedTypeName.get(ClassName.get(List.class), ClassName.get(typeElement)))
+                            .build()
+            );
+        }
+        return Optional.empty();
+    }
+
+    private Optional<MethodSpec> findByPageMethod(
+            TypeElement typeElement,
+            DefaultNameContext nameContext,
+            String repositoryFieldName
+    ) {
+        if (!StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getVoPackageName())) {
+            return Optional.of(
+                    MethodSpec.methodBuilder("findByPage")
+                            .addParameter(
+                                    ParameterizedTypeName.get(
+                                            ClassName.get(PageRequestWrapper.class),
+                                            ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName())
+                                    ),
+                                    "query"
+                            )
+                            .addModifiers(Modifier.PUBLIC)
+                            .addCode(
+                                    CodeBlock.of("$T booleanBuilder = new $T();\n", ClassName.get(BooleanBuilder.class), ClassName.get(BooleanBuilder.class))
+                            )
+                            .addCode(
+                                    CodeBlock.of("$T page = $L.findAll(booleanBuilder, $T.of(query.getPage() - 1, query.getPageSize(), $T.by($T.DESC, \"createdAt\")));\n",
+                                            ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(typeElement)),
+                                            repositoryFieldName,
+                                            ClassName.get(PageRequest.class),
+                                            ClassName.get(Sort.class),
+                                            ClassName.get(Direction.class)
+                                    )
+                            )
+                            .addCode(
+                                    CodeBlock.of("return page;")
+                            )
+                            .addAnnotation(Override.class)
+                            .returns(ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(typeElement)))
+                            .build()
+            );
         }
         return Optional.empty();
     }

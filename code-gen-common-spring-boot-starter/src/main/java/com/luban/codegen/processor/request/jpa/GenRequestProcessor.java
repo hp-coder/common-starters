@@ -57,7 +57,7 @@ public class GenRequestProcessor extends AbstractCodeGenProcessor {
         );
         generateGettersAndSettersWithLombok(builder, fields, fieldSpecModifiers);
         String packageName = generatePackage(typeElement);
-        generateJavaSourceFile(packageName, typeElement.getAnnotation(GenResponse.class).sourcePath(), builder);
+        generateJavaSourceFile(packageName, generatePath(typeElement), builder);
     }
 
     @Override
@@ -68,5 +68,10 @@ public class GenRequestProcessor extends AbstractCodeGenProcessor {
     @Override
     public String generatePackage(TypeElement typeElement) {
         return typeElement.getAnnotation(GenRequest.class).pkgName();
+    }
+
+    @Override
+    public String generatePath(TypeElement typeElement) {
+        return typeElement.getAnnotation(GenResponse.class).sourcePath();
     }
 }

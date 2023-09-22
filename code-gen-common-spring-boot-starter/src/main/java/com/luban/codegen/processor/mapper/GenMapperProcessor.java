@@ -34,35 +34,35 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        String className = typeElement.getSimpleName() + SUFFIX;
-        String packageName = typeElement.getAnnotation(GenMapper.class).pkgName();
-        AnnotationSpec mapperAnnotation = AnnotationSpec.builder(Mapper.class)
-                .addMember("uses", "$T.class", GenericEnumMapper.class)
-                .addMember("uses", "$T.class", DateMapper.class)
+        final String className = typeElement.getSimpleName() + SUFFIX;
+        final String packageName = typeElement.getAnnotation(GenMapper.class).pkgName();
+        final AnnotationSpec mapperAnnotation = AnnotationSpec.builder(Mapper.class)
+                .addMember("uses", "$T.class", ClassName.get(GenericEnumMapper.class))
+                .addMember("uses", "$T.class", ClassName.get(DateMapper.class))
                 .build();
-        TypeSpec.Builder typeSpecBuilder = TypeSpec.interfaceBuilder(className)
+        final TypeSpec.Builder typeSpecBuilder = TypeSpec.interfaceBuilder(className)
                 .addAnnotation(mapperAnnotation)
                 .addModifiers(Modifier.PUBLIC);
-        FieldSpec instance = FieldSpec
+        final FieldSpec instance = FieldSpec
                 .builder(ClassName.get(packageName, className), "INSTANCE")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                .initializer("$T.getMapper($T.class)",
-                        Mappers.class, ClassName.get(packageName, className))
+                .initializer(
+                        "$T.getMapper($T.class)",
+                        ClassName.get(Mappers.class),
+                        ClassName.get(packageName, className)
+                )
                 .build();
         typeSpecBuilder.addField(instance);
-        DefaultNameContext nameContext = getNameContext(typeElement);
 
-        Optional<MethodSpec> dtoToEntityMethod = dtoToEntityMethod(typeElement, nameContext);
-        dtoToEntityMethod.ifPresent(typeSpecBuilder::addMethod);
+        final DefaultNameContext nameContext = getNameContext();
 
-        Optional<MethodSpec> request2DtoMethod = request2DtoMethod(nameContext);
-        request2DtoMethod.ifPresent(typeSpecBuilder::addMethod);
+        copy(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        entityToResponseMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        dtoToEntityMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        requestToDtoMethod(nameContext).ifPresent(typeSpecBuilder::addMethod);
+        voToResponseMethod(nameContext).ifPresent(typeSpecBuilder::addMethod);
 
-        Optional<MethodSpec> vo2ResponseMethod = vo2ResponseMethod(nameContext);
-        vo2ResponseMethod.ifPresent(typeSpecBuilder::addMethod);
-
-        generateJavaSourceFile(generatePackage(typeElement),
-                typeElement.getAnnotation(GenMapper.class).sourcePath(), typeSpecBuilder);
+        generateJavaSourceFile(generatePackage(typeElement), typeElement.getAnnotation(GenMapper.class).sourcePath(), typeSpecBuilder);
     }
 
     @Override
@@ -75,42 +75,73 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
         return typeElement.getAnnotation(GenMapper.class).pkgName();
     }
 
+    private Optional<MethodSpec> copy(TypeElement typeElement, DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getResponsePackageName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec
+                        .methodBuilder("copy")
+                        .addParameter(ClassName.get(typeElement), "entity")
+                        .returns(ClassName.get(typeElement))
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .build()
+        );
+    }
+
+    private Optional<MethodSpec> entityToResponseMethod(TypeElement typeElement, DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getResponsePackageName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec
+                        .methodBuilder("entityToResponse")
+                        .addParameter(ClassName.get(typeElement), "entity")
+                        .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .build()
+        );
+    }
+
     private Optional<MethodSpec> dtoToEntityMethod(TypeElement typeElement, DefaultNameContext nameContext) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getDtoPackageName());
-        if (containsNull) {
+        if (StringUtils.containsNull(nameContext.getDtoPackageName())) {
             return Optional.empty();
         }
-        return Optional.of(MethodSpec
-                .methodBuilder("dtoToEntity")
-                .returns(ClassName.get(typeElement))
-                .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "dto")
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .build());
+        return Optional.of(
+                MethodSpec
+                        .methodBuilder("dtoToEntity")
+                        .returns(ClassName.get(typeElement))
+                        .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "dto")
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .build()
+        );
     }
 
-    private Optional<MethodSpec> request2DtoMethod(DefaultNameContext nameContext) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getRequestPackageName());
-        if (containsNull) {
+    private Optional<MethodSpec> requestToDtoMethod(DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getRequestPackageName())) {
             return Optional.empty();
         }
-        return Optional.of(MethodSpec
-                .methodBuilder("requestToDto")
-                .addParameter(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request")
-                .returns(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()))
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .build());
+        return Optional.of(
+                MethodSpec
+                        .methodBuilder("requestToDto")
+                        .addParameter(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request")
+                        .returns(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()))
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .build()
+        );
     }
 
-    private Optional<MethodSpec> vo2ResponseMethod(DefaultNameContext nameContext) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getResponsePackageName(), nameContext.getVoPackageName());
-        if (containsNull) {
+    private Optional<MethodSpec> voToResponseMethod(DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getResponsePackageName(), nameContext.getVoPackageName())) {
             return Optional.empty();
         }
-        return Optional.of(MethodSpec
-                .methodBuilder("voToResponse")
-                .addParameter(ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()), "vo")
-                .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
-                .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .build());
+        return Optional.of(
+                MethodSpec
+                        .methodBuilder("voToResponse")
+                        .addParameter(ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()), "vo")
+                        .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .build()
+        );
     }
 }

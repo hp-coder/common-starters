@@ -3,7 +3,7 @@ package com.luban.codegen.processor.service;
 import java.lang.annotation.*;
 
 /**
- * @author gim
+ * @author hp
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

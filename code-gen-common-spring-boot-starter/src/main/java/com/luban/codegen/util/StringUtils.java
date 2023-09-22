@@ -32,4 +32,8 @@ public final class StringUtils {
         return nullList.size() > 0;
     }
 
+    public static String uncapitalize(String str){
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
 }

@@ -3,7 +3,6 @@ package com.luban.codegen.processor.vo.jpa;
 import com.google.auto.service.AutoService;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
-import com.luban.codegen.processor.dto.jpa.AbstractBaseDTO;
 import com.luban.codegen.processor.vo.GenVo;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.jpa.BaseJpaAggregate;
@@ -42,7 +41,7 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
 
         getSuperClass(typeElement).ifPresent(superclass -> {
             if (superclass.getQualifiedName().contentEquals(BaseJpaAggregate.class.getCanonicalName())) {
-                builder.superclass(AbstractBaseDTO.class);
+                builder.superclass(AbstractBaseVO.class);
                 constructorSpecBuilder.addStatement("super(source)");
             }
         });
