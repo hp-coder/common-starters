@@ -150,7 +150,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
             DefaultNameContext nameContext,
             String repositoryFieldName
     ) {
-        if (StringUtils.containsNull(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName())) {
+        if (StringUtils.containsNull(nameContext.getCreateCommandPackageName())) {
             return Optional.empty();
         }
         final MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
@@ -244,7 +244,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
             DefaultNameContext nameContext,
             String repositoryFieldName
     ) {
-        if (StringUtils.containsNull(nameContext.getUpdateCommandPackageName(), nameContext.getUpdateCommandClassName())) {
+        if (StringUtils.containsNull(nameContext.getUpdateCommandPackageName())) {
             return Optional.empty();
         }
         final MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())

@@ -123,7 +123,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
             DefaultNameContext nameContext,
             String repositoryFieldName
     ) {
-        if (StringUtils.containsNull(nameContext.getDtoClassName(), nameContext.getMapperPackageName())) {
+        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
         }
         return Optional.of(MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
@@ -155,7 +155,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
             DefaultNameContext nameContext,
             String repositoryFieldName
     ) {
-        if (StringUtils.containsNull(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName())) {
+        if (StringUtils.containsNull(nameContext.getCreateCommandPackageName())) {
             return Optional.empty();
         }
         final MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
@@ -222,7 +222,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
             DefaultNameContext nameContext,
             String repositoryFieldName
     ) {
-        if (StringUtils.containsNull(nameContext.getDtoPackageName())) {
+        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
         }
         return Optional.of(MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
@@ -230,9 +230,10 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
                         CodeBlock.of(
-                                "$T.doUpdate($L)\n.loadById(updater.getId())\n"
-                                        + ".update(updater::update$L)\n"
-                                        + ".execute();",
+                                "$T.doUpdate($L)\n" +
+                                        ".loadById(updater.getId())\n" +
+                                        ".update(updater::update$L)\n" +
+                                        ".execute();",
                                 EntityOperations.class,
                                 repositoryFieldName,
                                 typeElement.getSimpleName()
@@ -247,7 +248,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
             DefaultNameContext nameContext,
             String repositoryFieldName
     ) {
-        if (StringUtils.containsNull(nameContext.getUpdateCommandPackageName(), nameContext.getUpdateCommandClassName())) {
+        if (StringUtils.containsNull(nameContext.getUpdateCommandPackageName())) {
             return Optional.empty();
         }
         final MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())

@@ -270,6 +270,7 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
 
         Optional.ofNullable(typeElement.getAnnotation(GenDto.class)).ifPresent(anno -> context.setDtoPackageName(anno.pkgName()));
         Optional.ofNullable(typeElement.getAnnotation(GenVo.class)).ifPresent(anno -> context.setVoPackageName(anno.pkgName()));
+
         Optional.ofNullable(typeElement.getAnnotation(GenRepository.class)).ifPresent(anno -> context.setRepositoryPackageName(anno.pkgName()));
         Optional.ofNullable(typeElement.getAnnotation(GenMapper.class)).ifPresent(anno -> context.setMapperPackageName(anno.pkgName()));
 

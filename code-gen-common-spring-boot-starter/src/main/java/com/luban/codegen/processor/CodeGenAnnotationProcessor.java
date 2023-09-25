@@ -49,7 +49,7 @@ public class CodeGenAnnotationProcessor extends AbstractProcessor {
                     processor.generate(typeElement, roundEnv);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, "代码生成异常: " + e.getLocalizedMessage());
+                    ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("生成%s异常: %s", typeElement, e.getLocalizedMessage()));
                 }
             });
         });

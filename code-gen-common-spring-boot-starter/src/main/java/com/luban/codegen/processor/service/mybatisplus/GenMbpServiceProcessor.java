@@ -74,7 +74,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
     }
 
     private Optional<MethodSpec> createMethod(TypeElement typeElement, DefaultNameContext nameContext) {
-        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getDtoClassName())) {
+        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
         }
         return Optional.of(
@@ -86,7 +86,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
     }
 
     private Optional<MethodSpec> createUsingCommandMethod(TypeElement typeElement, DefaultNameContext nameContext) {
-        if (StringUtils.containsNull(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName())) {
+        if (StringUtils.containsNull(nameContext.getCreateCommandPackageName())) {
             return Optional.empty();
         }
         return Optional.of(
@@ -98,7 +98,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
     }
 
     private Optional<MethodSpec> updateMethod(TypeElement typeElement, DefaultNameContext nameContext) {
-        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getDtoClassName())) {
+        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
         }
         return Optional.of(
@@ -110,7 +110,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
     }
 
     private Optional<MethodSpec> updateUsingCommandMethod(TypeElement typeElement, DefaultNameContext nameContext) {
-        if (StringUtils.containsNull(nameContext.getUpdateCommandPackageName(), nameContext.getUpdateCommandClassName())) {
+        if (StringUtils.containsNull(nameContext.getUpdateCommandPackageName())) {
             return Optional.empty();
         }
         return Optional.of(
