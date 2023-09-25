@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.request.mybatisplus;
+package com.luban.codegen.processor.request;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Lists;
@@ -9,11 +9,9 @@ import com.luban.codegen.processor.modifier.BaseEnumFieldSpecModifier;
 import com.luban.codegen.processor.modifier.DefaultToStringFieldSpecModifier;
 import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.luban.codegen.processor.modifier.mybatisplus.MybatisplusTypeHandlerFieldSpecModifier;
-import com.luban.codegen.processor.request.GenRequest;
-import com.luban.codegen.processor.response.GenResponse;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.model.Request;
-import com.luban.mybatisplus.BaseMbpAggregate;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -22,6 +20,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,32 +29,25 @@ import java.util.Objects;
  * @date 2022/10/24
  */
 @AutoService(CodeGenProcessor.class)
-public class GenMbpRequestProcessor extends AbstractCodeGenProcessor {
+public class GenUpdateRequestProcessor extends AbstractCodeGenProcessor {
 
-    public static final String SUFFIX = "Request";
+    public static final String SUFFIX = "UpdateRequest";
 
-    @Override
-    public boolean supportedOrm(Orm orm) {
-        return Objects.equals(orm, Orm.MYBATIS_PLUS);
+    public static String getPageRequestName(TypeElement typeElement) {
+        return typeElement.getSimpleName() + SUFFIX;
     }
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        List<VariableElement> fields = findFields(typeElement, v ->
+        final List<VariableElement> fields = findFields(typeElement, v ->
                 Objects.isNull(v.getAnnotation(Ignore.class)) &&
                         Objects.isNull(v.getAnnotation(Deprecated.class))
         );
-        String sourceClassName = typeElement.getSimpleName() + SUFFIX;
-        TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
+        final TypeSpec.Builder builder = TypeSpec.classBuilder(getPageRequestName(typeElement))
                 .addSuperinterface(Request.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        getSuperClass(typeElement)
-                .ifPresent(superclass -> {
-                    if (superclass.getQualifiedName().contentEquals(BaseMbpAggregate.class.getCanonicalName())) {
-                        builder.superclass(AbstractMbpBaseRequest.class);
-                    }
-                });
+        builder.addField(FieldSpec.builder(Long.class, "id", Modifier.PRIVATE).build());
 
         final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(
                 new DefaultToStringFieldSpecModifier(),
@@ -68,16 +60,16 @@ public class GenMbpRequestProcessor extends AbstractCodeGenProcessor {
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
-        return GenRequest.class;
+        return GenUpdateRequest.class;
     }
 
     @Override
     public String generatePackage(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenRequest.class).pkgName();
+        return typeElement.getAnnotation(GenUpdateRequest.class).pkgName();
     }
 
     @Override
     public String generatePath(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenResponse.class).sourcePath();
+        return typeElement.getAnnotation(GenUpdateRequest.class).sourcePath();
     }
 }

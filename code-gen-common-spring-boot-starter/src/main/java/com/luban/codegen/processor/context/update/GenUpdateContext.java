@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.context.create;
+package com.luban.codegen.processor.context.update;
 
 import java.lang.annotation.*;
 
@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface GenCreateContext {
+public @interface GenUpdateContext {
     String pkgName();
     String sourcePath() default "src/main/java";
 }

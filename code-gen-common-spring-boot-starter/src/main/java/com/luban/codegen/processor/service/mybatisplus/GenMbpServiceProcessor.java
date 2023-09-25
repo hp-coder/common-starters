@@ -44,13 +44,16 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
                 .addSuperinterface(ParameterizedTypeName.get(ClassName.get(IService.class), ClassName.get(typeElement)));
 
         DefaultNameContext nameContext = getNameContext();
+
         createMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        createUsingCommandMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         updateMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        updateUsingCommandMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         enableMethod(typeElement).ifPresent(typeSpecBuilder::addMethod);
         disableMethod(typeElement).ifPresent(typeSpecBuilder::addMethod);
         findByIdMethod(typeElement).ifPresent(typeSpecBuilder::addMethod);
         findAllByIdMethod(typeElement).ifPresent(typeSpecBuilder::addMethod);
-        findByPageMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        findByPageMethod(nameContext).ifPresent(typeSpecBuilder::addMethod);
 
         generateJavaSourceFile(generatePackage(typeElement), generatePath(typeElement), typeSpecBuilder);
     }
@@ -71,27 +74,51 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
     }
 
     private Optional<MethodSpec> createMethod(TypeElement typeElement, DefaultNameContext nameContext) {
-        if (!StringUtils.containsNull(nameContext.getDtoPackageName())) {
-            return Optional.of(
-                    MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
-                            .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "creator")
-                            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).returns(Long.class)
-                            .build()
-            );
+        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getDtoClassName())) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        return Optional.of(
+                MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
+                        .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "creator")
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).returns(Long.class)
+                        .build()
+        );
+    }
+
+    private Optional<MethodSpec> createUsingCommandMethod(TypeElement typeElement, DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
+                        .addParameter(ClassName.get(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName()), "command")
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).returns(Long.class)
+                        .build()
+        );
     }
 
     private Optional<MethodSpec> updateMethod(TypeElement typeElement, DefaultNameContext nameContext) {
-        if (!StringUtils.containsNull(nameContext.getDtoPackageName())) {
-            return Optional.of(
-                    MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
-                            .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "updater")
-                            .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                            .build()
-            );
+        if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getDtoClassName())) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        return Optional.of(
+                MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
+                        .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "updater")
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .build()
+        );
+    }
+
+    private Optional<MethodSpec> updateUsingCommandMethod(TypeElement typeElement, DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getUpdateCommandPackageName(), nameContext.getUpdateCommandClassName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
+                        .addParameter(ClassName.get(nameContext.getUpdateCommandPackageName(), nameContext.getUpdateCommandClassName()), "command")
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .build()
+        );
     }
 
     private Optional<MethodSpec> enableMethod(TypeElement typeElement) {
@@ -132,12 +159,21 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
         );
     }
 
-    private Optional<MethodSpec> findByPageMethod(TypeElement typeElement, DefaultNameContext nameContext) {
+    private Optional<MethodSpec> findByPageMethod(DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getPageRequestPackageName(), nameContext.getPageResponsePackageName())) {
+            return Optional.empty();
+        }
         return Optional.of(
                 MethodSpec.methodBuilder("findByPage")
-                        .addParameter(ParameterizedTypeName.get(ClassName.get(PageRequestWrapper.class), ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName())), "query")
+                        .addParameter(
+                                ParameterizedTypeName.get(
+                                        ClassName.get(PageRequestWrapper.class),
+                                        ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName())
+                                ),
+                                "query"
+                        )
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .returns(ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(typeElement)))
+                        .returns(ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
                         .build()
         );
     }

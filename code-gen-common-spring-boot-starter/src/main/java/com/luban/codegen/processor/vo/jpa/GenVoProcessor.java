@@ -1,6 +1,7 @@
 package com.luban.codegen.processor.vo.jpa;
 
 import com.google.auto.service.AutoService;
+import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.vo.GenVo;
@@ -28,6 +29,10 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
 
     public static final String SUFFIX = "VO";
 
+    @Override
+    public boolean supportedOrm(Orm orm) {
+        return Orm.SPRING_DATA_JPA.equals(orm);
+    }
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
         List<VariableElement> fields = findFields(typeElement, v ->

@@ -1,9 +1,8 @@
 package com.luban.codegen.util;
 
+import cn.hutool.core.util.ArrayUtil;
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.Lists;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -25,15 +24,21 @@ public final class StringUtils {
         return nullList.size() > 0;
     }
 
-    public static boolean containsNull(String... list) {
-        List<String> temp = Lists.newArrayList();
-        Collections.addAll(temp, list);
-        List<String> nullList = temp.stream().filter(Objects::isNull).collect(Collectors.toList());
-        return nullList.size() > 0;
+    public static boolean containsNull(String value, String... list) {
+        if (value == null) {
+            return true;
+        }
+        return ArrayUtil.hasNull(list);
     }
 
-    public static String uncapitalize(String str){
+    public static String uncapitalize(String str) {
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
+    public static boolean notEmpty(String value, String... list) {
+        if (value == null || value.length() == 0) {
+            return false;
+        }
+        return ArrayUtil.isAllNotEmpty(list);
+    }
 }

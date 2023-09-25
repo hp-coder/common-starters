@@ -4,19 +4,32 @@ import cn.hutool.core.collection.CollUtil;
 import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.context.ProcessingEnvironmentContextHolder;
 import com.luban.codegen.processor.api.GenFeign;
+import com.luban.codegen.processor.command.create.GenCreateCommand;
+import com.luban.codegen.processor.command.create.GenCreateCommandProcessor;
+import com.luban.codegen.processor.command.update.GenUpdateCommand;
+import com.luban.codegen.processor.command.update.GenUpdateCommandProcessor;
+import com.luban.codegen.processor.context.create.GenCreateContext;
+import com.luban.codegen.processor.context.create.GenCreateContextProcessor;
+import com.luban.codegen.processor.context.update.GenUpdateContext;
+import com.luban.codegen.processor.context.update.GenUpdateContextProcessor;
 import com.luban.codegen.processor.controller.GenController;
 import com.luban.codegen.processor.controller.GenControllerProcessor;
 import com.luban.codegen.processor.dto.GenDto;
 import com.luban.codegen.processor.dto.jpa.GenDtoProcessor;
+import com.luban.codegen.processor.event.GenEvent;
+import com.luban.codegen.processor.event.GenEventListener;
+import com.luban.codegen.processor.event.GenEventListenerProcessor;
+import com.luban.codegen.processor.event.GenEventProcessor;
 import com.luban.codegen.processor.mapper.GenMapper;
 import com.luban.codegen.processor.mapper.GenMapperProcessor;
 import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.luban.codegen.processor.repository.GenRepository;
 import com.luban.codegen.processor.repository.jpa.GenRepositoryProcessor;
-import com.luban.codegen.processor.request.GenRequest;
-import com.luban.codegen.processor.request.jpa.GenRequestProcessor;
+import com.luban.codegen.processor.request.*;
+import com.luban.codegen.processor.response.GenPageResponse;
+import com.luban.codegen.processor.response.GenPageResponseProcessor;
 import com.luban.codegen.processor.response.GenResponse;
-import com.luban.codegen.processor.response.jpa.GenResponseProcessor;
+import com.luban.codegen.processor.response.GenResponseProcessor;
 import com.luban.codegen.processor.service.GenService;
 import com.luban.codegen.processor.service.GenServiceImpl;
 import com.luban.codegen.processor.service.jpa.GenServiceImplProcessor;
@@ -186,36 +199,89 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
 
     private DefaultNameContext createNameContext(TypeElement typeElement) {
         DefaultNameContext context = new DefaultNameContext();
+
         String serviceName = GenServiceProcessor.SERVICE_PREFIX + typeElement.getSimpleName() + GenServiceProcessor.SERVICE_SUFFIX;
         String implName = typeElement.getSimpleName() + GenServiceImplProcessor.IMPL_SUFFIX;
         String repositoryName = typeElement.getSimpleName() + GenRepositoryProcessor.REPOSITORY_SUFFIX;
+
         String mapperName = typeElement.getSimpleName() + GenMapperProcessor.SUFFIX;
+
         String voName = typeElement.getSimpleName() + GenVoProcessor.SUFFIX;
         String dtoName = typeElement.getSimpleName() + GenDtoProcessor.SUFFIX;
+
         String responseName = typeElement.getSimpleName() + GenResponseProcessor.RESPONSE_SUFFIX;
+        String pageResponseName = typeElement.getSimpleName() + GenPageResponseProcessor.RESPONSE_SUFFIX;
+
         String requestName = typeElement.getSimpleName() + GenRequestProcessor.SUFFIX;
+        String createRequestName = typeElement.getSimpleName() + GenCreateRequestProcessor.SUFFIX;
+        String updateRequestName = typeElement.getSimpleName() + GenUpdateRequestProcessor.SUFFIX;
+        String pageRequestName = typeElement.getSimpleName() + GenPageRequestProcessor.SUFFIX;
+
         String controllerName = typeElement.getSimpleName() + GenControllerProcessor.CONTROLLER_SUFFIX;
 
+        String createContextName = GenCreateContextProcessor.PREFIX + typeElement.getSimpleName() + GenCreateContextProcessor.SUFFIX;
+        String createCommandName = GenCreateCommandProcessor.PREFIX + typeElement.getSimpleName() + GenCreateCommandProcessor.SUFFIX;
+        String updateContextName = GenUpdateContextProcessor.PREFIX + typeElement.getSimpleName() + GenUpdateContextProcessor.SUFFIX;
+        String updateCommandName = GenUpdateCommandProcessor.PREFIX + typeElement.getSimpleName() + GenUpdateCommandProcessor.SUFFIX;
+
+        String eventName = typeElement.getSimpleName() + GenEventProcessor.SUFFIX;
+        String eventListenerName = typeElement.getSimpleName() + GenEventListenerProcessor.SUFFIX;
+
         context.setServiceClassName(serviceName);
+        context.setServiceImplClassName(implName);
+
         context.setRepositoryClassName(repositoryName);
         context.setMapperClassName(mapperName);
+
         context.setVoClassName(voName);
         context.setDtoClassName(dtoName);
-        context.setImplClassName(implName);
+
+        context.setPageResponseClassName(pageResponseName);
         context.setResponseClassName(responseName);
+
         context.setRequestClassName(requestName);
+        context.setCreateRequestClassName(createRequestName);
+        context.setUpdateRequestClassName(updateRequestName);
+        context.setPageRequestClassName(pageRequestName);
+
         context.setControllerClassName(controllerName);
 
+        context.setCreateContextClassName(createContextName);
+        context.setCreateCommandClassName(createCommandName);
+        context.setUpdateContextClassName(updateContextName);
+        context.setUpdateCommandClassName(updateCommandName);
+
+        context.setEventClassName(eventName);
+        context.setEventListenerClassName(eventListenerName);
+
+
+        Optional.ofNullable(typeElement.getAnnotation(GenEvent.class)).ifPresent(anno -> context.setEventPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenEventListener.class)).ifPresent(anno -> context.setEventListenerPackageName(anno.pkgName()));
+
+        Optional.ofNullable(typeElement.getAnnotation(GenCreateContext.class)).ifPresent(anno -> context.setCreateContextPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenCreateCommand.class)).ifPresent(anno -> context.setCreateCommandPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenUpdateContext.class)).ifPresent(anno -> context.setUpdateContextPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenUpdateCommand.class)).ifPresent(anno -> context.setUpdateCommandPackageName(anno.pkgName()));
+
         Optional.ofNullable(typeElement.getAnnotation(GenController.class)).ifPresent(anno -> context.setControllerPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenFeign.class)).ifPresent(anno -> context.setFeignPackageName(anno.pkgName()));
+
         Optional.ofNullable(typeElement.getAnnotation(GenDto.class)).ifPresent(anno -> context.setDtoPackageName(anno.pkgName()));
         Optional.ofNullable(typeElement.getAnnotation(GenVo.class)).ifPresent(anno -> context.setVoPackageName(anno.pkgName()));
         Optional.ofNullable(typeElement.getAnnotation(GenRepository.class)).ifPresent(anno -> context.setRepositoryPackageName(anno.pkgName()));
         Optional.ofNullable(typeElement.getAnnotation(GenMapper.class)).ifPresent(anno -> context.setMapperPackageName(anno.pkgName()));
+
         Optional.ofNullable(typeElement.getAnnotation(GenService.class)).ifPresent(anno -> context.setServicePackageName(anno.pkgName()));
-        Optional.ofNullable(typeElement.getAnnotation(GenServiceImpl.class)).ifPresent(anno -> context.setImplPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenServiceImpl.class)).ifPresent(anno -> context.setServiceImplPackageName(anno.pkgName()));
+
         Optional.ofNullable(typeElement.getAnnotation(GenRequest.class)).ifPresent(anno -> context.setRequestPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenCreateRequest.class)).ifPresent(anno -> context.setCreateRequestPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenUpdateRequest.class)).ifPresent(anno -> context.setUpdateRequestPackageName(anno.pkgName()));
+        Optional.ofNullable(typeElement.getAnnotation(GenPageRequest.class)).ifPresent(anno -> context.setPageRequestPackageName(anno.pkgName()));
+
+        Optional.ofNullable(typeElement.getAnnotation(GenPageResponse.class)).ifPresent(anno -> context.setPageResponsePackageName(anno.pkgName()));
         Optional.ofNullable(typeElement.getAnnotation(GenResponse.class)).ifPresent(anno -> context.setResponsePackageName(anno.pkgName()));
-        Optional.ofNullable(typeElement.getAnnotation(GenFeign.class)).ifPresent(anno -> context.setFeignPackageName(anno.pkgName()));
+
         return context;
     }
 }

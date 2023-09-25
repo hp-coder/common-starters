@@ -1,12 +1,11 @@
 package com.luban.codegen.processor.controller;
 
 import com.google.auto.service.AutoService;
-import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.DefaultNameContext;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
-import com.luban.common.base.enums.CodeEnum;
+import com.luban.common.base.model.PageRequestWrapper;
 import com.luban.common.base.model.Returns;
 import com.squareup.javapoet.*;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -27,11 +25,6 @@ import java.util.Optional;
 public class GenControllerProcessor extends AbstractCodeGenProcessor {
 
     public static final String CONTROLLER_SUFFIX = "Controller";
-
-    @Override
-    public boolean supportedOrm(Orm orm) {
-        return Arrays.asList(Orm.values()).contains(orm);
-    }
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
@@ -54,10 +47,13 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
         typeSpecBuilder.addField(serviceField);
 
         createMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        createUsingCommandMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         updateMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        updateUsingCommandMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         enableMethod(serviceFieldName, typeElement).ifPresent(typeSpecBuilder::addMethod);
         disableMethod(serviceFieldName, typeElement).ifPresent(typeSpecBuilder::addMethod);
         findById(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
+        findByPage(serviceFieldName, nameContext).ifPresent(typeSpecBuilder::addMethod);
 
         generateJavaSourceFile(generatePackage(typeElement), generatePath(typeElement), typeSpecBuilder);
     }
@@ -78,45 +74,155 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
     }
 
     private Optional<MethodSpec> createMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getRequestPackageName(), nameContext.getMapperPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
-                    .addParameter(ParameterSpec.builder(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request").addAnnotation(
-                            RequestBody.class).build())
-                    .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "_create").build())
-                    .addModifiers(Modifier.PUBLIC)
-                    .addCode(
-                            CodeBlock.of("$T creator = $T.INSTANCE.requestToDto(request);\n",
-                                    ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
-                    )
-                    .addCode(CodeBlock.of("return Returns.success().data($L.create$L(creator));", serviceFieldName, typeElement.getSimpleName().toString()))
-                    .returns(Returns.class)
-                    .build());
+        if (StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        if (StringUtils.notEmpty(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
+                        .addParameter(
+                                ParameterSpec.builder(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request")
+                                        .addAnnotation(RequestBody.class)
+                                        .build()
+                        )
+                        .addAnnotation(
+                                AnnotationSpec.builder(PostMapping.class)
+                                        .addMember("value", "$S", "_create")
+                                        .build()
+                        )
+                        .addModifiers(Modifier.PUBLIC)
+                        .addCode(
+                                CodeBlock.of(
+                                        "$T creator = $T.INSTANCE.requestToDto(request);\n",
+                                        ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()),
+                                        ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName())
+                                )
+                        )
+                        .addCode(
+                                CodeBlock.of(
+                                        "return Returns.success().data($L.create$L(creator));",
+                                        serviceFieldName,
+                                        typeElement.getSimpleName().toString()
+                                )
+                        )
+                        .returns(Returns.class)
+                        .build()
+        );
+    }
+
+    private Optional<MethodSpec> createUsingCommandMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getCreateCommandPackageName(), nameContext.getMapperPackageName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec.methodBuilder("create" + typeElement.getSimpleName())
+                        .addParameter(
+                                ParameterSpec.builder(ClassName.get(nameContext.getCreateRequestPackageName(), nameContext.getCreateRequestClassName()), "request")
+                                        .addAnnotation(RequestBody.class)
+                                        .build()
+                        )
+                        .addAnnotation(
+                                AnnotationSpec.builder(PostMapping.class)
+                                        .addMember("value", "$S", "_create")
+                                        .build()
+                        )
+                        .addModifiers(Modifier.PUBLIC)
+                        .addCode(
+                                CodeBlock.of(
+                                        "final $T command = $T.INSTANCE.requestToCreateCommand(request);\n",
+                                        ClassName.get(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName()),
+                                        ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName())
+                                )
+                        )
+                        .addCode(
+                                CodeBlock.of(
+                                        "return Returns.success().data($L.create$L(command));",
+                                        serviceFieldName,
+                                        typeElement.getSimpleName().toString()
+                                )
+                        )
+                        .returns(Returns.class)
+                        .build()
+        );
     }
 
     private Optional<MethodSpec> updateMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
-        boolean containsNull = StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getRequestClassName(), nameContext.getMapperPackageName());
-        if (!containsNull) {
-            return Optional.of(MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
-                    .addParameter(ParameterSpec.builder(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request").addAnnotation(RequestBody.class).build())
-                    .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "_update").build())
-                    .addModifiers(Modifier.PUBLIC)
-                    .addCode(
-                            CodeBlock.of("$T updater = $T.INSTANCE.requestToDto(request);\n",
-                                    ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
-                    )
-                    .addCode(
-                            CodeBlock.of("$L.update$L(updater);\n", serviceFieldName, typeElement.getSimpleName().toString())
-                    )
-                    .addCode(
-                            CodeBlock.of("return $T.success().data($T.Success.getName());", Returns.class, CodeEnum.class)
-                    )
-                    .returns(Returns.class)
-                    .build());
+        if (StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        if (StringUtils.notEmpty(nameContext.getUpdateCommandPackageName(), nameContext.getUpdateCommandClassName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
+                        .addParameter(
+                                ParameterSpec.builder(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request")
+                                        .addAnnotation(RequestBody.class)
+                                        .build()
+                        )
+                        .addAnnotation(
+                                AnnotationSpec.builder(PostMapping.class)
+                                        .addMember("value", "$S", "_update")
+                                        .build()
+                        )
+                        .addModifiers(Modifier.PUBLIC)
+                        .addCode(
+                                CodeBlock.of("$T updater = $T.INSTANCE.requestToDto(request);\n",
+                                        ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
+                        )
+                        .addCode(
+                                CodeBlock.of("$L.update$L(updater);\n", serviceFieldName, typeElement.getSimpleName().toString())
+                        )
+                        .addCode(
+                                CodeBlock.of("return $T.success();", Returns.class)
+                        )
+                        .returns(Returns.class)
+                        .build()
+        );
+    }
+
+    private Optional<MethodSpec> updateUsingCommandMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getUpdateCommandPackageName(), nameContext.getMapperPackageName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
+                        .addParameter(
+                                ParameterSpec.builder(ClassName.get(nameContext.getUpdateRequestPackageName(), nameContext.getUpdateRequestClassName()), "request")
+                                        .addAnnotation(RequestBody.class)
+                                        .build()
+                        )
+                        .addAnnotation(
+                                AnnotationSpec.builder(PostMapping.class)
+                                        .addMember("value", "$S", "_update")
+                                        .build()
+                        )
+                        .addModifiers(Modifier.PUBLIC)
+                        .addCode(
+                                CodeBlock.of(
+                                        "final $T command = $T.INSTANCE.requestToUpdateCommand(request);\n",
+                                        ClassName.get(nameContext.getUpdateCommandPackageName(), nameContext.getUpdateCommandClassName()),
+                                        ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName())
+                                )
+                        )
+                        .addCode(
+                                CodeBlock.of(
+                                        "$L.update$L(command);\n",
+                                        serviceFieldName,
+                                        typeElement.getSimpleName().toString()
+                                )
+                        )
+                        .addCode(
+                                CodeBlock.of(
+                                        "return $T.success();",
+                                        Returns.class
+                                )
+                        )
+                        .returns(Returns.class)
+                        .build()
+        );
     }
 
     private Optional<MethodSpec> enableMethod(String serviceFieldName, TypeElement typeElement) {
@@ -129,7 +235,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                 serviceFieldName, typeElement.getSimpleName().toString())
                 )
                 .addCode(
-                        CodeBlock.of("return $T.success().data($T.Success.getName());", Returns.class, CodeEnum.class)
+                        CodeBlock.of("return $T.success();", Returns.class)
                 )
                 .returns(Returns.class)
                 .build());
@@ -145,7 +251,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                 serviceFieldName, typeElement.getSimpleName().toString())
                 )
                 .addCode(
-                        CodeBlock.of("return $T.success().data($T.Success.getName());", Returns.class, CodeEnum.class)
+                        CodeBlock.of("return $T.success();", Returns.class)
                 )
                 .returns(Returns.class)
                 .build());
@@ -160,12 +266,36 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                         CodeBlock.of("$T entity = $L.findById(id);\n", ClassName.get(typeElement), serviceFieldName)
                 )
                 .addCode(
-                        CodeBlock.of("$T response = $T.INSTANCE.entityToResponse(entity);\n"
+                        CodeBlock.of("$T response = $T.INSTANCE.entityToCustomResponse(entity);\n"
                                 , ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()),
                                 ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
                 )
                 .addCode(
                         CodeBlock.of("return $T.success().data(response);", Returns.class)
+                )
+                .returns(Returns.class)
+                .build());
+    }
+
+    private Optional<MethodSpec> findByPage(String serviceFieldName, DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getPageRequestPackageName(), nameContext.getPageResponsePackageName())) {
+            return Optional.empty();
+        }
+        return Optional.of(MethodSpec.methodBuilder("findByPage")
+                .addParameter(
+                        ParameterSpec.builder(ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName()), "request")
+                                .addAnnotation(RequestBody.class)
+                                .build()
+                )
+                .addAnnotation(AnnotationSpec.builder(PostMapping.class).addMember("value", "$S", "findByPage").build())
+                .addModifiers(Modifier.PUBLIC)
+                .addCode(
+                        CodeBlock.of(
+                                "return $T.success().data($L.findByPage(new $T<>(request.getPage(), request.getPageSize(), request)));",
+                                Returns.class,
+                                serviceFieldName,
+                                PageRequestWrapper.class
+                        )
                 )
                 .returns(Returns.class)
                 .build());

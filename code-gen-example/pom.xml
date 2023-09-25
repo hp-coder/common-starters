@@ -15,12 +15,16 @@
     <dependencies>
         <dependency>
             <groupId>com.luban</groupId>
-            <artifactId>jpa-common-spring-boot-starter</artifactId>
+            <artifactId>common-base</artifactId>
         </dependency>
         <dependency>
             <groupId>com.luban</groupId>
-            <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>
+            <artifactId>jpa-common-spring-boot-starter</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.luban</groupId>-->
+<!--            <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.luban</groupId>
             <artifactId>code-gen-common-spring-boot-starter</artifactId>
@@ -52,7 +56,10 @@
                     <compilerArgs>
                         <arg>-Aorm=jpa</arg>
                     </compilerArgs>
-                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                    <fork>true</fork>
+                    <showWarnings>true</showWarnings>
+                    <debug>false</debug>
+                    <optimize>true</optimize>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>com.luban</groupId>

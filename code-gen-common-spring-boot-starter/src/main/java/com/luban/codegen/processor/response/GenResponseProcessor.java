@@ -1,18 +1,16 @@
-package com.luban.codegen.processor.response.mybatisplus;
+package com.luban.codegen.processor.response;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Lists;
-import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.modifier.BaseEnumFieldSpecModifier;
 import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.luban.codegen.processor.modifier.LongToStringFieldSpecModifier;
-import com.luban.codegen.processor.modifier.mybatisplus.MybatisplusTypeHandlerFieldSpecModifier;
-import com.luban.codegen.processor.response.GenResponse;
+import com.luban.codegen.processor.modifier.jpa.JpaConverterFieldSpecModifier;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.model.Response;
-import com.luban.mybatisplus.BaseMbpAggregate;
+import com.luban.jpa.BaseJpaAggregate;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -29,35 +27,34 @@ import java.util.Objects;
  * @date 2022/10/24
  */
 @AutoService(CodeGenProcessor.class)
-public class GenMbpResponseProcessor extends AbstractCodeGenProcessor {
+public class GenResponseProcessor extends AbstractCodeGenProcessor {
 
     public static final String RESPONSE_SUFFIX = "Response";
 
-    @Override
-    public boolean supportedOrm(Orm orm) {
-        return Objects.equals(orm, Orm.MYBATIS_PLUS);
+    public static String getResponseName(TypeElement typeElement) {
+        return typeElement.getSimpleName() + RESPONSE_SUFFIX;
     }
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        List<VariableElement> fields = findFields(typeElement, v ->
-                Objects.isNull(v.getAnnotation(Ignore.class)) &&
-                        Objects.isNull(v.getAnnotation(Deprecated.class))
+        final List<VariableElement> fields = findFields(typeElement, v ->
+                Objects.isNull(v.getAnnotation(Ignore.class)) && Objects.isNull(v.getAnnotation(Deprecated.class))
         );
-        String sourceClassName = typeElement.getSimpleName() + RESPONSE_SUFFIX;
-        TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
+        final TypeSpec.Builder builder = TypeSpec.classBuilder(getResponseName(typeElement))
                 .addSuperinterface(Response.class)
                 .addModifiers(Modifier.PUBLIC);
 
-        getSuperClass(typeElement).ifPresent(superclass -> {
-            if (superclass.getQualifiedName().contentEquals(BaseMbpAggregate.class.getCanonicalName())) {
-                builder.superclass(AbstractMbpBaseResponse.class);
-            }
-        });
+        getSuperClass(typeElement).ifPresent(
+                superclass -> {
+                    if (superclass.getQualifiedName().contentEquals(BaseJpaAggregate.class.getCanonicalName())) {
+                        builder.superclass(AbstractBaseResponse.class);
+                    }
+                }
+        );
 
         final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(
                 new LongToStringFieldSpecModifier(),
-                new MybatisplusTypeHandlerFieldSpecModifier(),
+                new JpaConverterFieldSpecModifier(),
                 new BaseEnumFieldSpecModifier()
         );
         generateGettersAndSettersWithLombok(builder, fields, fieldSpecModifiers);

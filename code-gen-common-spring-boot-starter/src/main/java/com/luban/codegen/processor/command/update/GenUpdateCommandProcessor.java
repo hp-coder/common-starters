@@ -1,4 +1,4 @@
-package com.luban.codegen.processor.command.create;
+package com.luban.codegen.processor.command.update;
 
 import com.google.auto.service.AutoService;
 import com.google.common.base.Preconditions;
@@ -6,7 +6,8 @@ import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
-import com.luban.common.base.command.CommandForCreate;
+import com.luban.common.base.command.CommandForUpdateById;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -22,9 +23,9 @@ import java.util.Objects;
  * @author hp
  */
 @AutoService(value = CodeGenProcessor.class)
-public class GenCreateCommandProcessor extends AbstractCodeGenProcessor {
+public class GenUpdateCommandProcessor extends AbstractCodeGenProcessor {
 
-    public static final String PREFIX = "Create";
+    public static final String PREFIX = "Update";
     public static final String SUFFIX = "Command";
 
     public static String filename(TypeElement typeElement) {
@@ -42,24 +43,26 @@ public class GenCreateCommandProcessor extends AbstractCodeGenProcessor {
         final String packageName = generatePackage(typeElement);
 
         final TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .addSuperinterface(CommandForCreate.class)
+                .addSuperinterface(CommandForUpdateById.class)
                 .addModifiers(Modifier.PUBLIC);
+
+        builder.addField(FieldSpec.builder(Long.class, "id", Modifier.PRIVATE).build());
         generateGettersAndSettersWithLombok(builder, fields, null);
-        generateJavaSourceFile(packageName, typeElement.getAnnotation(GenCreateCommand.class).sourcePath(), builder);
+        generateJavaSourceFile(packageName, typeElement.getAnnotation(GenUpdateCommand.class).sourcePath(), builder);
     }
 
     @Override
     public Class<? extends Annotation> getAnnotation() {
-        return GenCreateCommand.class;
+        return GenUpdateCommand.class;
     }
 
     @Override
     public String generatePackage(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenCreateCommand.class).pkgName();
+        return typeElement.getAnnotation(GenUpdateCommand.class).pkgName();
     }
 
     @Override
     public String generatePath(TypeElement typeElement) {
-        return typeElement.getAnnotation(GenCreateCommand.class).sourcePath();
+        return typeElement.getAnnotation(GenUpdateCommand.class).sourcePath();
     }
 }

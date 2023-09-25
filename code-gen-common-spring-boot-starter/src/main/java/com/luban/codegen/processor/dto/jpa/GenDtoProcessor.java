@@ -1,6 +1,7 @@
 package com.luban.codegen.processor.dto.jpa;
 
 import com.google.auto.service.AutoService;
+import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.dto.GenDto;
@@ -28,6 +29,11 @@ import java.util.Optional;
 public class GenDtoProcessor extends AbstractCodeGenProcessor {
 
     public static final String SUFFIX = "DTO";
+
+    @Override
+    public boolean supportedOrm(Orm orm) {
+        return Orm.SPRING_DATA_JPA.equals(orm);
+    }
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
