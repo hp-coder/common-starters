@@ -9,6 +9,7 @@ import com.luban.common.base.enums.ValidStatus;
 import com.luban.jpa.BaseJpaAggregate;
 import com.luban.jpa.convertor.ValidStatusConverter;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @GenMapper(pkgName = "com.luban.codegen.test.domain.mapper")
 @Entity
 @Table(name = "test_order")
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class TestOrder extends BaseJpaAggregate {
 
@@ -33,15 +35,15 @@ public class TestOrder extends BaseJpaAggregate {
     @FieldDesc("状态")
     private ValidStatus status;
 
-    public static TestOrder createTestOrder(CreateTestOrderContext context){
-        final TestOrder entity = new TestOrder();
-        context.setEntity(entity);
-        return entity;
-    }
-
-    public void updateTestOrder(UpdateTestOrderContext context){
-        context.setEntity(this);
-    }
+//    public static TestOrder createTestOrder(CreateTestOrderContext context) {
+//        final TestOrder entity = new TestOrder();
+//        context.setEntity(entity);
+//        return entity;
+//    }
+//
+//    public void updateTestOrder(UpdateTestOrderContext context) {
+//        context.setEntity(this);
+//    }
 
     public boolean enabled() {
         return Optional.ofNullable(getStatus())
@@ -53,15 +55,15 @@ public class TestOrder extends BaseJpaAggregate {
         return !enabled();
     }
 
-    public void init(){
+    public void init() {
         setStatus(ValidStatus.VALID);
     }
 
-    public void valid(){
+    public void valid() {
         setStatus(ValidStatus.VALID);
     }
 
-    public void invalid(){
+    public void invalid() {
         setStatus(ValidStatus.INVALID);
     }
 }

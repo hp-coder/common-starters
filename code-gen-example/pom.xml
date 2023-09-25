@@ -55,6 +55,7 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
                         <arg>-Aorm=jpa</arg>
+                        <arg>-J-Duser.name=hp</arg>
                     </compilerArgs>
                     <fork>true</fork>
                     <showWarnings>true</showWarnings>

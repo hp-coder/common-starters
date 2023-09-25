@@ -175,6 +175,8 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
     }
 
     protected void generateJavaSourceFile(String packageName, String path, TypeSpec.Builder typeSpecBuilder) {
+        final String user = System.getProperty("user.name");
+        typeSpecBuilder.addJavadoc("@author " + user);
         final TypeSpec typeSpec = typeSpecBuilder.build();
         final JavaFile javaFile = JavaFile.builder(packageName, typeSpec)
                 .addFileComment(FILE_COMMENT)
