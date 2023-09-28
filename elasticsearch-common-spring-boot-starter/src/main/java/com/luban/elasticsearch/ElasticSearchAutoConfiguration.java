@@ -29,7 +29,7 @@ public class ElasticSearchAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "spring.elasticsearch", name = "enableRestClient", havingValue = "true")
+    @ConditionalOnProperty(prefix = "spring.elasticsearch", name = "enable-rest-client", havingValue = "true")
     public ElasticsearchClient elasticsearchClient(ElasticsearchProperties properties) {
         final HttpHost[] hosts = properties.getUris().stream().map(this::createHttpHost).toArray(HttpHost[]::new);
         final RestClientBuilder builder = RestClient.builder(hosts);
