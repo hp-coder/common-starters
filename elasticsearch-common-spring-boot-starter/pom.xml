@@ -13,10 +13,19 @@
     <version>1.0.0-sp2-SNAPSHOT</version>
     <description>主要是封装ElasticSearchClient</description>
 
+    <properties>
+        <jakarta-json.version>2.0.1</jakarta-json.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.json</groupId>
+            <artifactId>jakarta.json-api</artifactId>
+            <version>${jakarta-json.version}</version>
         </dependency>
     </dependencies>
 </project>
