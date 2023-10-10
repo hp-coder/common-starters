@@ -5,6 +5,8 @@ package com.luban.joininmemory.exception;
  */
 public class JoinException extends RuntimeException {
 
+    private static final long serialVersionUID = -2290173202494060253L;
+
     public JoinException() {
     }
 

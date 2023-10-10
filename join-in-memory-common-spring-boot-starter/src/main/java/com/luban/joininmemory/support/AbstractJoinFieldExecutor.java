@@ -29,6 +29,9 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
 
     /**
      * 提供对key的类型转换
+     *
+     * @param joinKey 关联key
+     * @return 关联key值
      */
     protected abstract JOIN_KEY convertJoinKeyFromSourceData(ROW_JOIN_KEY joinKey);
 
@@ -50,6 +53,8 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
 
     /**
      * 提供对key的类型转换
+     * @param joinKey 原始关联key
+     * @return 转换后的关联key
      */
     protected abstract JOIN_KEY convertJoinKeyFromJoinData(ROW_JOIN_KEY joinKey);
 

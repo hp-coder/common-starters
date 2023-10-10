@@ -13,14 +13,18 @@ public interface AfterJoinMethodExecutor<DATA_AFTER_JOIN> {
     void execute(DATA_AFTER_JOIN data);
 
     /**
-     * 执行顺序
+     * 执行顺序, 越低越优先
+     *
+     * @return 任务执行顺序
      */
     default int runOnOrder() {
         return 0;
     }
 
     /**
-     * 执行层级，用于并行任务的分类
+     * 执行层级，用于并行任务的分类, 越低越优先
+     *
+     * @return 任务层级
      */
     default int runOnLevel() {
         return 0;
