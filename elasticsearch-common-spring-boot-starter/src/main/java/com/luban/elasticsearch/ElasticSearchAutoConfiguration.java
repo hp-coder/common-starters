@@ -3,6 +3,7 @@ package com.luban.elasticsearch;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -15,6 +16,7 @@ import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchPropert
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.elasticsearch.client.elc.AutoCloseableElasticsearchClient;
 import org.springframework.util.StringUtils;
 
 import java.net.URI;
@@ -30,7 +32,7 @@ public class ElasticSearchAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "spring.elasticsearch", name = "enable-rest-client", havingValue = "true")
-    public ElasticsearchClient elasticsearchClient(ElasticsearchProperties properties) {
+    public ElasticsearchClient elasticsearchClient(ElasticsearchProperties properties, ObjectMapper objectMapper) {
         final HttpHost[] hosts = properties.getUris().stream().map(this::createHttpHost).toArray(HttpHost[]::new);
         final RestClientBuilder builder = RestClient.builder(hosts);
         if (StringUtils.hasText(properties.getUsername()) && StringUtils.hasText(properties.getPassword())) {
@@ -40,8 +42,8 @@ public class ElasticSearchAutoConfiguration {
             // b->b.disableAuthCaching //每次都不带认证请求， 如果401在重新待认证请求一次
         }
         final RestClient restClient = builder.setCompressionEnabled(true).build();
-        final RestClientTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
-        return new ElasticsearchClient(transport);
+        final RestClientTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper(objectMapper));
+        return new AutoCloseableElasticsearchClient(transport);
     }
 
     private HttpHost createHttpHost(String uri) {
