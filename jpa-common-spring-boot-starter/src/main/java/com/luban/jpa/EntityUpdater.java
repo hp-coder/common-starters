@@ -1,6 +1,8 @@
 package com.luban.jpa;
 
 import com.google.common.base.Preconditions;
+import com.luban.common.base.enums.CodeEnum;
+import com.luban.common.base.exception.BusinessException;
 import com.luban.jpa.group.UpdateGroup;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +21,11 @@ public class EntityUpdater<T, ID> extends BaseEntityOperation implements Loader<
 
   private final CrudRepository<T, ID> repository;
   private T entity;
-  private Consumer<T> successHook = t -> log.info("update success");
-  private Consumer<? super Throwable> errorHook = e -> e.printStackTrace();
+  private Consumer<T> successHook = entity -> log.info("Successfully updated");
+  private Consumer<? super Throwable> errorHook = e -> {
+    log.error("Failed at Updating", e);
+    throw new BusinessException(CodeEnum.SaveError);
+  };
 
   public EntityUpdater(CrudRepository<T, ID> repository) {
     this.repository = repository;

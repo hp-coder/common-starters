@@ -13,5 +13,5 @@ public interface Executor<T> {
 
     Executor<T> successHook(Consumer<T> consumer);
 
-    Executor<T> errorHook(Consumer<? super  Throwable> consumer);
+    Executor<T> errorHook(Consumer<? super Throwable> consumer);
 }

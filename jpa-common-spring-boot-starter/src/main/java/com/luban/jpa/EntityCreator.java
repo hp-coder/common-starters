@@ -1,6 +1,8 @@
 package com.luban.jpa;
 
 import com.google.common.base.Preconditions;
+import com.luban.common.base.enums.CodeEnum;
+import com.luban.common.base.exception.BusinessException;
 import com.luban.jpa.group.CreateGroup;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +21,11 @@ public class EntityCreator<T, ID> extends BaseEntityOperation implements Create<
 
   private final CrudRepository<T, ID> repository;
   private T t;
-  private Consumer<T> successHook = t -> log.info("save success");
-  private Consumer<? super Throwable> errorHook = e -> e.printStackTrace();
+  private Consumer<T> successHook = entity -> log.info("Successfully Saved");
+  private Consumer<? super Throwable> errorHook = e -> {
+    log.error("Failed at Saving", e);
+    throw new BusinessException(CodeEnum.SaveError);
+  };
 
   public EntityCreator(CrudRepository<T, ID> repository) {
     this.repository = repository;

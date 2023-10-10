@@ -1,6 +1,8 @@
 package com.luban.mybatisplus;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.luban.common.base.enums.CodeEnum;
+import com.luban.common.base.exception.BusinessException;
 import com.luban.mybatisplus.group.CreateGroup;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +21,11 @@ public class EntityCreator<T> extends BaseEntityOperation implements Create<T>, 
 
     private final BaseMapper<T> baseMapper;
     private T t;
-    private Consumer<T> successHook = _0 -> log.info("Successfully Saved");
-    private Consumer<? super Throwable> errorHook = _0 -> log.info("Successfully Saved");
+    private Consumer<T> successHook = entity -> log.info("Successfully Saved");
+    private Consumer<? super Throwable> errorHook = e -> {
+        log.error("Failed at Saving", e);
+        throw new BusinessException(CodeEnum.SaveError);
+    };
 
     public EntityCreator(BaseMapper<T> baseMapper) {
         this.baseMapper = baseMapper;

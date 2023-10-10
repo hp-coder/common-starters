@@ -2,6 +2,8 @@ package com.luban.mybatisplus;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.google.common.base.Preconditions;
+import com.luban.common.base.enums.CodeEnum;
+import com.luban.common.base.exception.BusinessException;
 import com.luban.mybatisplus.group.UpdateGroup;
 import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +24,11 @@ public class EntityUpdater<T> extends BaseEntityOperation implements Loader<T>, 
 
     private final BaseMapper<T> baseMapper;
     private T entity;
-    private Consumer<T> successHook = _0 -> log.info("successfully updated");
-    private Consumer<? super Throwable> errorHook = Throwable::printStackTrace;
+    private Consumer<T> successHook = entity -> log.info("Successfully updated");
+    private Consumer<? super Throwable> errorHook = e -> {
+        log.error("Failed at Updating", e);
+        throw new BusinessException(CodeEnum.SaveError);
+    };
 
     public EntityUpdater(BaseMapper<T> baseMapper) {
         this.baseMapper = baseMapper;

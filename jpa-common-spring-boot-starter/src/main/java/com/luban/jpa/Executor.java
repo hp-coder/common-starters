@@ -8,10 +8,10 @@ import java.util.function.Consumer;
  */
 public interface Executor<T> {
 
-  Optional<T> execute();
+    Optional<T> execute();
 
-  Executor<T> successHook(Consumer<T> consumer);
+    Executor<T> successHook(Consumer<T> consumer);
 
-  Executor<T> errorHook(Consumer<? super Throwable> consumer);
+    Executor<T> errorHook(Consumer<? super Throwable> consumer);
 
 }
