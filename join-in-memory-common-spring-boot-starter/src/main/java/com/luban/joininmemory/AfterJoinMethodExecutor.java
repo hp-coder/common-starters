@@ -8,7 +8,7 @@ public interface AfterJoinMethodExecutor<DATA_AFTER_JOIN> {
     /**
      * 对应关联属性的数据查询，转换，装载逻辑
      *
-     * @param dataList 数据集合
+     * @param data 数据集合
      */
     void execute(DATA_AFTER_JOIN data);
 

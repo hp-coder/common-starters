@@ -1,6 +1,8 @@
 package com.luban.joininmemory.support;
 
 import com.luban.joininmemory.JoinFieldExecutor;
+import com.luban.joininmemory.exception.JoinErrorCode;
+import com.luban.joininmemory.exception.JoinException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
@@ -78,49 +80,48 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
 
     @Override
     public void execute(List<SOURCE_DATA> sourceDataList) {
-        // 从源数据中提取 JoinKey
-        List<JOIN_KEY> joinKeys = sourceDataList.stream()
-                .filter(Objects::nonNull)
-                .map(this::joinKeyFromSource)
-                .map(this::convertJoinKeyFromSourceData)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(toList());
-        log.debug("get join key {} from source data {}", joinKeys, sourceDataList);
+        try {
+            // 从源数据中提取 JoinKey
+            final List<JOIN_KEY> joinKeys = sourceDataList.stream()
+                    .filter(Objects::nonNull)
+                    .map(this::joinKeyFromSource)
+                    .filter(Objects::nonNull)
+                    .map(this::convertJoinKeyFromSourceData)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .collect(toList());
+            log.debug("Join keys are {}", joinKeys);
 
-        // 根据 JoinKey 获取 JoinData
-        List<JOIN_DATA> joinDataList = getJoinDataByJoinKeys(joinKeys);
-        log.debug("get join data {} by join key {}", joinDataList, joinKeys);
+            final List<JOIN_DATA> joinDataList = getJoinDataByJoinKeys(joinKeys);
+            log.debug("Join records are {}", joinDataList);
 
-        // 将 JoinData 以 Map 形式进行组织
-        Map<JOIN_KEY, List<JOIN_DATA>> joinDataMap = joinDataList.stream()
-                .filter(Objects::nonNull)
-                .collect(groupingBy(joinKey -> convertJoinKeyFromJoinData(joinKeyFromJoinData(joinKey))));
-        log.debug("group by join key, result is {}", joinDataMap);
+            final Map<JOIN_KEY, List<JOIN_DATA>> joinDataMap = joinDataList.stream()
+                    .filter(Objects::nonNull)
+                    .collect(groupingBy(joinKey -> convertJoinKeyFromJoinData(joinKeyFromJoinData(joinKey))));
 
-        sourceDataList.forEach(sourceData -> {
-            // 从 SourceData 中 获取 JoinKey
-            JOIN_KEY joinKey = convertJoinKeyFromSourceData(joinKeyFromSource(sourceData));
-            if (joinKey == null) {
-                log.debug("join key from join data {} is null", sourceData);
-            } else {
-                // 根据 JoinKey 获取 JoinData
-                List<JOIN_DATA> relations = joinDataMap.get(joinKey);
+            sourceDataList.forEach(sourceData -> {
+                final JOIN_KEY joinKey = convertJoinKeyFromSourceData(joinKeyFromSource(sourceData));
+                log.debug("Using join key {}", joinKey);
+                if (joinKey == null) {
+                    return;
+                }
+                final List<JOIN_DATA> relations = joinDataMap.get(joinKey);
                 if (CollectionUtils.isEmpty(relations)) {
-                    log.debug("join data lost by join key {} for source data {}", joinKey, sourceData);
-                    // 为获取到 JoinData，进行 notFound 回调
+                    log.debug("Join results can't be found through the join key {}", joinKey);
                     onNotFound(sourceData, joinKey);
                 } else {
                     // 获取到 JoinData， 转换为 JoinResult，进行数据写回
-                    List<JOIN_RESULT> joinResults = relations.stream()
+                    final List<JOIN_RESULT> joinResults = relations.stream()
                             .filter(Objects::nonNull)
                             .map(this::convertToResult)
+                            .filter(Objects::nonNull)
                             .collect(toList());
-                    log.debug("Successfully converted the join-data:{} to the join-result:{}", relations, joinResults);
+                    log.debug("Join results are {}", joinResults);
                     onFound(sourceData, joinResults);
-                    log.debug("Successfully wrote the join-result:{} to the source-data:{}", joinResults, sourceData);
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            throw new JoinException(JoinErrorCode.ERROR, e);
+        }
     }
 }
