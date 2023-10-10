@@ -2,21 +2,20 @@ package com.luban.codegen.processor.context.create;
 
 import com.google.auto.service.AutoService;
 import com.google.common.base.Preconditions;
-import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.ProcessingEnvironmentContextHolder;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.context.AbstractContext;
 import com.squareup.javapoet.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -51,11 +50,25 @@ public class GenCreateContextProcessor extends AbstractCodeGenProcessor {
         final ClassName createContextName = ClassName.get(getNameContext().getCreateContextPackageName(), getNameContext().getCreateContextClassName());
 
         final TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .addAnnotation(Data.class)
                 .addModifiers(Modifier.PUBLIC)
                 .superclass(ParameterizedTypeName.get(ClassName.get(AbstractContext.class), ClassName.get(typeElement), createCommandName));
 
-        builder.addField(FieldSpec.builder(Long.class, "createdBy", Modifier.PRIVATE).build());
+        builder.addMethod(MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(ParameterSpec.builder(createCommandName, "command").build())
+                .addCode(
+                        CodeBlock.of("super(command);")
+                )
+                .build()
+        );
+
+        builder.addField(
+                FieldSpec.builder(Long.class, "createdBy", Modifier.PRIVATE)
+                        .addAnnotation(Getter.class)
+                        .addAnnotation(Setter.class)
+                        .build()
+        );
+
         builder.addMethod(MethodSpec.methodBuilder("create")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addParameter(
@@ -64,8 +77,7 @@ public class GenCreateContextProcessor extends AbstractCodeGenProcessor {
                 )
                 .addCode(
                         CodeBlock.of(
-                                "final $T context = new $T();\n" +
-                                        "context.setCommand(command);\n" +
+                                "final $T context = new $T(command);\n" +
                                         "context.init();\n" +
                                         "return context;",
                                 createContextName,
