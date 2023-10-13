@@ -3,7 +3,7 @@ package com.luban.codegen.processor.dto.mybatisplus;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * @author programmer
@@ -14,9 +14,9 @@ public abstract class AbstractMbpBaseDTO {
 
     private Long id;
 
-    private Instant createdAt;
+    private LocalDateTime createdAt;
 
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
     private Integer version;
 }
