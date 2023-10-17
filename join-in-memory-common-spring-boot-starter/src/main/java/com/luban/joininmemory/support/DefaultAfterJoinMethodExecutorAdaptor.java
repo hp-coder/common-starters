@@ -13,20 +13,17 @@ import java.util.function.Consumer;
 public class DefaultAfterJoinMethodExecutorAdaptor<DATA_AFTER_JOIN> extends AbstractAfterJoinMethodExecutor<DATA_AFTER_JOIN> {
     private final String name;
     private final int runLevel;
-    private final int runOrder;
 
     private final Consumer<DATA_AFTER_JOIN> afterjoin;
 
     public DefaultAfterJoinMethodExecutorAdaptor(
             String name,
             Integer runLevel,
-            Integer runOrder,
             Consumer<DATA_AFTER_JOIN> afterjoin
     ) {
         this.name = name;
         this.afterjoin = afterjoin;
         this.runLevel = runLevel == null ? 0 : runLevel;
-        this.runOrder = runOrder == null ? 0 : runOrder;
     }
 
     @Override
@@ -37,11 +34,6 @@ public class DefaultAfterJoinMethodExecutorAdaptor<DATA_AFTER_JOIN> extends Abst
     @Override
     public int runOnLevel() {
         return this.runLevel;
-    }
-
-    @Override
-    public int runOnOrder() {
-        return this.runOrder;
     }
 
     @Override

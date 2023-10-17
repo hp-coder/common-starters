@@ -57,7 +57,7 @@ public class DefaultJoinFieldsExecutorFactory implements JoinFieldsExecutorFacto
             List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors
     ) {
         if (joinInMemoryConfig == null || joinInMemoryConfig.executorType() == JoinInMemoryExecutorType.SERIAL) {
-            log.debug("JoinInMemory for {} uses parallel serial executor", clazz);
+            log.debug("JoinInMemory for {} uses serial executor", clazz);
             return new SerialJoinFieldsExecutor<>(clazz, joinItemExecutors, afterJoinMethodExecutors);
         }
         if (joinInMemoryConfig.executorType() == JoinInMemoryExecutorType.PARALLEL) {

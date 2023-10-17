@@ -10,9 +10,6 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface AfterJoin {
 
-    /**
-     * 同一个类中多个方法的执行顺序
-     */
-    int order() default 1;
+    int runLevel() default 10;
 
 }

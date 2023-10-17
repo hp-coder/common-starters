@@ -27,7 +27,7 @@ public class AfterJoinBasedAfterJoinMethodExecutorFactory extends AbstractAnnota
     }
 
     @Override
-    protected <DATA_AFTER_JOIN> int createForRunOrder(Class<DATA_AFTER_JOIN> clazz, Method method, AfterJoin afterJoin) {
-        return afterJoin.order();
+    protected <DATA_AFTER_JOIN> int createForRunLevel(Class<DATA_AFTER_JOIN> clazz, Method method, AfterJoin afterJoin) {
+        return afterJoin.runLevel();
     }
 }

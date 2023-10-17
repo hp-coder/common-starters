@@ -34,6 +34,6 @@ abstract class AbstractJoinFieldsExecutor<DATA> implements JoinFieldsExecutor<DA
         this.joinFieldExecutors = joinFieldExecutors;
         this.joinFieldExecutors.sort(Comparator.comparing(JoinFieldExecutor::runOnLevel));
         this.afterJoinMethodExecutors = afterJoinMethodExecutors;
-        this.afterJoinMethodExecutors.sort(Comparator.comparing(AfterJoinMethodExecutor::runOnOrder));
+        this.afterJoinMethodExecutors.sort(Comparator.comparing(AfterJoinMethodExecutor::runOnLevel));
     }
 }

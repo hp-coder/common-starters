@@ -38,7 +38,7 @@ public abstract class AbstractAnnotationBasedAfterJoinMethodExecutorFactory<A ex
                 DefaultAfterJoinMethodExecutorAdaptor
                         .builder()
                         .name(createForName(clazz, method, annotation))
-                        .runOrder(createForRunOrder(clazz, method, annotation))
+                        .runLevel(createForRunLevel(clazz, method, annotation))
                         .afterjoin(createForAfterJoin(clazz, method, annotation))
                         .build();
     }
@@ -51,5 +51,5 @@ public abstract class AbstractAnnotationBasedAfterJoinMethodExecutorFactory<A ex
 
     protected abstract <DATA_AFTER_JOIN> Consumer<Object> createForAfterJoin(Class<DATA_AFTER_JOIN> clazz, Method method, A annotation);
 
-    protected abstract <DATA_AFTER_JOIN> int createForRunOrder(Class<DATA_AFTER_JOIN> clazz, Method method, A annotation);
+    protected abstract <DATA_AFTER_JOIN> int createForRunLevel(Class<DATA_AFTER_JOIN> clazz, Method method, A annotation);
 }
