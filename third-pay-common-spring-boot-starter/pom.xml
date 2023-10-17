@@ -17,12 +17,12 @@
     </modules>
 
     <artifactId>third-pay-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.1-sp2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
         <alipay.version>4.34.39.ALL</alipay.version>
-        <pay-common-support.version>1.0.0-sp2-SNAPSHOT</pay-common-support.version>
+        <pay-common-support.version>1.0.1-sp2-SNAPSHOT</pay-common-support.version>
     </properties>
 
     <dependencyManagement>

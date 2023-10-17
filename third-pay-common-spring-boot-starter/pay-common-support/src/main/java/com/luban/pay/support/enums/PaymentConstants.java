@@ -73,8 +73,4 @@ public interface PaymentConstants {
 	 */
 	int CODE_503 = 503;
 
-	/**
-	 * 在线交流
-	 */
-	String ONLINE_CONTACT = "IJPay 让支付触手可及，交流群 723992875、864988890";
 }

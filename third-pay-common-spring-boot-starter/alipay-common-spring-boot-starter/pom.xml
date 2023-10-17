@@ -6,7 +6,7 @@
     <parent>
         <artifactId>third-pay-common-spring-boot-starter</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
+        <version>1.0.1-sp2-SNAPSHOT</version>
     </parent>
 
     <artifactId>alipay-common-spring-boot-starter</artifactId>
