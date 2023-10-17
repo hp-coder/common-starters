@@ -18,8 +18,8 @@ public enum PayType implements BaseEnum<PayType, Integer> {
     UNION_PAY(3, "银联"),
     JD_PAY(4, "京东"),
     OFFLINE(5, "线下支付"),
-    COIN(6, "线下支付"),
-    COUPON(7, "线下支付"),
+    COIN(6, "虚拟币"),
+    COUPON(7, "优惠券"),
     ;
 
     private final Integer code;
