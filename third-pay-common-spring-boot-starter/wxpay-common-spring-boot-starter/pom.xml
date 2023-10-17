@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>wxpay-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.1-sp2-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
