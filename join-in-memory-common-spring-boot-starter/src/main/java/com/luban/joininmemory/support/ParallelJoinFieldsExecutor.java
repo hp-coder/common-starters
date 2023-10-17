@@ -79,7 +79,7 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
                 stopwatch.stop();
                 log.debug("run execute cost {} ms, task is {}.", stopwatch.getTotalTimeMillis(), joinTasks);
             } else {
-                joinTasks.forEach(this.executorService::submit);
+                this.executorService.invokeAll(joinTasks);
             }
         } catch (Exception e) {
             throw new RuntimeException("Join Executor failed for,", e);
