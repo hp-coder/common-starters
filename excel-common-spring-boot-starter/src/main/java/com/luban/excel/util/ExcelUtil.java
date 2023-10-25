@@ -1,8 +1,10 @@
 package com.luban.excel.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.*;
@@ -96,15 +98,7 @@ public class ExcelUtil {
         for (String val : options) {
             final int rIndex = rowIndex++;
             final Row row = Optional.ofNullable(tmpSheet.getRow(rIndex))
-                    .orElseGet(() -> {
-                        try {
-                            return tmpSheet.createRow(rIndex);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e);
-                        }
-
-                    });
+                    .orElseGet(() -> tmpSheet.createRow(rIndex));
             final Cell cell = row.createCell(columnIndex);
             cell.setCellValue(val);
         }
@@ -124,7 +118,7 @@ public class ExcelUtil {
     }
 
     private static String createIndirectFormula(String columnName, int startRow) {
-        final String format = "INDIRECT($%s%s)";
+        final String format = "INDIRECT(CONCATENATE(\"_\",$%s%s))";
         return String.format(format, columnName, startRow);
     }
 
@@ -157,14 +151,8 @@ public class ExcelUtil {
     }
 
     private static String formatNameManager(String name) {
-        name = name
-                .replaceAll(" ", "")
-                .replaceAll("-", "_")
-                .replaceAll(":", ".");
-        if (Character.isDigit(name.charAt(0))) {
-            name = "_" + name;
-        }
-        return name;
+        Preconditions.checkArgument(StrUtil.isNotEmpty(name));
+        return "_" + name;
     }
 
     private static String calculateColumnName(int columnCount) {
