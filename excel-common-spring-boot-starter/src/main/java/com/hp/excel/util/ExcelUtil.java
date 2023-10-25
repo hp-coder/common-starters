@@ -1,8 +1,10 @@
 package com.hp.excel.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.*;
@@ -124,7 +126,7 @@ public class ExcelUtil {
     }
 
     private static String createIndirectFormula(String columnName, int startRow) {
-        final String format = "INDIRECT($%s%s)";
+        final String format = "INDIRECT(CONCATENATE(\"_\",$%s%s))";
         return String.format(format, columnName, startRow);
     }
 
@@ -157,14 +159,8 @@ public class ExcelUtil {
     }
 
     private static String formatNameManager(String name) {
-        name = name
-                .replaceAll(" ", "")
-                .replaceAll("-", "_")
-                .replaceAll(":", ".");
-        if (Character.isDigit(name.charAt(0))) {
-            name = "_" + name;
-        }
-        return name;
+        Preconditions.checkArgument(StrUtil.isNotEmpty(name));
+        return "_" + name;
     }
 
     private static String calculateColumnName(int columnCount) {
