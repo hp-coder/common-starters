@@ -64,26 +64,23 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
     }
 
     private void executeJoinTasks(List<DATA> dataList) {
-        try {
-            final List<Task> joinTasks = this.joinExecutorWithLevels
-                    .stream()
-                    .flatMap(leveledExecutors -> {
-                        log.debug("run join on level {} use {}", leveledExecutors.getLevel(), leveledExecutors.getJoinFieldExecutors());
-                        return buildJoinTasks(leveledExecutors, dataList).stream();
-                    })
-                    .collect(Collectors.toList());
-            if (log.isDebugEnabled()) {
-                StopWatch stopwatch = new StopWatch("Starting executing join tasks");
-                stopwatch.start();
-                this.executorService.invokeAll(joinTasks);
-                stopwatch.stop();
-                log.debug("run execute cost {} ms, task is {}.", stopwatch.getTotalTimeMillis(), joinTasks);
-            } else {
-                this.executorService.invokeAll(joinTasks);
+        this.joinExecutorWithLevels.forEach(leveledTasks -> {
+            log.debug("run join on level {} use {}", leveledTasks.getLevel(), leveledTasks.getJoinFieldExecutors());
+            final List<Task> tasks = buildJoinTasks(leveledTasks, dataList);
+            try {
+                if (log.isDebugEnabled()) {
+                    StopWatch stopwatch = new StopWatch("Starting executing join tasks");
+                    stopwatch.start();
+                    this.executorService.invokeAll(tasks);
+                    stopwatch.stop();
+                    log.debug("run execute cost {} ms, task is {}.", stopwatch.getTotalTimeMillis(), tasks);
+                } else {
+                    this.executorService.invokeAll(tasks);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Join Executor failed for,", e);
             }
-        } catch (Exception e) {
-            throw new RuntimeException("Join Executor failed for,", e);
-        }
+        });
     }
 
     private void executeAfterJoinTasks(List<DATA> dataList) {
