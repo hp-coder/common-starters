@@ -1,6 +1,6 @@
-## JPA + QueryDSL 集成 starter
+## JPA + QueryDSL
 
-- 注意：实体类可以集成统一聚合根
+- 注意：实体类可以继承聚合根
   - 如果继承则必须在启动类同级创建一个package-info.java文件增加配置
 
 ```java
