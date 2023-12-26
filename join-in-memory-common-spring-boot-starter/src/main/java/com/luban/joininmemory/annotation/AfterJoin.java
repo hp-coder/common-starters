@@ -1,5 +1,7 @@
 package com.luban.joininmemory.annotation;
 
+import com.luban.joininmemory.constant.ExecuteLevel;
+
 import java.lang.annotation.*;
 
 /**
@@ -10,6 +12,6 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface AfterJoin {
 
-    int runLevel() default 10;
+    ExecuteLevel runLevel() default ExecuteLevel.FIFTH;
 
 }

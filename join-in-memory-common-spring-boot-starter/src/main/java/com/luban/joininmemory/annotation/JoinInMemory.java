@@ -1,5 +1,7 @@
 package com.luban.joininmemory.annotation;
 
+import com.luban.joininmemory.constant.ExecuteLevel;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -94,5 +96,5 @@ public @interface JoinInMemory {
      */
     String joinDataConverter() default "";
 
-    int runLevel() default 10;
+    ExecuteLevel runLevel() default ExecuteLevel.FIFTH;
 }

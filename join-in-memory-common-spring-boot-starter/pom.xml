@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>join-in-memory-common-spring-boot-starter</artifactId>
-    <version>1.0.1-sp2-SNAPSHOT</version>
+    <version>1.0.2-sp2-SNAPSHOT</version>
     <description>服务内存中join</description>
 
     <developers>

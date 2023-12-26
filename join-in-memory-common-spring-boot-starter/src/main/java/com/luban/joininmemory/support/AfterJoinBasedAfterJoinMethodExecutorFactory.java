@@ -28,6 +28,6 @@ public class AfterJoinBasedAfterJoinMethodExecutorFactory extends AbstractAnnota
 
     @Override
     protected <DATA_AFTER_JOIN> int createForRunLevel(Class<DATA_AFTER_JOIN> clazz, Method method, AfterJoin afterJoin) {
-        return afterJoin.runLevel();
+        return afterJoin.runLevel().getCode();
     }
 }

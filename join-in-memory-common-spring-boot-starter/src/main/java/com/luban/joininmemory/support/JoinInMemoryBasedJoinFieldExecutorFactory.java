@@ -92,8 +92,8 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
 
     @Override
     protected <DATA> int createRunLevel(Class<DATA> clazz, Field field, JoinInMemory annotation) {
-        log.debug("run level for class {} field {},  is {}", clazz, field.getName(), annotation.runLevel());
-        return annotation.runLevel();
+        log.debug("run level for class {} field {}, is {}", clazz, field.getName(), annotation.runLevel());
+        return annotation.runLevel().getCode();
     }
 
     private class DataSetter implements BiConsumer<Object, List<Object>> {
