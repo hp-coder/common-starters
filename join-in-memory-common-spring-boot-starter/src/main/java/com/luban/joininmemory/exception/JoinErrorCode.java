@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum JoinErrorCode implements BaseEnum<JoinErrorCode, Integer> {
 
     /***/
-    ERROR(700500, "Join异常"),
+    JOIN_ERROR(700500, "Join异常"),
+    AFTER_JOIN_ERROR(700501, "AfterJoin异常"),
     ;
 
     private final Integer code;

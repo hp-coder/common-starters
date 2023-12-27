@@ -53,6 +53,7 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
 
     /**
      * 提供对key的类型转换
+     *
      * @param joinKey 原始关联key
      * @return 转换后的关联key
      */
@@ -126,7 +127,8 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
                 }
             });
         } catch (Exception e) {
-            throw new JoinException(JoinErrorCode.ERROR, e);
+            log.error("JoinErrorMessage={}", JoinErrorCode.JOIN_ERROR.getName(), e);
+            throw new JoinException(JoinErrorCode.JOIN_ERROR, e);
         }
     }
 }

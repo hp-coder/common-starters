@@ -2,6 +2,8 @@ package com.luban.joininmemory.support;
 
 import com.luban.joininmemory.AfterJoinMethodExecutor;
 import com.luban.joininmemory.JoinFieldExecutor;
+import com.luban.joininmemory.exception.JoinErrorCode;
+import com.luban.joininmemory.exception.JoinException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +80,7 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
                     this.executorService.invokeAll(tasks);
                 }
             } catch (Exception e) {
-                throw new RuntimeException("Join Executor failed for,", e);
+                throw new JoinException(JoinErrorCode.JOIN_ERROR, e);
             }
         });
     }
@@ -102,7 +104,7 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
                 this.executorService.invokeAll(afterJoinTasks);
             }
         } catch (Exception e) {
-            throw new RuntimeException("After join Executor failed for,", e);
+            throw new JoinException(JoinErrorCode.AFTER_JOIN_ERROR, e);
         }
     }
 

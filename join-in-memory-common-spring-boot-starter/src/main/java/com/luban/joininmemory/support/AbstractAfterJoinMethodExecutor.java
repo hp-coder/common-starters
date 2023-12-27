@@ -1,6 +1,8 @@
 package com.luban.joininmemory.support;
 
 import com.luban.joininmemory.AfterJoinMethodExecutor;
+import com.luban.joininmemory.exception.JoinErrorCode;
+import com.luban.joininmemory.exception.JoinException;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -13,6 +15,11 @@ public abstract class AbstractAfterJoinMethodExecutor<DATA_AFTER_JOIN> implement
     @Override
     public void execute(DATA_AFTER_JOIN data) {
         log.debug("Executing after join method on {}", data);
-        afterJoin(data);
+        try {
+            afterJoin(data);
+        } catch (Exception e) {
+            log.error("AfterJoinErrorMessage={}||data={}", JoinErrorCode.AFTER_JOIN_ERROR.getName(), data.toString(), e);
+            throw new JoinException(JoinErrorCode.AFTER_JOIN_ERROR, e);
+        }
     }
 }
