@@ -2,18 +2,18 @@ package com.luban.excel.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
-import com.alibaba.excel.write.metadata.holder.WriteWorkbookHolder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -22,12 +22,10 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class ExcelUtil {
 
-    private static final int limitation = 100;
-
     public static Sheet addCascadeValidationToSheet(
-            WriteWorkbookHolder workbookHolder,
-            WriteSheetHolder sheetHolder,
-            Sheet tmpSheet,
+            Workbook workbook,
+            Sheet sheet,
+            AtomicReference<Sheet> tmpSheet,
             Map<String, List<String>> options,
             AtomicInteger startCol,
             int parentCol,
@@ -35,61 +33,50 @@ public class ExcelUtil {
             int startRow,
             int endRow
     ) {
-        final Workbook workbook = workbookHolder.getWorkbook();
-        final Sheet sheet = sheetHolder.getSheet();
-        tmpSheet = createTmpSheet(tmpSheet, workbook, "cascade_sheet");
-
         for (Map.Entry<String, List<String>> entry : options.entrySet()) {
             String parentVal = formatNameManager(entry.getKey());
             List<String> children = entry.getValue();
             if (CollUtil.isEmpty(children)) {
                 continue;
             }
-
             int columnIndex = startCol.getAndIncrement();
-            createDropdownElement(tmpSheet, children, columnIndex);
-            if (children.size() >= limitation) {
-                tmpSheet = createTmpSheet(null, workbook, "cascade_sheet");
-            }
-
+            createDropdownElement(tmpSheet.get(), children, columnIndex);
             final String columnName = calculateColumnName(columnIndex + 1);
-            final String formula = createFormulaForNameManger(tmpSheet, children.size(), columnName);
+            final String formula = createFormulaForNameManger(tmpSheet.get(), children.size(), columnName);
             createNameManager(workbook, parentVal, formula);
         }
         final String parentColumnName = calculateColumnName(parentCol + 1);
         final String indirectFormula = createIndirectFormula(parentColumnName, startRow + 1);
-        createValidation(workbook, sheet, tmpSheet, indirectFormula, selfCol, startRow, endRow);
-        return tmpSheet;
+        createValidation(workbook, sheet, tmpSheet.get(), indirectFormula, selfCol, startRow, endRow);
+        return tmpSheet.get();
     }
 
 
-    private static Sheet createTmpSheet(Sheet tmpSheet, Workbook workbook, String sheetName) {
+    public static Sheet createTmpSheet(Workbook workbook, String sheetName) {
         final String actualName = sheetName + workbook.getNumberOfSheets();
-        if (tmpSheet == null) {
-            tmpSheet = workbook.createSheet(actualName);
+        final Sheet sheet = workbook.createSheet(actualName);
+        if (sheet instanceof SXSSFSheet) {
+            ((SXSSFSheet) sheet).setRandomAccessWindowSize(-1);
         }
-        return tmpSheet;
+        return sheet;
     }
 
     public static Sheet addSelectValidationToSheet(
-            WriteWorkbookHolder workbookHolder,
-            WriteSheetHolder sheetHolder,
-            Sheet tmpSheet,
+            Workbook workbook,
+            Sheet sheet,
+            AtomicReference<Sheet> tmpSheet,
             List<String> options,
             AtomicInteger startCol,
             int selfCol,
             int startRow,
             int endRow
     ) {
-        final Workbook workbook = workbookHolder.getWorkbook();
-        final Sheet sheet = sheetHolder.getSheet();
-        tmpSheet = createTmpSheet(tmpSheet, workbook, "sheet");
         final int columnIndex = startCol.getAndIncrement();
         String columnName = calculateColumnName(columnIndex + 1);
-        final String formula = createFormulaForDropdown(tmpSheet, options.size(), columnName);
-        createDropdownElement(tmpSheet, options, columnIndex);
-        createValidation(workbook, sheet, tmpSheet, formula, selfCol, startRow, endRow);
-        return options.size() >= limitation ? null : tmpSheet;
+        final String formula = createFormulaForDropdown(tmpSheet.get(), options.size(), columnName);
+        createDropdownElement(tmpSheet.get(), options, columnIndex);
+        createValidation(workbook, sheet, tmpSheet.get(), formula, selfCol, startRow, endRow);
+        return tmpSheet.get();
     }
 
 
@@ -114,7 +101,7 @@ public class ExcelUtil {
         validation.setSuppressDropDownArrow(true);
         validation.createErrorBox("提示", "请输入下拉选项中的内容");
         sheet.addValidationData(validation);
-        hideSheet(workbook, tmpSheet);
+//        hideSheet(workbook, tmpSheet);
     }
 
     private static String createIndirectFormula(String columnName, int startRow) {
