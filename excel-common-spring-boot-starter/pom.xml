@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>excel-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.0-sp2-experiment-SNAPSHOT</version>
 
     <properties>
         <easyexcel.version>3.1.0</easyexcel.version>

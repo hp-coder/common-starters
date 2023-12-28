@@ -8,6 +8,7 @@ import com.hp.excel.dto.ExcelSelectDataColumn;
 import com.hp.excel.util.ExcelUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * 请照抄整个类*
  *
- * @author HP
+ * @author hp
  * @date 2022/11/7
  */
 @RequiredArgsConstructor
@@ -38,22 +39,22 @@ public class SelectDataSheetWriteHandler implements SheetWriteHandler {
      */
     @Override
     public void afterSheetCreate(WriteWorkbookHolder writeWorkbookHolder, WriteSheetHolder writeSheetHolder) {
-        //尽量少的创建sheet, 也可以只用一个额外的sheet放这些下拉数据
-        AtomicReference<Sheet> tmpSheet = new AtomicReference<>(null);
-        AtomicReference<Sheet> tmpCascadeSheet = new AtomicReference<>(null);
-        AtomicInteger tmpSheetStartCol = new AtomicInteger(0);
-        AtomicInteger tmpCascadeSheetStartCol = new AtomicInteger(0);
+        final Workbook workbook = writeWorkbookHolder.getWorkbook();
+        final Sheet sheet = writeSheetHolder.getSheet();
+        // 仅创建一个sheet用于存放下拉数据
+        final AtomicReference<Sheet> tmpSheet = new AtomicReference<>(ExcelUtil.createTmpSheet(workbook, "tmp_sheet"));
+        final AtomicInteger tmpSheetStartCol = new AtomicInteger(0);
 
         selectedMap.forEach((colIndex, model) -> {
             if (StrUtil.isNotEmpty(model.getParentColumn())) {
                 //直接粘贴该工具类方法到你的项目中
-                tmpCascadeSheet.set(
+                tmpSheet.set(
                         ExcelUtil.addCascadeValidationToSheet(
-                                writeWorkbookHolder,
-                                writeSheetHolder,
-                                tmpCascadeSheet.get(),
+                                workbook,
+                                sheet,
+                                tmpSheet,
                                 (Map<String, List<String>>) model.getSource(),
-                                tmpCascadeSheetStartCol,
+                                tmpSheetStartCol,
                                 model.getParentColumnIndex(),
                                 colIndex,
                                 model.getFirstRow(),
@@ -64,9 +65,9 @@ public class SelectDataSheetWriteHandler implements SheetWriteHandler {
                 //直接粘贴该工具类方法到你的项目中
                 tmpSheet.set(
                         ExcelUtil.addSelectValidationToSheet(
-                                writeWorkbookHolder,
-                                writeSheetHolder,
-                                tmpSheet.get(),
+                                workbook,
+                                sheet,
+                                tmpSheet,
                                 (List<String>) model.getSource(),
                                 tmpSheetStartCol,
                                 colIndex,
