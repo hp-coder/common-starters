@@ -21,9 +21,9 @@ public final class PageOrderHelper {
         }
         return sorts.stream().map(i -> {
             if (Objects.equals(i.getSortedOrder(), PageRequestWrapper.Order.desc)) {
-                return new OrderItem(i.getColumnName(), false);
+                return OrderItem.desc(i.getColumnName());
             } else {
-                return new OrderItem(i.getColumnName(), true);
+                return OrderItem.asc(i.getColumnName());
             }
         }).collect(Collectors.toList());
     }

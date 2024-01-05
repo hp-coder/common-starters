@@ -4,21 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
+        <artifactId>common-starters</artifactId>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>join-in-memory-common-spring-boot-starter</artifactId>
-    <version>1.0.2-sp2-SNAPSHOT</version>
+    <version>1.0.0-sp3.2-SNAPSHOT</version>
     <description>服务内存中join</description>
-
-    <developers>
-        <developer>
-            <email>hup_dev@outlook.com</email>
-            <name>hupeng</name>
-        </developer>
-    </developers>
 
     <dependencies>
         <dependency>

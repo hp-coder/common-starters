@@ -8,12 +8,13 @@ import com.luban.common.base.annotations.FieldDesc;
 import com.luban.common.base.enums.ValidStatus;
 import com.luban.jpa.BaseJpaAggregate;
 import com.luban.jpa.convertor.ValidStatusConverter;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -27,8 +28,10 @@ import java.util.Optional;
 @GenMapper(pkgName = "com.luban.codegen.test.domain.mapper")
 @Entity
 @Table(name = "test_order")
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 public class TestOrder extends BaseJpaAggregate {
 
     @Convert(converter = ValidStatusConverter.class)
@@ -65,5 +68,21 @@ public class TestOrder extends BaseJpaAggregate {
 
     public void invalid() {
         setStatus(ValidStatus.INVALID);
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        TestOrder testOrder = (TestOrder) o;
+        return getId() != null && Objects.equals(getId(), testOrder.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

@@ -4,13 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
+        <artifactId>common-starters</artifactId>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>excel-starter-example</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.0-sp3.2-SNAPSHOT</version>
+
+    <properties>
+        <excel-starter.version>1.0.0-sp3.2-SNAPSHOT</excel-starter.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -20,6 +24,8 @@
         <dependency>
             <groupId>com.luban</groupId>
             <artifactId>excel-common-spring-boot-starter</artifactId>
+            <version>${excel-starter.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

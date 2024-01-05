@@ -5,8 +5,8 @@
     <parent>
         <groupId>com.luban</groupId>
         <artifactId>common-bom</artifactId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
-        <relativePath/>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
+
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -29,18 +29,22 @@
     </modules>
 
     <artifactId>common-starters</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.0-sp3.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <developers>
+        <developer>
+            <id>hp</id>
+            <name>hupeng</name>
+            <email>hup_dev@outlook.com</email>
+            <url>https://github.com/hp-coder</url>
+        </developer>
+    </developers>
 
     <properties>
         <!--in project-->
-        <common-base.version>1.0.0-sp2-SNAPSHOT</common-base.version>
-        <jpa-common-starter.version>1.0.0-sp2-SNAPSHOT</jpa-common-starter.version>
-        <mybatis-plus-common-starter.version>1.0.0-sp2-SNAPSHOT</mybatis-plus-common-starter.version>
-        <code-gen-starter.version>1.0.2-sp2-SNAPSHOT</code-gen-starter.version>
-<!--        <excel-common-starter.version>1.0.0-sp2-SNAPSHOT</excel-common-starter.version>-->
-        <excel-common-starter.version>1.0.0-sp2-experimental-SNAPSHOT</excel-common-starter.version>
-        <luban-dingtalk.version>1.0.0-sp2-SNAPSHOT</luban-dingtalk.version>
+        <common-base.version>1.0.0-sp3.2-SNAPSHOT</common-base.version>
+        <luban-dingtalk.version>1.0.0-sp3.2-SNAPSHOT</luban-dingtalk.version>
     </properties>
 
     <dependencyManagement>
@@ -49,26 +53,6 @@
                 <groupId>com.luban</groupId>
                 <artifactId>common-base</artifactId>
                 <version>${common-base.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.luban</groupId>
-                <artifactId>jpa-common-spring-boot-starter</artifactId>
-                <version>${jpa-common-starter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.luban</groupId>
-                <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>
-                <version>${mybatis-plus-common-starter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.luban</groupId>
-                <artifactId>code-gen-common-spring-boot-starter</artifactId>
-                <version>${code-gen-starter.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.luban</groupId>
-                <artifactId>excel-common-spring-boot-starter</artifactId>
-                <version>${excel-common-starter.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.luban</groupId>
@@ -88,10 +72,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
 

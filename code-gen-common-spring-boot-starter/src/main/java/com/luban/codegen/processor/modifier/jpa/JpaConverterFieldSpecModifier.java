@@ -4,8 +4,8 @@ import com.google.auto.common.MoreTypes;
 import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
-import javax.persistence.AttributeConverter;
-import javax.persistence.Convert;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Convert;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.VariableElement;

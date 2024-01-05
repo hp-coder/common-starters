@@ -4,18 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
+        <artifactId>common-starters</artifactId>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.0-sp3.2-SNAPSHOT</version>
     <description>DDD-mybatis+的封装</description>
 
     <properties>
         <!--this version supports Spring Boot 3.0-->
-        <mybatis-plus.version>3.5.3</mybatis-plus.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
     </properties>
 
     <dependencies>

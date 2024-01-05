@@ -7,8 +7,8 @@ import com.alipay.api.AlipayRequest;
 import com.alipay.api.AlipayResponse;
 import com.luban.alipay.config.AlipayClientConfig;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author hp

@@ -1,7 +1,6 @@
 package com.luban.codegen.processor.event;
 
 import com.google.auto.service.AutoService;
-import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
@@ -16,7 +15,6 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.Optional;
 
 /**

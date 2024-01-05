@@ -2,7 +2,7 @@ package com.luban.excel.aop;
 
 import com.luban.excel.annotation.ResponseExcel;
 import com.luban.excel.handler.ExcelSheetWriteHandler;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.Assert;

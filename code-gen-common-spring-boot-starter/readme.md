@@ -46,12 +46,12 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
         <!--其中包含了配置的apt插件, 和主要版本-->
         <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
     
     <properties>
-        <!--1.0.0-sp2-SNAPSHOT不支持生成Mybatis-Plus的代码-->
-        <code-gen-version>1.0.1-sp2-SNAPSHOT</code-gen-version>
+        <!--1.0.0-sp3.2-SNAPSHOT不支持生成Mybatis-Plus的代码-->
+        <code-gen-version>1.0.0-sp3.2-SNAPSHOT</code-gen-version>
     </properties>
     
     <dependencies>
@@ -167,9 +167,9 @@ import com.luban.jpa.convertor.LocalDateTimeConverter;
 import com.luban.jpa.convertor.ValidStatusConverter;
 import lombok.Data;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * @author hp 2023/4/10

@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
+        <artifactId>common-starters</artifactId>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>excel-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp2-experimental-SNAPSHOT</version>
+    <version>1.0.0-sp3.2-SNAPSHOT</version>
 
     <properties>
         <easyexcel.version>3.1.0</easyexcel.version>

@@ -2,7 +2,6 @@ package com.luban.codegen.processor.request;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Lists;
-import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.modifier.BaseEnumFieldSpecModifier;
@@ -21,7 +20,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 

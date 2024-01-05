@@ -48,7 +48,6 @@ public class CodeGenAnnotationProcessor extends AbstractProcessor {
                     final CodeGenProcessor processor = CodeGenProcessorRegistry.find(annotation.getQualifiedName().toString(), supportedOrm);
                     processor.generate(typeElement, roundEnv);
                 } catch (Exception e) {
-                    e.printStackTrace();
                     ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("生成%s异常: %s", typeElement, e.getLocalizedMessage()));
                 }
             });

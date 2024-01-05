@@ -2,7 +2,6 @@ package com.luban.codegen.processor.command.update;
 
 import com.google.auto.service.AutoService;
 import com.google.common.base.Preconditions;
-import com.luban.codegen.constant.Orm;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
@@ -15,7 +14,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 

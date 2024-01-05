@@ -2,15 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>common-starters</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
+        <artifactId>common-starters</artifactId>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
     <artifactId>code-gen-example</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.0-sp3.2-SNAPSHOT</version>
+
+    <properties>
+        <code-gen-starter.version>1.0.0-sp3.2-SNAPSHOT</code-gen-starter.version>
+        <jpa-starter.version>1.0.0-sp3.2-SNAPSHOT</jpa-starter.version>
+        <mybatis-plus-starter.version>1.0.0-sp3.2-SNAPSHOT</mybatis-plus-starter.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -18,16 +24,19 @@
             <artifactId>common-base</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>com.luban</groupId>
             <artifactId>jpa-common-spring-boot-starter</artifactId>
+            <version>${jpa-starter.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.luban</groupId>-->
-<!--            <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.luban</groupId>
             <artifactId>code-gen-common-spring-boot-starter</artifactId>
+            <version>${code-gen-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -58,10 +67,12 @@
                         <arg>-J-Duser.name=hp</arg>
                     </compilerArgs>
                     <fork>true</fork>
-                    <showWarnings>true</showWarnings>
-                    <debug>false</debug>
-                    <optimize>true</optimize>
                     <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.luban</groupId>
+                            <artifactId>jpa-common-spring-boot-starter</artifactId>
+                            <version>${jpa-starter.version}</version>
+                        </path>
                         <path>
                             <groupId>com.luban</groupId>
                             <artifactId>code-gen-common-spring-boot-starter</artifactId>
@@ -85,12 +96,10 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-            <!--for jdk11, the apt plugin is already configured in the bom.xml-->
-            <!--natively, it would use querydsl by default to generate Q classes-->
-<!--            <plugin>-->
-<!--                <groupId>com.mysema.maven</groupId>-->
-<!--                <artifactId>apt-maven-plugin</artifactId>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>com.mysema.maven</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 </project>

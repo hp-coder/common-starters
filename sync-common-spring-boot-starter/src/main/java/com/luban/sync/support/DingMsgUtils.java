@@ -1,7 +1,7 @@
 package com.luban.sync.support;
 
 import com.luban.dingtalk.component.application.IDingBot;
-import com.luban.dingtalk.pojo.message.IDingBotMsg;
+import com.luban.dingtalk.pojo.message.bot.IDingBotMsg;
 import com.luban.dingtalk.service.message.DingBotMessageHandler;
 import com.luban.sync.config.SyncConfig;
 import org.jetbrains.annotations.NotNull;

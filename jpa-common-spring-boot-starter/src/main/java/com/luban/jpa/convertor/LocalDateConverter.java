@@ -1,7 +1,7 @@
 package com.luban.jpa.convertor;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

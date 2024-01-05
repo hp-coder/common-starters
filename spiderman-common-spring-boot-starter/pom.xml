@@ -4,10 +4,10 @@
     <parent>
         <groupId>com.luban</groupId>
         <artifactId>common-starters</artifactId>
-        <version>1.0.0-sp2-SNAPSHOT</version>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
     <artifactId>spiderman-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp2-SNAPSHOT</version>
+    <version>1.0.0-sp3.2-SNAPSHOT</version>
 
     <properties>
         <jsoup.version>1.15.4</jsoup.version>

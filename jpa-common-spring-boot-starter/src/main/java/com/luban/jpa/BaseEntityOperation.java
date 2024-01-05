@@ -1,8 +1,8 @@
 package com.luban.jpa;
 
+import com.luban.jpa.exception.ValidateResult;
 import com.luban.jpa.exception.ValidationException;
 import com.luban.jpa.group.ValidateGroup;
-import com.luban.jpa.exception.ValidateResult;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

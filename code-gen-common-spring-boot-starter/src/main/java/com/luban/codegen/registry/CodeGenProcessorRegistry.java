@@ -1,17 +1,12 @@
 package com.luban.codegen.registry;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.luban.codegen.constant.Orm;
 import com.luban.codegen.context.ProcessingEnvironmentContextHolder;
 import com.luban.codegen.spi.CodeGenProcessor;
 
 import javax.tools.Diagnostic;
 import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 处理器注册中心*
@@ -42,13 +37,15 @@ public final class CodeGenProcessorRegistry {
     }
 
     public static void initProcessors() {
-        final Map<String, Set<CodeGenProcessor>> map = Maps.newLinkedHashMap();
+        final Map<String, Set<CodeGenProcessor>> map = new HashMap<>();
         final ServiceLoader<CodeGenProcessor> processors = ServiceLoader.load(CodeGenProcessor.class, CodeGenProcessor.class.getClassLoader());
         for (CodeGenProcessor processor : processors) {
             final Class<? extends Annotation> annotation = processor.getAnnotation();
             map.compute(annotation.getName(), (key, set) -> {
                 if (Objects.isNull(set)) {
-                    return Sets.newHashSet(processor);
+                    final Set<CodeGenProcessor> processorSet = new HashSet<>();
+                    processorSet.add(processor);
+                    return processorSet;
                 } else {
                     set.add(processor);
                     return set;

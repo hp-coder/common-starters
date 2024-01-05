@@ -1,13 +1,13 @@
 package com.luban.jpa;
 
 import com.luban.jpa.convertor.InstantLongConverter;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
-import javax.persistence.*;
 import java.time.Instant;
 
 @MappedSuperclass

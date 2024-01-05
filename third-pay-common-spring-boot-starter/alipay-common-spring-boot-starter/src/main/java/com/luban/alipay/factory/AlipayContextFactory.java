@@ -3,8 +3,8 @@ package com.luban.alipay.factory;
 import com.alipay.api.*;
 import com.luban.alipay.context.AlipayContext;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author hp

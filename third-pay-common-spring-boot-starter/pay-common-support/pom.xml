@@ -6,11 +6,11 @@
     <parent>
         <artifactId>third-pay-common-spring-boot-starter</artifactId>
         <groupId>com.luban</groupId>
-        <version>1.0.1-sp2-SNAPSHOT</version>
+        <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>pay-common-support</artifactId>
-    <version>1.0.1-sp2-SNAPSHOT</version>
+    <version>1.0.0-sp3.2-SNAPSHOT</version>
     <description>支付通用依赖</description>
 
     <dependencies>

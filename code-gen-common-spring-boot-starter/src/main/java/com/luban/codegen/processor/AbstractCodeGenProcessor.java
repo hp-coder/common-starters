@@ -72,6 +72,9 @@ public abstract class AbstractCodeGenProcessor implements CodeGenProcessor {
     @Getter
     protected DefaultNameContext nameContext;
 
+    public AbstractCodeGenProcessor() {
+    }
+
     @Override
     public void generate(TypeElement typeElement, RoundEnvironment roundEnvironment) {
         nameContext = createNameContext(typeElement);

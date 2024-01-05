@@ -2,7 +2,7 @@ package com.luban.excel.annotation;
 
 import com.luban.excel.enums.MergeStrategy;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import java.lang.annotation.*;
 
 /**
