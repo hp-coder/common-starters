@@ -34,47 +34,74 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
 
     @Override
     protected <DATA> BiConsumer<Object, List<Object>> createFoundFunction(Class<DATA> clazz, Field field, JoinInMemory annotation) {
-        log.info("the field about to be set is {}, a type of {}", field.getName(), clazz);
+        log.debug("the field about to be set is {}, a type of {}", field.getName(), clazz);
         boolean isCollection = Collection.class.isAssignableFrom(field.getType());
-        return new DataSetter<>(field.getName(), isCollection);
+        return new DataSetter(field.getName(), isCollection);
     }
 
     @Override
     protected <DATA> Function<Object, Object> createDataConverter(Class<DATA> clazz, Field field, JoinInMemory annotation) {
         if (StringUtils.isEmpty(annotation.joinDataConverter())) {
-            log.info("No data convert for class {}, field {}", clazz, field.getName());
+            log.debug("No data convert for class {}, field {}", clazz, field.getName());
             return Function.identity();
         } else {
-            log.info("The data-converter for class {} field {}, is {}", clazz, field.getName(), annotation.joinDataConverter());
+            log.debug("The data-converter for class {} field {}, is {}", clazz, field.getName(), annotation.joinDataConverter());
             return new DataGetter<>(annotation.joinDataConverter());
         }
     }
 
     @Override
     protected <DATA> Function<Object, Object> createKeyGeneratorFromJoinData(Class<DATA> clazz, Field field, JoinInMemory annotation) {
-        log.info("The key from join data is {}, the class is {}, the field is {}", annotation.keyFromJoinData(), clazz, field.getName());
+        log.debug("The key from join data is {}, the class is {}, the field is {}", annotation.keyFromJoinData(), clazz, field.getName());
         return new DataGetter<>(annotation.keyFromJoinData());
     }
 
     @Override
-    protected <DATA> Function<List<Object>, List<Object>> createDataLoader(Class<DATA> clazz, Field field, JoinInMemory annotation) {
-        log.info("data loader for class {}  field {}, is {}", clazz, field.getName(), annotation.loader());
+    protected <DATA> Function<Object, Object> createKeyConverterFromJoinData(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+        if (StringUtils.isEmpty(annotation.joinDataKeyConverter())) {
+            log.debug("No join data key converter for class {}, field {}", clazz, field.getName());
+            return Function.identity();
+        } else {
+            log.debug("The join data key converter for class {} field {}, is {}", clazz, field.getName(), annotation.joinDataConverter());
+            return new DataGetter<>(annotation.joinDataKeyConverter());
+        }
+    }
+
+    @Override
+    protected <DATA> Function<Collection<Object>, List<Object>> createDataLoader(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+        log.debug("data loader for class {}  field {}, is {}", clazz, field.getName(), annotation.loader());
         return new DataGetter<>(annotation.loader());
     }
 
     @Override
-    protected <DATA> Function<Object, Object> createKeyGeneratorFromData(Class<DATA> clazz, Field field, JoinInMemory annotation) {
-        log.info("Key from source data for class {} field {}, is {}", clazz, field.getName(), annotation.keyFromJoinData());
+    protected <DATA> Function<Object, Object> createKeyGeneratorFromSourceData(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+        log.debug("Key from source data for class {} field {}, is {}", clazz, field.getName(), annotation.keyFromJoinData());
         return new DataGetter<>(annotation.keyFromSourceData());
     }
 
     @Override
-    protected <DATA> int createRunLevel(Class<DATA> clazz, Field field, JoinInMemory annotation) {
-        log.info("run level for class {} field {},  is {}", clazz, field.getName(), annotation.runLevel());
-        return annotation.runLevel();
+    protected <DATA> Function<Object, Object> createKeyConverterFromSourceData(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+        if (StringUtils.isEmpty(annotation.sourceDataKeyConverter())) {
+            log.debug("No source data key converter for class {}, field {}", clazz, field.getName());
+            return Function.identity();
+        } else {
+            log.debug("The source data key converter for class {} field {}, is {}", clazz, field.getName(), annotation.joinDataConverter());
+            return new DataGetter<>(annotation.sourceDataKeyConverter());
+        }
     }
 
-    private class DataSetter<T, U> implements BiConsumer<Object, List<Object>> {
+    @Override
+    protected <DATA> int createRunLevel(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+        log.debug("run level for class {} field {}, is {}", clazz, field.getName(), annotation.runLevel());
+        return annotation.runLevel().getCode();
+    }
+
+    @Override
+    public <DATA> Function<Object, Object> groupBy(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+        return ignored -> annotation.keyFromJoinData() + annotation.joinDataKeyConverter() + annotation.loader() + annotation.runLevel();
+    }
+
+    private class DataSetter implements BiConsumer<Object, List<Object>> {
         private final String fieldName;
         private final boolean isCollection;
         private final Expression expression;
@@ -94,7 +121,7 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
                 if (size == 1) {
                     this.expression.setValue(data, result.get(0));
                 } else {
-                    log.warn("write join result to {} error, field is {}, data is {}", data, fieldName, result);
+                    log.error("write join result to {} error, field is {}, data is {}", data, fieldName, result);
                 }
             }
         }

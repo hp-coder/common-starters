@@ -39,7 +39,7 @@
         <jpa-common-starter.version>1.0.0-sp2-SNAPSHOT</jpa-common-starter.version>
         <code-gen-starter.version>1.0.0-sp2-SNAPSHOT</code-gen-starter.version>
         <excel-common-starter.version>1.0.0-sp2-experiment-SNAPSHOT</excel-common-starter.version>
-        <join-in-memory-starter.version>1.0.0-sp2-SNAPSHOT</join-in-memory-starter.version>
+        <join-in-memory-starter.version>1.0.0-sp2-experiment-SNAPSHOT</join-in-memory-starter.version>
         <dingtalk-module.version>1.0.0-sp2-SNAPSHOT</dingtalk-module.version>
     </properties>
 
