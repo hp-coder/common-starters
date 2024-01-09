@@ -1,5 +1,7 @@
 package com.luban.joininmemory;
 
+import com.luban.joininmemory.context.JoinContext;
+
 import java.util.List;
 
 /**
@@ -7,5 +9,5 @@ import java.util.List;
  */
 public interface AfterJoinMethodExecutorFactory {
 
-    <TYPE> List<AfterJoinMethodExecutor<TYPE>> createForType(Class<TYPE> clazz);
+    <DATA> List<AfterJoinMethodExecutor<DATA>> createForType(JoinContext<DATA> context);
 }

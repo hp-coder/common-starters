@@ -1,6 +1,8 @@
 package com.luban.joininmemory.annotation;
 
 import com.luban.joininmemory.JoinInMemoryAutoConfiguration;
+import com.luban.joininmemory.constant.JoinFieldProcessPolicy;
+import com.luban.joininmemory.constant.JoinInMemoryExecutorType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -45,4 +47,21 @@ public @interface JoinInMemoryConfig {
      * @return the bean name of the defined executor service.
      */
     String executorName() default "defaultJoinInMemoryExecutor";
+
+    /**
+     * This value defines whether to combine multiple fields
+     * that use the same join-in-memory annotation in a class
+     * during join-processing.
+     * <p>
+     * Note:
+     * <p>
+     * Since fields defined in the {@code @JoinInMemory} can be
+     * overridden freely, {@code JoinFieldProcessPolicy.GROUPED}
+     * will only combine those fields annotated with the same
+     * join-annotation which has the same {@code JoinInMemory.runLevel()}
+     * value and the same {@code JoinInMemory.loader()} value.
+     * <p>
+     * By default, SEPERATED.
+     */
+    JoinFieldProcessPolicy processPolicy() default JoinFieldProcessPolicy.SEPERATED;
 }

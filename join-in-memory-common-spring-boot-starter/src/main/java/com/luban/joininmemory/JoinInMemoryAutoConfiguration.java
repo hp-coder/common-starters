@@ -63,10 +63,14 @@ public class JoinInMemoryAutoConfiguration {
                 .daemon(true)
                 .build();
         int maxSize = Runtime.getRuntime().availableProcessors() * 3;
-        return new ThreadPoolExecutor(0, maxSize,
-                60L, TimeUnit.SECONDS,
+        return new ThreadPoolExecutor(
+                0,
+                maxSize,
+                60L,
+                TimeUnit.SECONDS,
                 new SynchronousQueue<>(),
                 basicThreadFactory,
-                new ThreadPoolExecutor.CallerRunsPolicy());
+                new ThreadPoolExecutor.CallerRunsPolicy()
+        );
     }
 }

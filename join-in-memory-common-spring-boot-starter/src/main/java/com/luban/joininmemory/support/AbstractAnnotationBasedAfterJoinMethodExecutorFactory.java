@@ -2,6 +2,7 @@ package com.luban.joininmemory.support;
 
 import com.luban.joininmemory.AfterJoinMethodExecutor;
 import com.luban.joininmemory.AfterJoinMethodExecutorFactory;
+import com.luban.joininmemory.context.JoinContext;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
@@ -25,7 +26,8 @@ public abstract class AbstractAnnotationBasedAfterJoinMethodExecutorFactory<A ex
     }
 
     @Override
-    public <DATA_AFTER_JOIN> List<AfterJoinMethodExecutor<DATA_AFTER_JOIN>> createForType(Class<DATA_AFTER_JOIN> clazz) {
+    public <DATA> List<AfterJoinMethodExecutor<DATA>> createForType(JoinContext<DATA> context) {
+        final Class<DATA> clazz = context.getDataClass();
         final List<Method> methods = MethodUtils.getMethodsListWithAnnotation(clazz, annotationClass);
         return methods.stream()
                 .map(method -> buildAfterJoinMethodExecutor(clazz, method, AnnotatedElementUtils.findMergedAnnotation(method, annotationClass)))
@@ -33,8 +35,8 @@ public abstract class AbstractAnnotationBasedAfterJoinMethodExecutorFactory<A ex
                 .collect(toList());
     }
 
-    private <DATA_AFTER_JOIN> AfterJoinMethodExecutor<DATA_AFTER_JOIN> buildAfterJoinMethodExecutor(Class<DATA_AFTER_JOIN> clazz, Method method, A annotation) {
-        return (AfterJoinMethodExecutor<DATA_AFTER_JOIN>)
+    private <DATA> AfterJoinMethodExecutor<DATA> buildAfterJoinMethodExecutor(Class<DATA> clazz, Method method, A annotation) {
+        return (AfterJoinMethodExecutor<DATA>)
                 DefaultAfterJoinMethodExecutorAdaptor
                         .builder()
                         .name(createForName(clazz, method, annotation))
@@ -49,7 +51,7 @@ public abstract class AbstractAnnotationBasedAfterJoinMethodExecutorFactory<A ex
                 "-" + annotation.getClass().getSimpleName();
     }
 
-    protected abstract <DATA_AFTER_JOIN> Consumer<Object> createForAfterJoin(Class<DATA_AFTER_JOIN> clazz, Method method, A annotation);
+    protected abstract <DATA> Consumer<Object> createForAfterJoin(Class<DATA> clazz, Method method, A annotation);
 
-    protected abstract <DATA_AFTER_JOIN> int createForRunLevel(Class<DATA_AFTER_JOIN> clazz, Method method, A annotation);
+    protected abstract <DATA> int createForRunLevel(Class<DATA> clazz, Method method, A annotation);
 }

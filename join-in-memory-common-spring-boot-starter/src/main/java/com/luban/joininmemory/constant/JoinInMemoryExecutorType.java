@@ -1,4 +1,4 @@
-package com.luban.joininmemory.annotation;
+package com.luban.joininmemory.constant;
 
 
 /**

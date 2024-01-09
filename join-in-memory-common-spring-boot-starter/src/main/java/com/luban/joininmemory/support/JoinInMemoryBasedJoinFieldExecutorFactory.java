@@ -68,7 +68,7 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
     }
 
     @Override
-    protected <DATA> Function<List<Object>, List<Object>> createDataLoader(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+    protected <DATA> Function<Collection<Object>, List<Object>> createDataLoader(Class<DATA> clazz, Field field, JoinInMemory annotation) {
         log.debug("data loader for class {}  field {}, is {}", clazz, field.getName(), annotation.loader());
         return new DataGetter<>(annotation.loader());
     }
@@ -96,6 +96,11 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
         return annotation.runLevel().getCode();
     }
 
+    @Override
+    public <DATA> Function<Object, Object> groupBy(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+        return ignored -> annotation.keyFromJoinData() + annotation.joinDataKeyConverter() + annotation.loader() + annotation.runLevel();
+    }
+
     private class DataSetter implements BiConsumer<Object, List<Object>> {
         private final String fieldName;
         private final boolean isCollection;
@@ -116,7 +121,7 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
                 if (size == 1) {
                     this.expression.setValue(data, result.get(0));
                 } else {
-                    log.debug("write join result to {} error, field is {}, data is {}", data, fieldName, result);
+                    log.error("write join result to {} error, field is {}, data is {}", data, fieldName, result);
                 }
             }
         }

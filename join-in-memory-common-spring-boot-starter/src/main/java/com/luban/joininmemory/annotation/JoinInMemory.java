@@ -71,7 +71,7 @@ public @interface JoinInMemory {
      * <p>
      * Usage example:
      * <p>
-     * "#{@userRepository.findAllById(#root)}"
+     * "{@code userRepository.findAllById(#root)}"
      *
      * @return SpEL expression of the method that extracts the data from datasource
      */

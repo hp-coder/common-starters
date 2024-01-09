@@ -4,7 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.luban.joininmemory.*;
 import com.luban.joininmemory.annotation.JoinInMemoryConfig;
-import com.luban.joininmemory.annotation.JoinInMemoryExecutorType;
+import com.luban.joininmemory.constant.JoinInMemoryExecutorType;
+import com.luban.joininmemory.context.JoinContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
@@ -38,33 +39,35 @@ public class DefaultJoinFieldsExecutorFactory implements JoinFieldsExecutorFacto
 
     @Override
     public <DATA> JoinFieldsExecutor<DATA> createFor(Class<DATA> clazz) {
+        final JoinInMemoryConfig joinInMemoryConfig = clazz.getAnnotation(JoinInMemoryConfig.class);
+        final JoinContext<DATA> joinContext = new JoinContext<>(clazz, joinInMemoryConfig);
+
         final List<JoinFieldExecutor<DATA>> joinItemExecutors = this.joinFieldExecutorFactories.stream()
-                .flatMap(factory -> factory.createForType(clazz).stream())
+                .flatMap(factory -> factory.createForType(joinContext).stream())
                 .collect(Collectors.toList());
 
         final List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors = this.afterJoinMethodExecutorFactories.stream()
-                .flatMap(factory -> factory.createForType(clazz).stream())
+                .flatMap(factory -> factory.createForType(joinContext).stream())
                 .collect(Collectors.toList());
 
-        final JoinInMemoryConfig joinInMemoryConfig = clazz.getAnnotation(JoinInMemoryConfig.class);
         return buildJoinFieldsExecutor(clazz, joinInMemoryConfig, joinItemExecutors, afterJoinMethodExecutors);
     }
 
     private <DATA> JoinFieldsExecutor<DATA> buildJoinFieldsExecutor(
             Class<DATA> clazz,
             JoinInMemoryConfig joinInMemoryConfig,
-            List<JoinFieldExecutor<DATA>> joinItemExecutors,
+            List<JoinFieldExecutor<DATA>> joinFieldExecutors,
             List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors
     ) {
         if (joinInMemoryConfig == null || joinInMemoryConfig.executorType() == JoinInMemoryExecutorType.SERIAL) {
             log.debug("JoinInMemory for {} uses serial executor", clazz);
-            return new SerialJoinFieldsExecutor<>(clazz, joinItemExecutors, afterJoinMethodExecutors);
+            return new SerialJoinFieldsExecutor<>(clazz, joinFieldExecutors, afterJoinMethodExecutors);
         }
         if (joinInMemoryConfig.executorType() == JoinInMemoryExecutorType.PARALLEL) {
             log.debug("JoinInMemory for {} uses parallel executor, the executor pool is {}", clazz, joinInMemoryConfig.executorName());
             ExecutorService executor = executorServiceMap.get(joinInMemoryConfig.executorName());
             Preconditions.checkArgument(executor != null);
-            return new ParallelJoinFieldsExecutor<>(clazz, joinItemExecutors, afterJoinMethodExecutors, executor);
+            return new ParallelJoinFieldsExecutor<>(clazz, joinFieldExecutors, afterJoinMethodExecutors, executor);
         }
         throw new IllegalArgumentException("无效类型");
     }

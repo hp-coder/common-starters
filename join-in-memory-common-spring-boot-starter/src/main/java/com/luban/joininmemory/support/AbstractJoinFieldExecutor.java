@@ -1,22 +1,26 @@
 package com.luban.joininmemory.support;
 
+import cn.hutool.core.collection.CollUtil;
 import com.luban.joininmemory.JoinFieldExecutor;
 import com.luban.joininmemory.exception.JoinErrorCode;
 import com.luban.joininmemory.exception.JoinException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+// TODO 从这里实现一个抽象group父类, 重新实现分组调用的场景
 
 /**
  * @author hp 2023/3/27
  */
 @Slf4j
+@Deprecated
 public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinFieldExecutor<SOURCE_DATA> {
 
     /**
@@ -83,27 +87,41 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
      */
     protected abstract void onNotFound(SOURCE_DATA data, JOIN_KEY joinKey);
 
+    private List<JOIN_KEY> joinKeys(List<SOURCE_DATA> sourceDataList) {
+        if (CollUtil.isEmpty(sourceDataList)) {
+            return Collections.emptyList();
+        }
+        return sourceDataList.stream()
+                .filter(Objects::nonNull)
+                .map(this::joinKeyFromSource)
+                .filter(Objects::nonNull)
+                .map(this::convertJoinKeyFromSourceData)
+                //提取转换之后, 类型应该都相同
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(toList());
+    }
 
+    // TODO 用个新对象包起来, 持有处理后的关联键信息, 后续能少处理一次
     @Override
     public void execute(List<SOURCE_DATA> sourceDataList) {
         try {
             // 从源数据中提取 JoinKey
-            final List<JOIN_KEY> joinKeys = sourceDataList.stream()
-                    .filter(Objects::nonNull)
-                    .map(this::joinKeyFromSource)
-                    .filter(Objects::nonNull)
-                    .map(this::convertJoinKeyFromSourceData)
-                    .filter(Objects::nonNull)
-                    .distinct()
-                    .collect(toList());
+            final List<JOIN_KEY> joinKeys = joinKeys(sourceDataList);
             log.debug("Join keys are {}", joinKeys);
-
+            if (CollUtil.isEmpty(joinKeys)) {
+                log.warn("The given source data is empty. Abort!");
+                return;
+            }
+            // TODO 这部分
+            // loader
             final List<JOIN_DATA> joinDataList = getJoinDataByJoinKeys(joinKeys);
             log.debug("Join records are {}", joinDataList);
 
             final Map<JOIN_KEY, List<JOIN_DATA>> joinDataMap = joinDataList.stream()
                     .filter(Objects::nonNull)
                     .collect(groupingBy(joinKey -> convertJoinKeyFromJoinData(joinKeyFromJoinData(joinKey))));
+            // TODO 这部分 多个map影响不大
 
             sourceDataList.forEach(sourceData -> {
                 final JOIN_KEY joinKey = convertJoinKeyFromSourceData(joinKeyFromSource(sourceData));
