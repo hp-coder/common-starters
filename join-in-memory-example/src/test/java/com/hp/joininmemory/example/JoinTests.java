@@ -1,6 +1,7 @@
 package com.hp.joininmemory.example;
 
 import com.hp.joininmemory.JoinService;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,13 +39,12 @@ public class JoinTests {
      * but with a custom property of sourceDataKeyConverter()
      * of which doesn't affect the grouping process.
      *
-     * 2024-01-09 11:36:23.237  INFO 32833 --- [Memory-Thread-1] c.h.joininmemory.example.JoinRepository  : Querying, ids=1,2,3
-     * JoinTester(createdBy=1, creator=user1, updatedBy=2, updater=user1, removedBy=3, remover=user1)
      */
     @Test
     public void test_grouped_join_scene1() {
         final JoinTester joinTester = new JoinTester("1", "2",3L);
-        joinService.joinInMemory(joinTester);
+        final JoinTester dup = new JoinTester("1", "2",3L);
+        joinService.joinInMemory(Lists.newArrayList(joinTester,dup));
         System.out.println(joinTester);
     }
 
