@@ -19,17 +19,17 @@ public class JoinTester2 {
 
     String createdBy;
 
-    @JoinUsernameOnUserId(keyFromSourceData = "#{createdBy}")
+    @JoinUsernameOnUserId(keyFromSourceData = "createdBy")
     String creator;
 
     String updatedBy;
 
-    @JoinUsernameOnUserId(keyFromSourceData = "#{updatedBy}")
+    @JoinUsernameOnUserId(keyFromSourceData = "updatedBy")
     String updater;
 
     Long removedBy;
 
-    @JoinUsernameOnUserId(keyFromSourceData = "#{removedBy}", sourceDataKeyConverter = "", runLevel = ExecuteLevel.FOURTH)
+    @JoinUsernameOnUserId(keyFromSourceData = "removedBy", sourceDataKeyConverter = "", runLevel = ExecuteLevel.FOURTH)
     String remover;
 
     public JoinTester2(String createdBy, String updatedBy) {

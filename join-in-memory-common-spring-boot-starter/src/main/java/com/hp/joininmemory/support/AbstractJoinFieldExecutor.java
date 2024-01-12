@@ -5,7 +5,6 @@ import com.hp.joininmemory.JoinFieldExecutor;
 import com.hp.joininmemory.exception.JoinErrorCode;
 import com.hp.joininmemory.exception.JoinException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +18,7 @@ import static java.util.stream.Collectors.toList;
  * @author hp 2023/3/27
  */
 @Slf4j
-@Deprecated
+@Deprecated(forRemoval = true)
 public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinFieldExecutor<SOURCE_DATA> {
 
     /**
@@ -124,7 +123,7 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
                     return;
                 }
                 final List<JOIN_DATA> relations = joinDataMap.get(joinKey);
-                if (CollectionUtils.isEmpty(relations)) {
+                if (CollUtil.isEmpty(relations)) {
                     log.debug("Join results can't be found through the join key {}", joinKey);
                     onNotFound(sourceData, joinKey);
                 } else {

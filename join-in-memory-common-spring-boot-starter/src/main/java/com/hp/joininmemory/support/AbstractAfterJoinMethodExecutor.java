@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class AbstractAfterJoinMethodExecutor<DATA_AFTER_JOIN> implements AfterJoinMethodExecutor<DATA_AFTER_JOIN> {
+
     protected abstract void afterJoin(DATA_AFTER_JOIN data);
 
     @Override

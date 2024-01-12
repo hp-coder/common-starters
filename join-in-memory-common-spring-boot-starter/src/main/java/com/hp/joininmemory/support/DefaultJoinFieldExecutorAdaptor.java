@@ -1,7 +1,6 @@
 package com.hp.joininmemory.support;
 
 import com.google.common.base.Preconditions;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,7 +13,6 @@ import java.util.function.Function;
  * @author hp 2023/3/27
  */
 @Getter
-@Builder
 @Slf4j
 public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_KEY, JOIN_DATA, DATA_JOIN_KEY, JOIN_RESULT> extends AbstractJoinFieldV2Executor<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_KEY, JOIN_DATA, DATA_JOIN_KEY, JOIN_RESULT> {
 
@@ -32,7 +30,7 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_
 
 
     public DefaultJoinFieldExecutorAdaptor(String name,
-                                           Integer runLevel,
+                                           int runLevel,
                                            Function<SOURCE_DATA, SOURCE_JOIN_KEY> keyFromSource,
                                            Function<SOURCE_JOIN_KEY, JOIN_KEY> convertKeyFromSourceData,
                                            Function<Collection<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader,
@@ -59,7 +57,7 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_
         } else {
             this.lostCallback = getDefaultLostFunction();
         }
-        this.runLevel = runLevel == null ? 0 : runLevel;
+        this.runLevel = runLevel;
     }
 
     private BiConsumer<SOURCE_DATA, JOIN_KEY> getDefaultLostFunction() {

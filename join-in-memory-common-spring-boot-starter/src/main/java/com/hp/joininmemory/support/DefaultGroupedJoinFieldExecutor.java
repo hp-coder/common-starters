@@ -28,7 +28,7 @@ public class DefaultGroupedJoinFieldExecutor<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_
 
     private List<JoinFieldContext<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_KEY, JOIN_DATA, DATA_JOIN_KEY, JOIN_RESULT>> createJoinContext(List<SOURCE_DATA> sourceData) {
         return joinFieldExecutors.stream()
-                .map(executor -> executor.createJoinContext(sourceData))
+                .map(executor -> executor.createJoinFieldContext(sourceData))
                 .filter(CollUtil::isNotEmpty)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

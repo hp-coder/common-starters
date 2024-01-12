@@ -14,11 +14,11 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @JoinInMemory(
         keyFromSourceData = "",
-        sourceDataKeyConverter = "#{ #root != null ? T(java.lang.Long).parseLong(#root) : null}",
-        keyFromJoinData = "#{id}",
+        sourceDataKeyConverter = "#root != null ? T(java.lang.Long).parseLong(#root) : null",
+        keyFromJoinData = "id",
         joinDataKeyConverter = "",
-        loader = "#{@joinRepository.findAllById(#root)}",
-        joinDataConverter = "#{#root.name}"
+        loader = "@joinRepository.findAllById(#root)",
+        joinDataConverter = "#root.name"
 )
 public @interface JoinUsernameOnUserId {
 
@@ -26,7 +26,7 @@ public @interface JoinUsernameOnUserId {
     String keyFromSourceData();
 
     @AliasFor(annotation = JoinInMemory.class, value="sourceDataKeyConverter")
-    String sourceDataKeyConverter() default "#{ #root != null ? T(java.lang.Long).parseLong(#root) : null}";
+    String sourceDataKeyConverter() default "#root != null ? T(java.lang.Long).parseLong(#root) : null";
 
     @AliasFor(annotation = JoinInMemory.class, value = "runLevel")
     ExecuteLevel runLevel() default ExecuteLevel.FIFTH;
