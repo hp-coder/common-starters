@@ -13,11 +13,7 @@ import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.expression.BeanResolver;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.common.TemplateParserContext;
+import org.springframework.expression.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -42,7 +38,7 @@ import java.util.stream.Collectors;
 public class SpiderNodeBasedDomNodeExecutorFactory extends AbstractAnnotationBasedDomNodeExecutorFactory<SpiderNode> {
 
     private final ExpressionParser expressionParser = new SpelExpressionParser();
-    private final TemplateParserContext templateParserContext = new TemplateParserContext();
+    private final ParserContext parserContext = ParserContext.TEMPLATE_EXPRESSION;
     private final BeanResolver beanResolver;
     private final ConnectionFactory connectionFactory;
 
@@ -175,7 +171,7 @@ public class SpiderNodeBasedDomNodeExecutorFactory extends AbstractAnnotationBas
         private final EvaluationContext evaluationContext;
 
         public DataGetter(String expressionStr) {
-            this.expression = expressionParser.parseExpression(expressionStr, templateParserContext);
+            this.expression = expressionParser.parseExpression(expressionStr, parserContext);
             final StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
             evaluationContext.setBeanResolver(beanResolver);
             this.evaluationContext = evaluationContext;
