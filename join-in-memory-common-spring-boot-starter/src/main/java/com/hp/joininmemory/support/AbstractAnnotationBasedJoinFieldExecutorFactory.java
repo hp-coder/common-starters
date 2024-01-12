@@ -35,7 +35,7 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
     @Override
     public <DATA> List<JoinFieldExecutor<DATA>> createForType(JoinContext<DATA> context) {
         final Class<DATA> clazz = context.getDataClass();
-        final List<JoinFieldExecutorContext<DATA, A>> joinFieldExecutorContexts = createJoinFieldExecutorContext(clazz, context);
+        final List<JoinFieldExecutorContext<DATA>> joinFieldExecutorContexts = createJoinFieldExecutorContext(clazz, context);
         return joinFieldExecutorContexts.stream()
                 .filter(Objects::nonNull)
                 .map(JoinFieldExecutorContext::getExecutor)
@@ -43,7 +43,7 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
                 .collect(Collectors.toList());
     }
 
-    private <DATA> List<JoinFieldExecutorContext<DATA, A>> createJoinFieldExecutorContext(Class<DATA> clazz, JoinContext<DATA> context) {
+    private <DATA> List<JoinFieldExecutorContext<DATA>> createJoinFieldExecutorContext(Class<DATA> clazz, JoinContext<DATA> context) {
         if (context.getConfig().processPolicy().isGrouped()) {
             return createGroupedJoinFieldExecutorContext(clazz);
         } else {
@@ -56,7 +56,7 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
             JOIN_KEY,
             JOIN_DATA,
             DATA_JOIN_KEY,
-            JOIN_RESULT> List<JoinFieldExecutorContext<DATA, A>> createGroupedJoinFieldExecutorContext(Class<DATA> clazz) {
+            JOIN_RESULT> List<JoinFieldExecutorContext<DATA>> createGroupedJoinFieldExecutorContext(Class<DATA> clazz) {
         final List<Field> fields = FieldUtils.getAllFieldsList(clazz);
         if (CollUtil.isEmpty(fields)) {
             return Collections.emptyList();
@@ -68,7 +68,6 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
                 .values()
                 .stream()
                 .map(groupedFields -> {
-                    final JoinFieldExecutorContext<DATA, A> context = new JoinFieldExecutorContext<>();
                     final DefaultGroupedJoinFieldExecutor<DATA,
                             SOURCE_JOIN_KEY,
                             JOIN_KEY,
@@ -80,13 +79,12 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
                                             buildJoinFieldExecutor(clazz, field, AnnotatedElementUtils.getMergedAnnotation(field, annotationClass)))
                                     .collect(Collectors.toList())
                     );
-                    context.setExecutor(groupedExecutor);
-                    return context;
+                    return new JoinFieldExecutorContext<>(groupedExecutor);
                 })
                 .collect(Collectors.toList());
     }
 
-    private <DATA> List<JoinFieldExecutorContext<DATA, A>> createJoinFieldExecutorContext(Class<DATA> clazz) {
+    private <DATA> List<JoinFieldExecutorContext<DATA>> createJoinFieldExecutorContext(Class<DATA> clazz) {
         final List<Field> fields = FieldUtils.getAllFieldsList(clazz);
         if (CollUtil.isEmpty(fields)) {
             return Collections.emptyList();
@@ -94,12 +92,8 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
         return fields.stream()
                 .filter(f -> AnnotatedElementUtils.isAnnotated(f, annotationClass))
                 .map(field -> {
-                    final JoinFieldExecutorContext<DATA, A> context = new JoinFieldExecutorContext<>();
-                    context.setField(field);
                     final A annotation = AnnotatedElementUtils.getMergedAnnotation(field, annotationClass);
-                    context.setAnnotation(annotation);
-                    context.setExecutor(buildJoinFieldExecutor(clazz, field, annotation));
-                    return context;
+                    return new JoinFieldExecutorContext<>(buildJoinFieldExecutor(clazz, field, annotation));
                 })
                 .collect(Collectors.toList());
     }
