@@ -5,7 +5,6 @@ import com.hp.joininmemory.JoinFieldExecutor;
 import com.hp.joininmemory.JoinFieldExecutorFactory;
 import com.hp.joininmemory.JoinFieldExecutorGrouper;
 import com.hp.joininmemory.context.JoinContext;
-import com.hp.joininmemory.context.JoinFieldExecutorContext;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
@@ -35,66 +34,46 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
     @Override
     public <DATA> List<JoinFieldExecutor<DATA>> createForType(JoinContext<DATA> context) {
         final Class<DATA> clazz = context.getDataClass();
-        final List<JoinFieldExecutorContext<DATA>> joinFieldExecutorContexts = createJoinFieldExecutorContext(clazz, context);
-        return joinFieldExecutorContexts.stream()
-                .filter(Objects::nonNull)
-                .map(JoinFieldExecutorContext::getExecutor)
+        final List<JoinFieldExecutor<DATA>> executors = createJoinFieldExecutor(clazz, context);
+        return executors.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    private <DATA> List<JoinFieldExecutorContext<DATA>> createJoinFieldExecutorContext(Class<DATA> clazz, JoinContext<DATA> context) {
+    private <DATA> List<JoinFieldExecutor<DATA>> createJoinFieldExecutor(Class<DATA> clazz, JoinContext<DATA> context) {
         if (context.getConfig().processPolicy().isGrouped()) {
-            return createGroupedJoinFieldExecutorContext(clazz);
+            return createGroupedJoinFieldExecutor(clazz);
         } else {
-            return createJoinFieldExecutorContext(clazz);
+            return createJoinFieldExecutor(clazz);
         }
     }
 
-    private <DATA,
-            SOURCE_JOIN_KEY,
-            JOIN_KEY,
-            JOIN_DATA,
-            DATA_JOIN_KEY,
-            JOIN_RESULT> List<JoinFieldExecutorContext<DATA>> createGroupedJoinFieldExecutorContext(Class<DATA> clazz) {
+    private <DATA> List<JoinFieldExecutor<DATA>> createGroupedJoinFieldExecutor(Class<DATA> clazz) {
         final List<Field> fields = FieldUtils.getAllFieldsList(clazz);
         if (CollUtil.isEmpty(fields)) {
             return Collections.emptyList();
         }
-
         return fields.stream()
                 .filter(field -> AnnotatedElementUtils.isAnnotated(field, annotationClass))
                 .collect(groupingBy(field -> groupBy(clazz, field, AnnotatedElementUtils.getMergedAnnotation(field, annotationClass)).apply(null)))
                 .values()
                 .stream()
-                .map(groupedFields -> {
-                    final DefaultGroupedJoinFieldExecutor<DATA,
-                            SOURCE_JOIN_KEY,
-                            JOIN_KEY,
-                            JOIN_DATA,
-                            DATA_JOIN_KEY,
-                            JOIN_RESULT> groupedExecutor = new DefaultGroupedJoinFieldExecutor<>(
-                            groupedFields.stream()
-                                    .map(field -> this.<DATA, SOURCE_JOIN_KEY, JOIN_KEY, JOIN_DATA, DATA_JOIN_KEY, JOIN_RESULT>
-                                            buildJoinFieldExecutor(clazz, field, AnnotatedElementUtils.getMergedAnnotation(field, annotationClass)))
-                                    .collect(Collectors.toList())
-                    );
-                    return new JoinFieldExecutorContext<>(groupedExecutor);
-                })
+                .map(groupedFields -> (JoinFieldExecutor<DATA>) new DefaultGroupedJoinFieldExecutor<>(
+                        groupedFields.stream()
+                                .map(field -> this.buildJoinFieldExecutor(clazz, field, AnnotatedElementUtils.getMergedAnnotation(field, annotationClass)))
+                                .collect(Collectors.toList())
+                ))
                 .collect(Collectors.toList());
     }
 
-    private <DATA> List<JoinFieldExecutorContext<DATA>> createJoinFieldExecutorContext(Class<DATA> clazz) {
+    private <DATA> List<JoinFieldExecutor<DATA>> createJoinFieldExecutor(Class<DATA> clazz) {
         final List<Field> fields = FieldUtils.getAllFieldsList(clazz);
         if (CollUtil.isEmpty(fields)) {
             return Collections.emptyList();
         }
         return fields.stream()
                 .filter(f -> AnnotatedElementUtils.isAnnotated(f, annotationClass))
-                .map(field -> {
-                    final A annotation = AnnotatedElementUtils.getMergedAnnotation(field, annotationClass);
-                    return new JoinFieldExecutorContext<>(buildJoinFieldExecutor(clazz, field, annotation));
-                })
+                .map(field -> buildJoinFieldExecutor(clazz, field, AnnotatedElementUtils.getMergedAnnotation(field, annotationClass)))
                 .collect(Collectors.toList());
     }
 
