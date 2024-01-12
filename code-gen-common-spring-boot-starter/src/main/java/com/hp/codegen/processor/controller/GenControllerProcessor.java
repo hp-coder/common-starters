@@ -6,7 +6,7 @@ import com.hp.codegen.processor.AbstractCodeGenProcessor;
 import com.hp.codegen.spi.CodeGenProcessor;
 import com.hp.codegen.util.StringUtils;
 import com.hp.common.base.enums.CodeEnum;
-import com.hp.common.base.model.AjaxResult;
+import com.hp.common.base.model.Returns;
 import com.squareup.javapoet.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,7 +72,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                     ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
                     )
                     .addCode(CodeBlock.of("return AjaxResult.success($L.create$L(creator));", serviceFieldName, typeElement.getSimpleName().toString()))
-                    .returns(AjaxResult.class)
+                    .returns(Returns.class)
                     .build());
         }
         return Optional.empty();
@@ -93,9 +93,9 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                             CodeBlock.of("$L.update$L(updater);\n", serviceFieldName, typeElement.getSimpleName().toString())
                     )
                     .addCode(
-                            CodeBlock.of("return $T.success($T.Success.getName());", AjaxResult.class, CodeEnum.class)
+                            CodeBlock.of("return $T.success($T.Success.getName());", Returns.class, CodeEnum.class)
                     )
-                    .returns(AjaxResult.class)
+                    .returns(Returns.class)
                     .build());
         }
         return Optional.empty();
@@ -111,9 +111,9 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                 serviceFieldName, typeElement.getSimpleName().toString())
                 )
                 .addCode(
-                        CodeBlock.of("return $T.success($T.Success.getName());", AjaxResult.class, CodeEnum.class)
+                        CodeBlock.of("return $T.success($T.Success.getName());", Returns.class, CodeEnum.class)
                 )
-                .returns(AjaxResult.class)
+                .returns(Returns.class)
                 .build());
     }
 
@@ -127,9 +127,9 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                 serviceFieldName, typeElement.getSimpleName().toString())
                 )
                 .addCode(
-                        CodeBlock.of("return $T.success($T.Success.getName());", AjaxResult.class, CodeEnum.class)
+                        CodeBlock.of("return $T.success($T.Success.getName());", Returns.class, CodeEnum.class)
                 )
-                .returns(AjaxResult.class)
+                .returns(Returns.class)
                 .build());
     }
 
@@ -149,9 +149,9 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                     ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
                     )
                     .addCode(
-                            CodeBlock.of("return $T.success(response);", AjaxResult.class)
+                            CodeBlock.of("return $T.success(response);", Returns.class)
                     )
-                    .returns(AjaxResult.class)
+                    .returns(Returns.class)
                     .build());
         }
         return Optional.empty();
