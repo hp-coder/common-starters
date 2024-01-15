@@ -61,7 +61,7 @@ public @interface JoinInMemoryConfig {
      * join-annotation which has the same {@code JoinInMemory.runLevel()}
      * value and the same {@code JoinInMemory.loader()} value.
      * <p>
-     * By default, SEPERATED.
+     * By default, SEPARATED.
      */
-    JoinFieldProcessPolicy processPolicy() default JoinFieldProcessPolicy.SEPERATED;
+    JoinFieldProcessPolicy processPolicy() default JoinFieldProcessPolicy.SEPARATED;
 }

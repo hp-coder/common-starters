@@ -16,7 +16,7 @@ public class AfterJoinBasedAfterJoinMethodExecutorFactory extends AbstractAnnota
     }
 
     @Override
-    protected <DATA_AFTER_JOIN> Consumer<Object> createForAfterJoin(Class<DATA_AFTER_JOIN> clazz, Method method, AfterJoin afterJoin) {
+    protected <DATA_AFTER_JOIN> Consumer<DATA_AFTER_JOIN> createForAfterJoin(Class<DATA_AFTER_JOIN> clazz, Method method, AfterJoin afterJoin) {
         return dataAfterJoin -> {
             try {
                 MethodUtils.getAccessibleMethod(method).invoke(dataAfterJoin);

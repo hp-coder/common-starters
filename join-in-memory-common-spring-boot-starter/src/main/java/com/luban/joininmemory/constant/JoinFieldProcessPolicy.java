@@ -7,7 +7,7 @@ import java.util.Objects;
  */
 public enum JoinFieldProcessPolicy {
     GROUPED,
-    SEPERATED,
+    SEPARATED,
     ;
 
     public boolean isGrouped(){

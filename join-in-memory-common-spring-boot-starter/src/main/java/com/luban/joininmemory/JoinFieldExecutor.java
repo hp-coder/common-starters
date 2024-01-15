@@ -3,7 +3,7 @@ package com.luban.joininmemory;
 import java.util.List;
 
 /**
- * @author programmer
+ * @author hp
  */
 public interface JoinFieldExecutor<DATA> {
 

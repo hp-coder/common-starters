@@ -1,7 +1,7 @@
 package com.luban.joininmemory;
 
 /**
- * @author programmer
+ * @author hp
  */
 public interface JoinFieldsExecutorFactory {
     /**
