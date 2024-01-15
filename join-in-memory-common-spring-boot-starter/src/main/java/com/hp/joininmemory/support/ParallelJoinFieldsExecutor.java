@@ -108,6 +108,7 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
         }
     }
 
+    @SuppressWarnings("unchecked")
     private List<Task> buildJoinTasks(JoinExecutorWithLevel leveledExecutors, List<DATA> dataList) {
         return leveledExecutors.getJoinFieldExecutors()
                 .stream()
@@ -115,6 +116,7 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     private List<Task> buildAfterJoinTasks(AfterJoinExecutorWithLevel leveledExecutors, DATA data) {
         return leveledExecutors.getAfterJoinMethodExecutors()
                 .stream()

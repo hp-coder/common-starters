@@ -1,7 +1,7 @@
 package com.hp.joininmemory;
 
 /**
- * @author programmer
+ * @author hp
  */
 public interface JoinFieldsExecutorFactory {
     /**
