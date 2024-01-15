@@ -2,12 +2,14 @@ package com.luban.codegen.processor.request;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.Lists;
+import com.luban.codegen.context.ProcessingEnvironmentContextHolder;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.modifier.BaseEnumFieldSpecModifier;
 import com.luban.codegen.processor.modifier.DefaultToStringFieldSpecModifier;
 import com.luban.codegen.processor.modifier.FieldSpecModifier;
 import com.luban.codegen.processor.modifier.jpa.JpaConverterFieldSpecModifier;
+import com.luban.codegen.processor.modifier.mybatisplus.MybatisplusTypeHandlerFieldSpecModifier;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.model.Request;
 import com.luban.jpa.BaseJpaAggregate;
@@ -51,9 +53,10 @@ public class GenRequestProcessor extends AbstractCodeGenProcessor {
         final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(
                 new DefaultToStringFieldSpecModifier(),
                 new JpaConverterFieldSpecModifier(),
+                new MybatisplusTypeHandlerFieldSpecModifier(),
                 new BaseEnumFieldSpecModifier()
         );
-        generateGettersAndSettersWithLombok(builder, fields, fieldSpecModifiers);
+        generateGettersAndSettersWithLombok(builder, fields, ProcessingEnvironmentContextHolder.getFieldSpecModifiers());
         generateJavaSourceFile(generatePackage(typeElement), generatePath(typeElement), builder);
     }
 

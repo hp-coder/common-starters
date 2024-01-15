@@ -27,6 +27,7 @@ public final class CodeGenProcessorRegistry {
     }
 
     public static CodeGenProcessor find(String annotationClassName, Orm supportedOrm) {
+        ProcessingEnvironmentContextHolder.setOrm(supportedOrm);
         final Set<? extends CodeGenProcessor> codeGenProcessors = PROCESSORS.get(annotationClassName);
         if (codeGenProcessors == null || codeGenProcessors.isEmpty()) {
             // By printing out error messages, the compilation process will be interrupted.

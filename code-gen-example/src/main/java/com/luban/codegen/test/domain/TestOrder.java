@@ -2,6 +2,7 @@ package com.luban.codegen.test.domain;
 
 import com.luban.codegen.processor.mapper.GenMapper;
 import com.luban.codegen.processor.repository.GenRepository;
+import com.luban.codegen.processor.request.GenRequest;
 import com.luban.codegen.processor.service.GenService;
 import com.luban.codegen.processor.service.GenServiceImpl;
 import com.luban.common.base.annotations.FieldDesc;
@@ -22,6 +23,7 @@ import java.util.Optional;
  */
 
 
+@GenRequest(pkgName =  "com.luban.codegen.test.domain.request")
 @GenService(pkgName = "com.luban.codegen.test.domain.service")
 @GenServiceImpl(pkgName = "com.luban.codegen.test.domain.service.impl")
 @GenRepository(pkgName = "com.luban.codegen.test.domain.repository")

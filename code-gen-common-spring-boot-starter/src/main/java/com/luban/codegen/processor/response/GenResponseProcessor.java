@@ -1,13 +1,9 @@
 package com.luban.codegen.processor.response;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.Lists;
+import com.luban.codegen.context.ProcessingEnvironmentContextHolder;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
-import com.luban.codegen.processor.modifier.BaseEnumFieldSpecModifier;
-import com.luban.codegen.processor.modifier.FieldSpecModifier;
-import com.luban.codegen.processor.modifier.LongToStringFieldSpecModifier;
-import com.luban.codegen.processor.modifier.jpa.JpaConverterFieldSpecModifier;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.model.Response;
 import com.luban.jpa.BaseJpaAggregate;
@@ -18,7 +14,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,12 +47,7 @@ public class GenResponseProcessor extends AbstractCodeGenProcessor {
                 }
         );
 
-        final ArrayList<FieldSpecModifier> fieldSpecModifiers = Lists.newArrayList(
-                new LongToStringFieldSpecModifier(),
-                new JpaConverterFieldSpecModifier(),
-                new BaseEnumFieldSpecModifier()
-        );
-        generateGettersAndSettersWithLombok(builder, fields, fieldSpecModifiers);
+        generateGettersAndSettersWithLombok(builder, fields, ProcessingEnvironmentContextHolder.getFieldSpecModifiers());
         generateJavaSourceFile(generatePackage(typeElement), generatePath(typeElement), builder);
     }
 
