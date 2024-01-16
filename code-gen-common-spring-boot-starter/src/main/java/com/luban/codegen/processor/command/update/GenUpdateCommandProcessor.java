@@ -6,8 +6,7 @@ import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.command.CommandForUpdateById;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
@@ -16,6 +15,7 @@ import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author hp
@@ -41,10 +41,13 @@ public class GenUpdateCommandProcessor extends AbstractCodeGenProcessor {
         final String packageName = generatePackage(typeElement);
 
         final TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
-                .addSuperinterface(CommandForUpdateById.class)
+                .addSuperinterface(ParameterizedTypeName.get(CommandForUpdateById.class, Long.class))
                 .addModifiers(Modifier.PUBLIC);
 
         builder.addField(FieldSpec.builder(Long.class, "id", Modifier.PRIVATE).build());
+
+        updaterMethod(typeElement, fields).ifPresent(builder::addMethod);
+
         generateGettersAndSettersWithLombok(builder, fields, null);
         generateJavaSourceFile(packageName, typeElement.getAnnotation(GenUpdateCommand.class).sourcePath(), builder);
     }
@@ -62,5 +65,15 @@ public class GenUpdateCommandProcessor extends AbstractCodeGenProcessor {
     @Override
     public String generatePath(TypeElement typeElement) {
         return typeElement.getAnnotation(GenUpdateCommand.class).sourcePath();
+    }
+
+
+    private Optional<MethodSpec> updaterMethod(TypeElement typeElement, List<VariableElement> fields) {
+        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("update" + typeElement.getSimpleName())
+                .addParameter(TypeName.get(typeElement.asType()), "source")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(void.class);
+        fields.forEach(f -> methodBuilder.addStatement("$T.ofNullable(this.get$L()).ifPresent(source::set$L)", Optional.class, getFieldMethodName(f), getFieldMethodName(f)));
+        return Optional.of(methodBuilder.build());
     }
 }

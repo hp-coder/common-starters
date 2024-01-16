@@ -51,6 +51,7 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
 
         copy(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         requestToCreateCommandMethod(nameContext).ifPresent(typeSpecBuilder::addMethod);
+        createCommandToEntityMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         requestToUpdateCommandMethod(nameContext).ifPresent(typeSpecBuilder::addMethod);
         entityToResponseMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         entityToCustomResponseMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
@@ -79,12 +80,10 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("copy")
+                MethodSpec.methodBuilder("copy")
                         .addParameter(ClassName.get(typeElement), "entity")
                         .returns(ClassName.get(typeElement))
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .build()
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).build()
         );
     }
 
@@ -93,11 +92,21 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("requestToCreateCommand")
+                MethodSpec.methodBuilder("requestToCreateCommand")
                         .addParameter(ClassName.get(nameContext.getCreateRequestPackageName(), nameContext.getCreateRequestClassName()), "request")
                         .returns(ClassName.get(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName()))
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).build()
+        );
+    }
+
+    private Optional<MethodSpec> createCommandToEntityMethod(TypeElement typeElement, DefaultNameContext nameContext) {
+        if (StringUtils.containsNull(nameContext.getCreateCommandPackageName(), nameContext.getCreateRequestPackageName())) {
+            return Optional.empty();
+        }
+        return Optional.of(
+                MethodSpec.methodBuilder("createCommandToEntity")
+                        .addParameter(ClassName.get(nameContext.getCreateCommandPackageName(), nameContext.getCreateCommandClassName()), "command")
+                        .returns(ClassName.get(typeElement)).addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .build()
         );
     }
@@ -107,8 +116,7 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("requestToUpdateCommand")
+                MethodSpec.methodBuilder("requestToUpdateCommand")
                         .addParameter(ClassName.get(nameContext.getUpdateRequestPackageName(), nameContext.getUpdateRequestClassName()), "request")
                         .returns(ClassName.get(nameContext.getUpdateCommandPackageName(), nameContext.getUpdateCommandClassName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -120,14 +128,7 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
         if (StringUtils.containsNull(nameContext.getResponsePackageName())) {
             return Optional.empty();
         }
-        return Optional.of(
-                MethodSpec
-                        .methodBuilder("entityToResponse")
-                        .addParameter(ClassName.get(typeElement), "entity")
-                        .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
-                        .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .build()
-        );
+        return Optional.of(MethodSpec.methodBuilder("entityToResponse").addParameter(ClassName.get(typeElement), "entity").returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName())).addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT).build());
     }
 
     private Optional<MethodSpec> entityToCustomResponseMethod(TypeElement typeElement, DefaultNameContext nameContext) {
@@ -135,19 +136,11 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("entityToCustomResponse")
+                MethodSpec.methodBuilder("entityToCustomResponse")
                         .addParameter(ClassName.get(typeElement), "entity")
                         .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
                         .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                        .addCode(
-                                CodeBlock.of(
-                                        "final $T response = entityToResponse(entity);\n" +
-                                                "// customization\n" +
-                                                "return response;",
-                                        ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName())
-                                )
-                        )
+                        .addCode(CodeBlock.of("final $T response = entityToResponse(entity);\n" + "// customization\n" + "return response;", ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName())))
                         .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
                         .build()
         );
@@ -158,8 +151,7 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("entityToPageResponse")
+                MethodSpec.methodBuilder("entityToPageResponse")
                         .addParameter(ClassName.get(typeElement), "entity")
                         .returns(ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -172,19 +164,11 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("entityToCustomPageResponse")
+                MethodSpec.methodBuilder("entityToCustomPageResponse")
                         .addParameter(ClassName.get(typeElement), "entity")
                         .returns(ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName()))
                         .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
-                        .addCode(
-                                CodeBlock.of(
-                                        "final $T response = entityToPageResponse(entity);\n" +
-                                                "// customization\n" +
-                                                "return response;",
-                                        ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())
-                                )
-                        )
+                        .addCode(CodeBlock.of("final $T response = entityToPageResponse(entity);\n" + "// customization\n" + "return response;", ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
                         .build()
         );
     }
@@ -194,10 +178,8 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("dtoToEntity")
-                        .returns(ClassName.get(typeElement))
-                        .addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "dto")
+                MethodSpec.methodBuilder("dtoToEntity")
+                        .returns(ClassName.get(typeElement)).addParameter(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()), "dto")
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .build()
         );
@@ -211,8 +193,7 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("requestToDto")
+                MethodSpec.methodBuilder("requestToDto")
                         .addParameter(ClassName.get(nameContext.getRequestPackageName(), nameContext.getRequestClassName()), "request")
                         .returns(ClassName.get(nameContext.getDtoPackageName(), nameContext.getDtoClassName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -225,8 +206,7 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("voToResponse")
+                MethodSpec.methodBuilder("voToResponse")
                         .addParameter(ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()), "vo")
                         .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -239,17 +219,9 @@ public class GenMapperProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(
-                MethodSpec
-                        .methodBuilder("voToCustomResponse")
+                MethodSpec.methodBuilder("voToCustomResponse")
                         .addParameter(ClassName.get(nameContext.getVoPackageName(), nameContext.getVoClassName()), "vo")
-                        .addCode(
-                                CodeBlock.of(
-                                        "final $T response = voToResponse(vo);\n" +
-                                                "// customization\n" +
-                                                "return response;",
-                                        ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName())
-                                )
-                        )
+                        .addCode(CodeBlock.of("final $T response = voToResponse(vo);\n" + "// customization\n" + "return response;", ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName())))
                         .returns(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
                         .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
                         .build()
