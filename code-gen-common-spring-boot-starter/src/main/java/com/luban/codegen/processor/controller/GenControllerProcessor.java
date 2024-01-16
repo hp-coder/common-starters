@@ -6,6 +6,7 @@ import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.model.PageRequestWrapper;
+import com.luban.common.base.model.PageResponse;
 import com.luban.common.base.model.Returns;
 import com.squareup.javapoet.*;
 import lombok.RequiredArgsConstructor;
@@ -46,9 +47,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
 
         typeSpecBuilder.addField(serviceField);
 
-        createMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         createUsingCommandMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
-        updateMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         updateUsingCommandMethod(serviceFieldName, typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         enableMethod(serviceFieldName, typeElement).ifPresent(typeSpecBuilder::addMethod);
         disableMethod(serviceFieldName, typeElement).ifPresent(typeSpecBuilder::addMethod);
@@ -73,6 +72,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
         return typeElement.getAnnotation(GenController.class).sourcePath();
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> createMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
         if (StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
@@ -113,7 +113,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
     }
 
     private Optional<MethodSpec> createUsingCommandMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
-        if (StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getCreateCommandPackageName(), nameContext.getMapperPackageName())) {
+        if (StringUtils.containsNull(nameContext.getCreateRequestPackageName(), nameContext.getCreateCommandPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
         }
         return Optional.of(
@@ -138,16 +138,17 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                         )
                         .addCode(
                                 CodeBlock.of(
-                                        "return Returns.success().data($L.create$L(command));",
+                                        "return Returns.success($L.create$L(command));",
                                         serviceFieldName,
                                         typeElement.getSimpleName().toString()
                                 )
                         )
-                        .returns(Returns.class)
+                        .returns(ParameterizedTypeName.get(ClassName.get(Returns.class), ClassName.get(Long.class)))
                         .build()
         );
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> updateMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
         if (StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
@@ -184,7 +185,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
     }
 
     private Optional<MethodSpec> updateUsingCommandMethod(String serviceFieldName, TypeElement typeElement, DefaultNameContext nameContext) {
-        if (StringUtils.containsNull(nameContext.getRequestPackageName(), nameContext.getUpdateCommandPackageName(), nameContext.getMapperPackageName())) {
+        if (StringUtils.containsNull(nameContext.getUpdateRequestPackageName(), nameContext.getUpdateCommandPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
         }
         return Optional.of(
@@ -220,7 +221,12 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                         Returns.class
                                 )
                         )
-                        .returns(Returns.class)
+                        .returns(
+                                ParameterizedTypeName.get(
+                                        ClassName.get(Returns.class),
+                                        ClassName.get(Void.class)
+                                )
+                        )
                         .build()
         );
     }
@@ -237,7 +243,12 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                 .addCode(
                         CodeBlock.of("return $T.success();", Returns.class)
                 )
-                .returns(Returns.class)
+                .returns(
+                        ParameterizedTypeName.get(
+                                ClassName.get(Returns.class),
+                                ClassName.get(Void.class)
+                        )
+                )
                 .build());
     }
 
@@ -253,7 +264,12 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                 .addCode(
                         CodeBlock.of("return $T.success();", Returns.class)
                 )
-                .returns(Returns.class)
+                .returns(
+                        ParameterizedTypeName.get(
+                                ClassName.get(Returns.class),
+                                ClassName.get(Void.class)
+                        )
+                )
                 .build());
     }
 
@@ -271,9 +287,14 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                                 ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()))
                 )
                 .addCode(
-                        CodeBlock.of("return $T.success().data(response);", Returns.class)
+                        CodeBlock.of("return $T.success(response);", Returns.class)
                 )
-                .returns(Returns.class)
+                .returns(
+                        ParameterizedTypeName.get(
+                                ClassName.get(Returns.class),
+                                ParameterizedTypeName.get(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
+                        )
+                )
                 .build());
     }
 
@@ -291,13 +312,21 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
                         CodeBlock.of(
-                                "return $T.success().data($L.findByPage(new $T<>(request.getPage(), request.getPageSize(), request)));",
+                                "return $T.success($L.findByPage($T.createWrapper(request)));",
                                 Returns.class,
                                 serviceFieldName,
                                 PageRequestWrapper.class
                         )
                 )
-                .returns(Returns.class)
+                .returns(
+                        ParameterizedTypeName.get(
+                                ClassName.get(Returns.class),
+                                ParameterizedTypeName.get(
+                                        ClassName.get(PageResponse.class),
+                                        ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())
+                                )
+                        )
+                )
                 .build());
     }
 }

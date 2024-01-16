@@ -13,4 +13,6 @@ public @interface GenFeign {
     String pkgName();
 
     String sourcePath() default "src/main/java";
+
+    String serverName();
 }

@@ -6,7 +6,7 @@ import com.luban.codegen.context.ProcessingEnvironmentContextHolder;
 import com.luban.codegen.processor.AbstractCodeGenProcessor;
 import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
-import com.luban.common.base.model.Request;
+import com.luban.common.base.model.PageRequest;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -39,7 +39,7 @@ public class GenPageRequestProcessor extends AbstractCodeGenProcessor {
                         Objects.isNull(v.getAnnotation(Deprecated.class))
         );
         final TypeSpec.Builder builder = TypeSpec.classBuilder(getPageRequestName(typeElement))
-                .addSuperinterface(Request.class)
+                .addSuperinterface(PageRequest.class)
                 .addModifiers(Modifier.PUBLIC);
 
         builder.addField(
@@ -52,15 +52,14 @@ public class GenPageRequestProcessor extends AbstractCodeGenProcessor {
                         .build()
         );
         builder.addField(
-                FieldSpec.builder(Integer.class, "pageSize", Modifier.PRIVATE)
+                FieldSpec.builder(Integer.class, "size", Modifier.PRIVATE)
                         .addAnnotation(
                                 AnnotationSpec.builder(JsonAlias.class)
-                                        .addMember("value", "\"pageSize\"")
+                                        .addMember("value", "\"size\"")
                                         .build()
                         )
                         .build()
         );
-
 
         generateGettersAndSettersWithLombok(builder, fields, ProcessingEnvironmentContextHolder.getFieldSpecModifiers());
         generateJavaSourceFile(generatePackage(typeElement), generatePath(typeElement), builder);

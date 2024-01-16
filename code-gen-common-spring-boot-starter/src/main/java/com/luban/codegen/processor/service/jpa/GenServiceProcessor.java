@@ -9,11 +9,11 @@ import com.luban.codegen.processor.service.GenService;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.model.PageRequestWrapper;
+import com.luban.common.base.model.PageResponse;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import org.springframework.data.domain.Page;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
@@ -46,9 +46,7 @@ public class GenServiceProcessor extends AbstractCodeGenProcessor {
 
         final DefaultNameContext nameContext = getNameContext();
 
-        createMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         createUsingCommandMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
-        updateMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         updateUsingCommandMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         enableMethod(typeElement).ifPresent(typeSpecBuilder::addMethod);
         disableMethod(typeElement).ifPresent(typeSpecBuilder::addMethod);
@@ -74,6 +72,7 @@ public class GenServiceProcessor extends AbstractCodeGenProcessor {
         return typeElement.getAnnotation(GenService.class).sourcePath();
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> createMethod(TypeElement typeElement, DefaultNameContext nameContext) {
         if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
@@ -96,6 +95,7 @@ public class GenServiceProcessor extends AbstractCodeGenProcessor {
         );
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> updateMethod(TypeElement typeElement, DefaultNameContext nameContext) {
         if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
@@ -155,7 +155,7 @@ public class GenServiceProcessor extends AbstractCodeGenProcessor {
         return Optional.of(MethodSpec.methodBuilder("findByPage")
                 .addParameter(ParameterizedTypeName.get(ClassName.get(PageRequestWrapper.class), ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName())), "query")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                .returns(ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
+                .returns(ParameterizedTypeName.get(ClassName.get(PageResponse.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
                 .build());
     }
 }

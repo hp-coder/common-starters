@@ -14,6 +14,7 @@ import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.enums.CodeEnum;
 import com.luban.common.base.exception.BusinessException;
 import com.luban.common.base.model.PageRequestWrapper;
+import com.luban.common.base.model.PageResponse;
 import com.luban.jpa.EntityOperations;
 import com.querydsl.core.BooleanBuilder;
 import com.squareup.javapoet.*;
@@ -21,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -82,9 +82,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
         typeSpecBuilder.addField(repositoryField);
         typeSpecBuilder.addField(applicationEventPublisherField);
 
-        createMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
         createUsingCommandMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
-        updateMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
         updateUsingCommandMethod(typeElement, nameContext, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
         enableMethod(typeElement, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
         disableMethod(typeElement, repositoryFieldName).ifPresent(typeSpecBuilder::addMethod);
@@ -110,6 +108,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
         return typeElement.getAnnotation(GenServiceImpl.class).sourcePath();
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> createMethod(
             TypeElement typeElement,
             DefaultNameContext nameContext,
@@ -212,6 +211,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
         );
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> updateMethod(
             TypeElement typeElement,
             DefaultNameContext nameContext,
@@ -425,7 +425,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                                 CodeBlock.of("final $T booleanBuilder = new $T();\n", ClassName.get(BooleanBuilder.class), ClassName.get(BooleanBuilder.class))
                         )
                         .addCode(
-                                CodeBlock.of("final $T page = $L.findAll(booleanBuilder, $T.of(pageWrapper.getPage() - 1, pageWrapper.getPageSize(), $T.by($T.DESC, \"createdAt\")));\n",
+                                CodeBlock.of("final $T page = $L.findAll(booleanBuilder, $T.of(pageWrapper.getPage() - 1, pageWrapper.getPageSize(), $T.by($T.DESC, \"id\")));\n",
                                         ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(typeElement)),
                                         repositoryFieldName,
                                         ClassName.get(PageRequest.class),
@@ -435,21 +435,21 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                         )
                         .addCode(
                                 CodeBlock.of(
-                                        "return new $T<>(\n" +
+                                        "return $T.of(\n" +
                                                 "page.getContent()\n" +
                                                 "   .stream()\n" +
                                                 "   .map($T.INSTANCE::entityToCustomPageResponse)\n" +
                                                 "   .collect($T.toList()),\n" +
-                                                "page.getPageable(),\n" +
-                                                "page.getTotalElements()\n" +
+                                                "page.getTotalElements(),\n" +
+                                                "pageWrapper \n" +
                                                 ");\n",
-                                        ClassName.get(PageImpl.class),
+                                        ClassName.get(PageResponse.class),
                                         ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()),
                                         ClassName.get(Collectors.class)
                                 )
                         )
                         .addAnnotation(Override.class)
-                        .returns(ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
+                        .returns(ParameterizedTypeName.get(ClassName.get(PageResponse.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
                         .build()
         );
     }

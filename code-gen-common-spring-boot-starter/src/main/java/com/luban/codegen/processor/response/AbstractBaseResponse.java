@@ -6,6 +6,7 @@ import lombok.Data;
 /**
  * @author hp
  */
+@Deprecated
 @Data
 public abstract class AbstractBaseResponse implements Response {
     private String id;

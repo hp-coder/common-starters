@@ -19,6 +19,7 @@ import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.enums.CodeEnum;
 import com.luban.common.base.exception.BusinessException;
 import com.luban.common.base.model.PageRequestWrapper;
+import com.luban.common.base.model.PageResponse;
 import com.luban.mybatisplus.EntityOperations;
 import com.squareup.javapoet.*;
 import lombok.RequiredArgsConstructor;
@@ -90,10 +91,8 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
         builder.addField(repositoryField);
         builder.addField(applicationEventPublisherField);
 
-        createMethod(typeElement, nameContext, repositoryFieldName).ifPresent(builder::addMethod);
         createUsingCommandMethod(typeElement, nameContext, repositoryFieldName).ifPresent(builder::addMethod);
         updateMethod(typeElement, nameContext, repositoryFieldName).ifPresent(builder::addMethod);
-        updateUsingCommandMethod(typeElement, nameContext, repositoryFieldName).ifPresent(builder::addMethod);
         enableMethod(typeElement, repositoryFieldName).ifPresent(builder::addMethod);
         disableMethod(typeElement, repositoryFieldName).ifPresent(builder::addMethod);
         findByIdMethod(typeElement, repositoryFieldName).ifPresent(builder::addMethod);
@@ -118,6 +117,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
         return typeElement.getAnnotation(GenServiceImpl.class).sourcePath();
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> createMethod(
             TypeElement typeElement,
             DefaultNameContext nameContext,
@@ -217,6 +217,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
         );
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> updateMethod(
             TypeElement typeElement,
             DefaultNameContext nameContext,
@@ -410,7 +411,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                                 CodeBlock.of(
                                         "$T page = new $T<>(pageWrapper.getPage(), pageWrapper.getPageSize());\n" +
                                                 "page.setOptimizeCountSql(true);\n" +
-                                                "page.setOrders($T.newArrayList($T.desc(\"create_at\")));\n",
+                                                "page.setOrders($T.newArrayList($T.desc(\"id\")));\n",
                                         ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(typeElement)),
                                         Page.class,
                                         Lists.class,
@@ -432,27 +433,19 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                         )
                         .addCode(
                                 CodeBlock.of(
-                                        "final $T data = new $T<>(page.getCurrent(), page.getSize(), page.getTotal());\n",
-                                        ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())),
-                                        ClassName.get(Page.class)
-                                )
-                        )
-                        .addCode(
-                                CodeBlock.of(
-                                        "data.setRecords(\n" +
+                                        " return $T.of(\n" +
                                                 "page.getRecords().stream()\n" +
                                                 ".map($T.INSTANCE::entityToCustomPageResponse)\n" +
-                                                ".collect($T.toList())\n" +
+                                                ".collect($T.toList()),\n" +
+                                                "page.getTotal(),\n"+
+                                                "pageWrapper\n"+
                                                 ");\n",
                                         ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()),
                                         ClassName.get(Collectors.class)
                                 )
                         )
-                        .addCode(
-                                CodeBlock.of("return data;")
-                        )
                         .addAnnotation(Override.class)
-                        .returns(ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
+                        .returns(ParameterizedTypeName.get(ClassName.get(PageResponse.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
                         .build()
         );
     }

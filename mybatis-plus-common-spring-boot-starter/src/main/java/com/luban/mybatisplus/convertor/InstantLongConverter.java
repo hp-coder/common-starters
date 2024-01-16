@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 
-public class InstantLongConverter implements TypeHandlerCodeGenAdapter<Instant, String> {
+public class InstantLongConverter implements TypeHandlerCodeGenAdapter<Instant, Long> {
 
     @Override
     public void setParameter(PreparedStatement ps, int i, Instant instant, JdbcType jdbcType) throws SQLException {

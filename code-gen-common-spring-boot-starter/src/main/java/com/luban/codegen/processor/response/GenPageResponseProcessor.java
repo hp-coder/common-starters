@@ -8,6 +8,7 @@ import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.common.base.model.Response;
 import com.luban.jpa.BaseJpaAggregate;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -32,23 +33,22 @@ public class GenPageResponseProcessor extends AbstractCodeGenProcessor {
         return super.supportedOrm(orm);
     }
 
-    public static String getPageResponseName(TypeElement typeElement) {
-        return typeElement.getSimpleName() + RESPONSE_SUFFIX;
-    }
 
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
         final List<VariableElement> fields = findFields(typeElement, v ->
                 Objects.isNull(v.getAnnotation(Ignore.class)) && Objects.isNull(v.getAnnotation(Deprecated.class))
         );
-        final TypeSpec.Builder builder = TypeSpec.classBuilder(getPageResponseName(typeElement))
+        final TypeSpec.Builder builder = TypeSpec.classBuilder(nameContext.getPageResponseClassName())
                 .addSuperinterface(Response.class)
                 .addModifiers(Modifier.PUBLIC);
 
         getSuperClass(typeElement).ifPresent(
                 superclass -> {
                     if (superclass.getQualifiedName().contentEquals(BaseJpaAggregate.class.getCanonicalName())) {
-                        builder.superclass(AbstractBaseResponse.class);
+                        builder.addField(FieldSpec.builder(String.class,"id", Modifier.PRIVATE).build());
+                        builder.addField(FieldSpec.builder(String.class,"createdAt", Modifier.PRIVATE).build());
+                        builder.addField(FieldSpec.builder(String.class,"updatedAt", Modifier.PRIVATE).build());
                     }
                 }
         );

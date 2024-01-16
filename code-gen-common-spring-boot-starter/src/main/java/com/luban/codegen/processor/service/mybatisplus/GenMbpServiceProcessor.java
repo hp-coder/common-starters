@@ -1,7 +1,6 @@
 package com.luban.codegen.processor.service.mybatisplus;
 
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.google.auto.service.AutoService;
 import com.luban.codegen.constant.Orm;
@@ -11,6 +10,7 @@ import com.luban.codegen.processor.service.GenService;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.codegen.util.StringUtils;
 import com.luban.common.base.model.PageRequestWrapper;
+import com.luban.common.base.model.PageResponse;
 import com.squareup.javapoet.*;
 
 import javax.annotation.processing.RoundEnvironment;
@@ -45,9 +45,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
 
         DefaultNameContext nameContext = getNameContext();
 
-        createMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         createUsingCommandMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
-        updateMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         updateUsingCommandMethod(typeElement, nameContext).ifPresent(typeSpecBuilder::addMethod);
         enableMethod(typeElement).ifPresent(typeSpecBuilder::addMethod);
         disableMethod(typeElement).ifPresent(typeSpecBuilder::addMethod);
@@ -73,6 +71,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
         return typeElement.getAnnotation(GenService.class).sourcePath();
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> createMethod(TypeElement typeElement, DefaultNameContext nameContext) {
         if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
@@ -97,6 +96,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
         );
     }
 
+    @Deprecated(forRemoval = true)
     private Optional<MethodSpec> updateMethod(TypeElement typeElement, DefaultNameContext nameContext) {
         if (StringUtils.containsNull(nameContext.getDtoPackageName(), nameContext.getMapperPackageName())) {
             return Optional.empty();
@@ -173,7 +173,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
                                 "query"
                         )
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-                        .returns(ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
+                        .returns(ParameterizedTypeName.get(ClassName.get(PageResponse.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
                         .build()
         );
     }

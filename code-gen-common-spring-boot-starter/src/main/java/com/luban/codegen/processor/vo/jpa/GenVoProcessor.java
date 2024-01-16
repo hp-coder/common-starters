@@ -7,6 +7,7 @@ import com.luban.codegen.processor.Ignore;
 import com.luban.codegen.processor.vo.GenVo;
 import com.luban.codegen.spi.CodeGenProcessor;
 import com.luban.jpa.BaseJpaAggregate;
+import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -16,6 +17,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import java.lang.annotation.Annotation;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,21 +35,26 @@ public class GenVoProcessor extends AbstractCodeGenProcessor {
     public boolean supportedOrm(Orm orm) {
         return Orm.SPRING_DATA_JPA.equals(orm);
     }
+
     @Override
     protected void generateClass(TypeElement typeElement, RoundEnvironment roundEnvironment) {
-        List<VariableElement> fields = findFields(typeElement, v ->
+        final List<VariableElement> fields = findFields(typeElement, v ->
                 Objects.isNull(v.getAnnotation(Ignore.class)) &&
                         Objects.isNull(v.getAnnotation(Deprecated.class))
         );
-        String sourceClassName = typeElement.getSimpleName() + SUFFIX;
-        TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
+        final String sourceClassName = typeElement.getSimpleName() + SUFFIX;
+        final TypeSpec.Builder builder = TypeSpec.classBuilder(sourceClassName)
                 .addModifiers(Modifier.PUBLIC);
-        MethodSpec.Builder constructorSpecBuilder = MethodSpec.constructorBuilder().addParameter(TypeName.get(typeElement.asType()), "source").addModifiers(Modifier.PUBLIC);
+        final MethodSpec.Builder constructorSpecBuilder = MethodSpec.constructorBuilder()
+                .addParameter(TypeName.get(typeElement.asType()), "source")
+                .addModifiers(Modifier.PUBLIC);
 
         getSuperClass(typeElement).ifPresent(superclass -> {
             if (superclass.getQualifiedName().contentEquals(BaseJpaAggregate.class.getCanonicalName())) {
-                builder.superclass(AbstractBaseVO.class);
-                constructorSpecBuilder.addStatement("super(source)");
+                builder.addField(FieldSpec.builder(Long.class, "id", Modifier.PRIVATE).build());
+                builder.addField(FieldSpec.builder(Instant.class, "createdAt", Modifier.PRIVATE).build());
+                builder.addField(FieldSpec.builder(Instant.class, "updatedAt", Modifier.PRIVATE).build());
+                builder.addField(FieldSpec.builder(Integer.class, "version", Modifier.PRIVATE).build());
             }
         });
 

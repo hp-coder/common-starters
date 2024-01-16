@@ -13,6 +13,7 @@ import java.time.Instant;
 @MappedSuperclass
 @Getter
 public abstract class BaseJpaAggregate extends AbstractAggregateRoot<BaseJpaAggregate> {
+
     @Id
     @GeneratedValue(generator = "snowflakeIdGenerator")
     @GenericGenerator(name = "snowflakeIdGenerator", strategy = "com.luban.jpa.id.SnowflakeIdGenerator")
