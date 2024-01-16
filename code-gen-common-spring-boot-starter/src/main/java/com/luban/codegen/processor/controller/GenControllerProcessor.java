@@ -292,7 +292,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                 .returns(
                         ParameterizedTypeName.get(
                                 ClassName.get(Returns.class),
-                                ParameterizedTypeName.get(ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName()))
+                                ClassName.get(nameContext.getResponsePackageName(), nameContext.getResponseClassName())
                         )
                 )
                 .build());
