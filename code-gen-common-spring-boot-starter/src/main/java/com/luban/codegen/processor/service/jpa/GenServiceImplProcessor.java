@@ -304,7 +304,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                         .addCode(
                                 CodeBlock.of(
                                         "$T.doUpdate($L)\n.loadById(id)\n"
-                                                + ".update($L::valid)\n"
+                                                + ".update($L::enable)\n"
                                                 + ".execute();",
                                         ClassName.get(EntityOperations.class),
                                         repositoryFieldName,
@@ -327,7 +327,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                         .addCode(
                                 CodeBlock.of(
                                         "$T.doUpdate($L)\n.loadById(id)\n"
-                                                + ".update($L::invalid)\n"
+                                                + ".update($L::disable)\n"
                                                 + ".execute();",
                                         ClassName.get(EntityOperations.class),
                                         repositoryFieldName,
