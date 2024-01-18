@@ -35,6 +35,11 @@ public class JoinRepository {
                 .collect(Collectors.toList());
         log.info("Querying, ids={}", CollUtil.join(safeIds, StrUtil.COMMA));
         return safeIds.stream()
+//                .peek(id -> {
+//                    if (Objects.equals(2L, id)) {
+//                        throw new IllegalArgumentException("join 发生 参数错误");
+//                    }
+//                })
                 .map(id -> LOCAL_REPO.getOrDefault(id, null))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

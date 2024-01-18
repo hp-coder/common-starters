@@ -19,7 +19,6 @@ public abstract class AbstractAfterJoinMethodExecutor<DATA_AFTER_JOIN> implement
         try {
             afterJoin(data);
         } catch (Exception e) {
-            log.error("AfterJoinErrorMessage={}||data={}", JoinErrorCode.AFTER_JOIN_ERROR.getName(), data.toString(), e);
             throw new JoinException(JoinErrorCode.AFTER_JOIN_ERROR, e);
         }
     }

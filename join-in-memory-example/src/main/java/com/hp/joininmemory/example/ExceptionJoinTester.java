@@ -13,7 +13,7 @@ import lombok.Data;
         executorType = JoinInMemoryExecutorType.PARALLEL,
         processPolicy = JoinFieldProcessPolicy.GROUPED
 )
-public class JoinTester {
+public class ExceptionJoinTester {
 
 
     String createdBy;
@@ -28,10 +28,11 @@ public class JoinTester {
 
     Long removedBy;
 
+//    @JoinUsernameOnUserId(keyFromSourceData = "#{}", sourceDataKeyConverter = "")
     @JoinUsernameOnUserId(keyFromSourceData = "#{removedBy}", sourceDataKeyConverter = "")
     String remover;
 
-    public JoinTester(String createdBy, String updatedBy, Long removedBy) {
+    public ExceptionJoinTester(String createdBy, String updatedBy, Long removedBy) {
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
         this.removedBy = removedBy;

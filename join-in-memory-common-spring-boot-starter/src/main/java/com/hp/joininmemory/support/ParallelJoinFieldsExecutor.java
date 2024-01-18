@@ -2,6 +2,7 @@ package com.hp.joininmemory.support;
 
 import com.hp.joininmemory.AfterJoinMethodExecutor;
 import com.hp.joininmemory.JoinFieldExecutor;
+import com.hp.joininmemory.exception.ExceptionNotifier;
 import com.hp.joininmemory.exception.JoinErrorCode;
 import com.hp.joininmemory.exception.JoinException;
 import lombok.AllArgsConstructor;
@@ -21,20 +22,26 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor<DATA> {
+
     private final ExecutorService executorService;
     private final List<JoinExecutorWithLevel> joinExecutorWithLevels;
     private final List<AfterJoinExecutorWithLevel> afterJoinExecutorWithLevels;
-
+    private final ExceptionNotifier joinExceptionNotifier;
+    private final ExceptionNotifier afterJoinExceptionNotifier;
 
     public ParallelJoinFieldsExecutor(Class<DATA> clazz,
                                       List<JoinFieldExecutor<DATA>> joinFieldExecutors,
                                       List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors,
-                                      ExecutorService executorService
+                                      ExecutorService executorService,
+                                      ExceptionNotifier joinExceptionNotifier,
+                                      ExceptionNotifier afterJoinExceptionNotifier
     ) {
         super(clazz, joinFieldExecutors, afterJoinMethodExecutors);
         this.executorService = executorService;
         this.joinExecutorWithLevels = buildJoinExecutorWithLevel();
         this.afterJoinExecutorWithLevels = buildAfterJoinExecutorWithLevel();
+        this.joinExceptionNotifier = joinExceptionNotifier;
+        this.afterJoinExceptionNotifier = afterJoinExceptionNotifier;
     }
 
     private List<JoinExecutorWithLevel> buildJoinExecutorWithLevel() {
@@ -79,40 +86,38 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
                 } else {
                     this.executorService.invokeAll(tasks);
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 throw new JoinException(JoinErrorCode.JOIN_ERROR, e);
             }
         });
     }
 
     private void executeAfterJoinTasks(List<DATA> dataList) {
-        try {
-            final List<Task> afterJoinTasks = afterJoinExecutorWithLevels
-                    .stream()
-                    .flatMap(leveledExecutors ->
-                            dataList.stream()
-                                    .flatMap(data -> buildAfterJoinTasks(leveledExecutors, data).stream())
-                    )
-                    .collect(Collectors.toList());
-            if (log.isDebugEnabled()) {
-                StopWatch stopwatch = new StopWatch("Starting executing after join tasks");
-                stopwatch.start();
-                this.executorService.invokeAll(afterJoinTasks);
-                stopwatch.stop();
-                log.debug("run execute cost {} ms, task is {}.", stopwatch.getTotalTimeMillis(), afterJoinTasks);
-            } else {
-                this.executorService.invokeAll(afterJoinTasks);
+        afterJoinExecutorWithLevels.forEach(leveled -> {
+            final AfterJoinExecutorWithLevel leveled1 = leveled;
+            final List<Task> afterJoinTasks = dataList.stream().flatMap(data -> buildAfterJoinTasks(leveled1, data).stream()).collect(Collectors.toList());
+            try {
+                if (log.isDebugEnabled()) {
+                    StopWatch stopwatch = new StopWatch("Starting executing after join tasks");
+                    stopwatch.start();
+                    this.executorService.invokeAll(afterJoinTasks);
+                    stopwatch.stop();
+                    log.debug("run execute cost {} ms, task is {}.", stopwatch.getTotalTimeMillis(), afterJoinTasks);
+                } else {
+                    this.executorService.invokeAll(afterJoinTasks);
+                }
+            } catch (InterruptedException e) {
+                throw new JoinException(JoinErrorCode.AFTER_JOIN_ERROR, e);
             }
-        } catch (Exception e) {
-            throw new JoinException(JoinErrorCode.AFTER_JOIN_ERROR, e);
-        }
+        });
+
     }
 
     @SuppressWarnings("unchecked")
     private List<Task> buildJoinTasks(JoinExecutorWithLevel leveledExecutors, List<DATA> dataList) {
         return leveledExecutors.getJoinFieldExecutors()
                 .stream()
-                .map(executor -> new Task(data -> executor.execute((List<DATA>) data), dataList))
+                .map(executor -> new Task(data -> executor.execute((List<DATA>) data), dataList, joinExceptionNotifier))
                 .collect(Collectors.toList());
     }
 
@@ -120,7 +125,7 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
     private List<Task> buildAfterJoinTasks(AfterJoinExecutorWithLevel leveledExecutors, DATA data) {
         return leveledExecutors.getAfterJoinMethodExecutors()
                 .stream()
-                .map(executor -> new Task(d -> executor.execute((DATA) d), data))
+                .map(executor -> new Task(d -> executor.execute((DATA) d), data, afterJoinExceptionNotifier))
                 .collect(Collectors.toList());
     }
 
@@ -130,13 +135,14 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
 
         private final Consumer<Object> consumer;
         private final Object data;
+        private final ExceptionNotifier exceptionNotifier;
 
         @Override
         public Void call() {
             try {
                 consumer.accept(data);
             } catch (Exception e) {
-                throw new RuntimeException("JoinFieldExecutor failed for: ", e);
+                exceptionNotifier.handle().accept(data, e);
             }
             return null;
         }

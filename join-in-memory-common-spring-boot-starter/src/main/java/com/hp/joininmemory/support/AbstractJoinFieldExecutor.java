@@ -138,7 +138,6 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
                 }
             });
         } catch (Exception e) {
-            log.error("JoinErrorMessage={}", JoinErrorCode.JOIN_ERROR.getName(), e);
             throw new JoinException(JoinErrorCode.JOIN_ERROR, e);
         }
     }

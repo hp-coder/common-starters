@@ -50,11 +50,8 @@ public class SerialJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor<D
         } else {
             dataList.forEach(data ->
                     getAfterJoinMethodExecutors()
-                            .forEach(
-                                    e -> e.execute(data)
-                            )
+                            .forEach(e -> e.execute(data))
             );
         }
-
     }
 }
