@@ -4,11 +4,14 @@ import com.hp.joininmemory.annotation.JoinInMemoryConfig;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Optional;
+
 /**
  * @author hp
  */
 @Getter
 @Setter
+@JoinInMemoryConfig
 public class JoinContext<DATA> {
 
     Class<DATA> dataClass;
@@ -17,6 +20,6 @@ public class JoinContext<DATA> {
 
     public JoinContext(Class<DATA> dataClass, JoinInMemoryConfig config) {
         this.dataClass = dataClass;
-        this.config = config;
+        this.config = Optional.ofNullable(config).orElse(this.getClass().getAnnotation(JoinInMemoryConfig.class));
     }
 }
