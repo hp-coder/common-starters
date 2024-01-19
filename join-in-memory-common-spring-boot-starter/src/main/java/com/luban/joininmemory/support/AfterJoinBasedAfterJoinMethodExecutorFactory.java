@@ -21,7 +21,7 @@ public class AfterJoinBasedAfterJoinMethodExecutorFactory extends AbstractAnnota
             try {
                 MethodUtils.getAccessibleMethod(method).invoke(dataAfterJoin);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
+                throwSimpleExceptionIfPossible(dataAfterJoin, method, e);
             }
         };
     }
@@ -29,5 +29,16 @@ public class AfterJoinBasedAfterJoinMethodExecutorFactory extends AbstractAnnota
     @Override
     protected <DATA_AFTER_JOIN> int createForRunLevel(Class<DATA_AFTER_JOIN> clazz, Method method, AfterJoin afterJoin) {
         return afterJoin.runLevel().getCode();
+    }
+
+    private void throwSimpleExceptionIfPossible(Object value, Method method, Throwable ex) {
+        if (ex instanceof InvocationTargetException) {
+            Throwable rootCause = ex.getCause();
+            if (rootCause instanceof RuntimeException) {
+                throw (RuntimeException) rootCause;
+            }
+            throw new RuntimeException("A problem occurred when trying to execute method '" + method.getName() +
+                    "' on object of type [" + value.getClass().getName() + "]", rootCause);
+        }
     }
 }

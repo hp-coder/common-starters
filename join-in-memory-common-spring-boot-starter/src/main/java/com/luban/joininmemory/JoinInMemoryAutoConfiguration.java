@@ -1,5 +1,7 @@
 package com.luban.joininmemory;
 
+import com.luban.joininmemory.exception.AfterJoinExceptionNotifier;
+import com.luban.joininmemory.exception.JoinExceptionNotifier;
 import com.luban.joininmemory.support.AfterJoinBasedAfterJoinMethodExecutorFactory;
 import com.luban.joininmemory.support.DefaultJoinFieldsExecutorFactory;
 import com.luban.joininmemory.support.DefaultJoinService;
@@ -31,13 +33,35 @@ public class JoinInMemoryAutoConfiguration {
     public JoinFieldsExecutorFactory joinFieldsExecutorFactory(
             Collection<? extends JoinFieldExecutorFactory> joinFieldExecutorFactories,
             Collection<? extends AfterJoinMethodExecutorFactory> afterJoinMethodExecutorFactories,
-            Map<String, ExecutorService> executorServiceMap
+            Map<String, ExecutorService> executorServiceMap,
+            JoinExceptionNotifier joinExceptionNotifier,
+            AfterJoinExceptionNotifier afterJoinExceptionNotifier
     ) {
         return new DefaultJoinFieldsExecutorFactory(
                 joinFieldExecutorFactories,
                 afterJoinMethodExecutorFactories,
-                executorServiceMap
+                executorServiceMap,
+                joinExceptionNotifier,
+                afterJoinExceptionNotifier
         );
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public JoinExceptionNotifier joinExceptionNotifier() {
+        return () -> (data, ex) -> {
+            log.error("Join Exception:", ex);
+            log.error("Exceptional data={}", data);
+        };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AfterJoinExceptionNotifier afterJoinExceptionNotifier() {
+        return () -> (data, ex) -> {
+            log.error("AfterJoin Exception:", ex);
+            log.error("Exceptional data={}", data);
+        };
     }
 
     @Bean
