@@ -96,11 +96,11 @@ import java.util.Optional;
          setStatus(ValidStatus.VALID);
      }
 
-     public void valid(){
+     public void enable(){
          setStatus(ValidStatus.VALID);
      }
 
-     public void invalid(){
+     public void disable(){
          setStatus(ValidStatus.INVALID);
      }
 
