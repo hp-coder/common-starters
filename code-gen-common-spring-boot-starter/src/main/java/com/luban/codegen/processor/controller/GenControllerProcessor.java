@@ -125,7 +125,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                         )
                         .addAnnotation(
                                 AnnotationSpec.builder(PostMapping.class)
-                                        .addMember("value", "$S", "_create")
+                                        .addMember("value", "$S", "create")
                                         .build()
                         )
                         .addModifiers(Modifier.PUBLIC)
@@ -197,7 +197,7 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                         )
                         .addAnnotation(
                                 AnnotationSpec.builder(PostMapping.class)
-                                        .addMember("value", "$S", "_update")
+                                        .addMember("value", "$S", "update")
                                         .build()
                         )
                         .addModifiers(Modifier.PUBLIC)

@@ -79,7 +79,7 @@ public class GenFeignProcessor extends AbstractCodeGenProcessor {
                 )
                 .addAnnotation(
                         AnnotationSpec.builder(PostMapping.class)
-                                .addMember("value", "$S", "_create")
+                                .addMember("value", "$S", "create")
                                 .build()
                 )
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
@@ -98,7 +98,7 @@ public class GenFeignProcessor extends AbstractCodeGenProcessor {
                 )
                 .addAnnotation(
                         AnnotationSpec.builder(PostMapping.class)
-                                .addMember("value", "$S", "_update")
+                                .addMember("value", "$S", "update")
                                 .build()
                 )
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
