@@ -53,7 +53,7 @@ public class JoinTests {
      * <p>
      * 2024-01-09 11:36:38.541  INFO 32852 --- [Memory-Thread-2] c.h.joininmemory.example.JoinRepository  : Querying, ids=3
      * 2024-01-09 11:36:38.541  INFO 32852 --- [Memory-Thread-1] c.h.joininmemory.example.JoinRepository  : Querying, ids=1,2
-     * JoinTester2(createdBy=1, creator=user1, updatedBy=2, updater=user1, removedBy=3, remover=user1)
+     * JoinTester2(createdBy=1, creator=user1, updatedBy=2, updater=user2, removedBy=3, remover=user3)
      */
     @Test
     public void test_grouped_join_scene2() {
@@ -70,7 +70,7 @@ public class JoinTests {
      * 2024-01-09 11:42:09.445  INFO 32930 --- [Memory-Thread-1] c.h.joininmemory.example.JoinRepository  : Querying, ids=3
      * 2024-01-09 11:42:09.452  INFO 32930 --- [Memory-Thread-1] c.h.joininmemory.example.JoinRepository  : Querying, ids=1
      * 2024-01-09 11:42:09.453  INFO 32930 --- [Memory-Thread-2] c.h.joininmemory.example.JoinRepository  : Querying, ids=2
-     * JoinTester3(createdBy=1, creator=user1, updatedBy=2, updater=user1, removedBy=3, remover=user1)
+     * JoinTester3(createdBy=1, creator=user1, updatedBy=2, updater=user2, removedBy=3, remover=user3)
      */
     @Test
     public void test_grouped_join_scene3() {
@@ -87,7 +87,7 @@ public class JoinTests {
      * AfterJoin2: createdBy=user1 || updatedBy=user1 || removedBy=user1
      * AfterJoin3: The function is executed before the afterJoin() and the afterJoin2()
      * AfterJoin: sequence = 123
-     * AfterJoinTester(createdBy=1, creator=user1, updatedBy=2, updater=user1, removedBy=3, remover=user1)
+     * AfterJoinTester(createdBy=1, creator=user1, updatedBy=2, updater=user2, removedBy=3, remover=user3)
      */
     @Test
     public void test_after_join_scene1() {
