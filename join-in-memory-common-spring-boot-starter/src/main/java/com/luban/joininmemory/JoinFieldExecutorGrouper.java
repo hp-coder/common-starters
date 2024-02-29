@@ -7,7 +7,7 @@ import java.util.function.Function;
 /**
  * @author hp
  */
-public interface JoinFieldExecutorGrouper<A extends Annotation> {
+public interface JoinFieldExecutorGrouper<A extends Annotation, KEY> {
 
-   <DATA> Function<Object, Object> groupBy(Class<DATA> clazz, Field field, A annotation);
+   <DATA> Function<Class<? extends Annotation>, KEY> groupBy(Class<DATA> clazz, Field field, A annotation);
 }

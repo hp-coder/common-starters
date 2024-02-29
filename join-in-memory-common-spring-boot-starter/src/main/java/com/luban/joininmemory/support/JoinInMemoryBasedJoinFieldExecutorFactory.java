@@ -8,6 +8,7 @@ import org.springframework.expression.*;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
@@ -97,8 +98,13 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
     }
 
     @Override
-    public <DATA> Function<Object, Object> groupBy(Class<DATA> clazz, Field field, JoinInMemory annotation) {
-        return ignored -> annotation.keyFromJoinData() + annotation.joinDataKeyConverter() + annotation.loader() + annotation.runLevel();
+    public <DATA> Function<Class<? extends Annotation>, String> groupBy(Class<DATA> clazz, Field field, JoinInMemory annotation) {
+        return rootAnnotation -> rootAnnotation.getName() +
+                annotation.keyFromJoinData() +
+                annotation.joinDataKeyConverter() +
+                annotation.loader() +
+                annotation.runLevel() +
+                annotation.filter();
     }
 
     private class DataSetter<T, R> implements BiConsumer<T, List<R>> {

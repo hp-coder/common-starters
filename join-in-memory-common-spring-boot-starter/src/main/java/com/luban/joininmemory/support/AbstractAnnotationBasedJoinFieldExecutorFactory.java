@@ -7,13 +7,13 @@ import com.luban.joininmemory.JoinFieldExecutorGrouper;
 import com.luban.joininmemory.context.JoinContext;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.MergedAnnotation;
+import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.core.annotation.RepeatableContainers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.groupingBy;
 /**
  * @author hp 2023/3/27
  */
-public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends Annotation> implements JoinFieldExecutorFactory, JoinFieldExecutorGrouper<A> {
+public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends Annotation> implements JoinFieldExecutorFactory, JoinFieldExecutorGrouper<A,String> {
 
     public final Class<A> annotationClass;
 
@@ -53,9 +53,16 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
         if (CollUtil.isEmpty(fields)) {
             return Collections.emptyList();
         }
-        return fields.stream()
+        final Map<String, List<Field>> maps = fields.stream()
                 .filter(field -> AnnotatedElementUtils.isAnnotated(field, annotationClass))
-                .collect(groupingBy(field -> groupBy(clazz, field, AnnotatedElementUtils.getMergedAnnotation(field, annotationClass)).apply(null)))
+                .collect(groupingBy(field -> {
+                    final A mergedAnnotation = AnnotatedElementUtils.getMergedAnnotation(field, annotationClass);
+                    // Reduce the possibility of different annotations being grouped togther.
+                    final MergedAnnotations from = MergedAnnotations.from(field, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY, RepeatableContainers.none());
+                    final MergedAnnotation<?> rootAnnotation = from.get(annotationClass).getRoot();
+                    return groupBy(clazz, field, mergedAnnotation).apply(rootAnnotation.getType());
+                }));
+        return maps
                 .values()
                 .stream()
                 .map(groupedFields -> (JoinFieldExecutor<DATA>) new DefaultGroupedJoinFieldExecutor<>(
