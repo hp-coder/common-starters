@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.luban</groupId>
+        <groupId>com.hp</groupId>
         <artifactId>common-starters</artifactId>
         <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
@@ -21,7 +21,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>common-base</artifactId>
         </dependency>
         <dependency>
@@ -34,12 +34,12 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>jpa-common-spring-boot-starter</artifactId>
             <version>${jpa-starter.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>code-gen-common-spring-boot-starter</artifactId>
             <version>${code-gen-starter.version}</version>
         </dependency>
@@ -83,12 +83,12 @@
                             <version>${spring-cloud-openfeign.version}</version>
                         </path>
                         <path>
-                            <groupId>com.luban</groupId>
+                            <groupId>com.hp</groupId>
                             <artifactId>jpa-common-spring-boot-starter</artifactId>
                             <version>${jpa-starter.version}</version>
                         </path>
                         <path>
-                            <groupId>com.luban</groupId>
+                            <groupId>com.hp</groupId>
                             <artifactId>code-gen-common-spring-boot-starter</artifactId>
                             <version>${code-gen-starter.version}</version>
                         </path>

@@ -45,7 +45,7 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
     <parent>
         <!--其中包含了配置的apt插件, 和主要版本-->
         <artifactId>common-starters</artifactId>
-        <groupId>com.luban</groupId>
+        <groupId>com.hp</groupId>
         <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
     
@@ -70,7 +70,7 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>code-gen-common-spring-boot-starter</artifactId>
             <version>${code-gen-version}</version>
         </dependency>
@@ -80,13 +80,13 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
         <!--默认-->
         <!--代码生成器生成符合JPA的代码-->
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>jpa-common-spring-boot-starter</artifactId>
         </dependency>
         <!--======================== separate line =============================-->
         <!--在编译时添加自定义参数 -Aorm=mbp 可以生成符合Mybatis-Plus的代码-->
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
@@ -108,7 +108,7 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>com.luban</groupId>
+                            <groupId>com.hp</groupId>
                             <artifactId>code-gen-common-spring-boot-starter</artifactId>
                             <version>${code-gen-starter.version}</version>
                         </path>
@@ -151,20 +151,20 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
 
 适用非Jakarta环境
 ```shell
-import com.luban.codegen.processor.controller.GenController;
-import com.luban.codegen.processor.dto.GenDto;
-import com.luban.codegen.processor.mapper.GenMapper;
-import com.luban.codegen.processor.repository.GenRepository;
-import com.luban.codegen.processor.request.GenRequest;
-import com.luban.codegen.processor.response.GenResponse;
-import com.luban.codegen.processor.service.GenService;
-import com.luban.codegen.processor.service.GenServiceImpl;
-import com.luban.codegen.processor.vo.GenVo;
-import com.luban.common.base.annotations.FieldDesc;
-import com.luban.common.base.enums.ValidStatus;
-import com.luban.jpa.BaseJpaAggregate;
-import com.luban.jpa.convertor.LocalDateTimeConverter;
-import com.luban.jpa.convertor.ValidStatusConverter;
+import com.hp.codegen.processor.controller.GenController;
+import com.hp.codegen.processor.dto.GenDto;
+import com.hp.codegen.processor.mapper.GenMapper;
+import com.hp.codegen.processor.repository.GenRepository;
+import com.hp.codegen.processor.request.GenRequest;
+import com.hp.codegen.processor.response.GenResponse;
+import com.hp.codegen.processor.service.GenService;
+import com.hp.codegen.processor.service.GenServiceImpl;
+import com.hp.codegen.processor.vo.GenVo;
+import com.hp.common.base.annotations.FieldDesc;
+import com.hp.common.base.enums.ValidStatus;
+import com.hp.jpa.BaseJpaAggregate;
+import com.hp.jpa.convertor.LocalDateTimeConverter;
+import com.hp.jpa.convertor.ValidStatusConverter;
 import lombok.Data;
 
 import jakarta.persistence.Convert;
@@ -256,19 +256,19 @@ public class $ENTITY$ extends BaseJpaAggregate {
 ```java
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.luban.codegen.processor.controller.GenController;
-import com.luban.codegen.processor.dto.GenDto;
-import com.luban.codegen.processor.mapper.GenMapper;
-import com.luban.codegen.processor.repository.GenRepository;
-import com.luban.codegen.processor.request.GenRequest;
-import com.luban.codegen.processor.response.GenResponse;
-import com.luban.codegen.processor.service.GenService;
-import com.luban.codegen.processor.service.GenServiceImpl;
-import com.luban.codegen.processor.vo.GenVo;
-import com.luban.common.base.annotations.FieldDesc;
-import com.luban.common.base.enums.ValidStatus;
-import com.luban.mybatisplus.BaseMbpAggregate;
-import com.luban.mybatisplus.convertor.ValidStatusConverter;
+import com.hp.codegen.processor.controller.GenController;
+import com.hp.codegen.processor.dto.GenDto;
+import com.hp.codegen.processor.mapper.GenMapper;
+import com.hp.codegen.processor.repository.GenRepository;
+import com.hp.codegen.processor.request.GenRequest;
+import com.hp.codegen.processor.response.GenResponse;
+import com.hp.codegen.processor.service.GenService;
+import com.hp.codegen.processor.service.GenServiceImpl;
+import com.hp.codegen.processor.vo.GenVo;
+import com.hp.common.base.annotations.FieldDesc;
+import com.hp.common.base.enums.ValidStatus;
+import com.hp.mybatisplus.BaseMbpAggregate;
+import com.hp.mybatisplus.convertor.ValidStatusConverter;
 import lombok.Data;
 
 /**

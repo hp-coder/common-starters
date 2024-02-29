@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.luban</groupId>
+        <groupId>com.hp</groupId>
         <artifactId>common-starters</artifactId>
         <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
@@ -32,12 +32,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>aspose-cells</artifactId>
             <version>${aspose-cells.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.luban</groupId>
+            <groupId>com.hp</groupId>
             <artifactId>aspose-words</artifactId>
             <version>${aspose-words.version}</version>
         </dependency>

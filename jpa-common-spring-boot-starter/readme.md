@@ -6,8 +6,8 @@
 ```java
 @QueryEntities(value = {BaseJpaAggregate.class})
 //这个包名为启动类所在包的名称
-package com.luban.jsoup;
+package com.hp.jsoup;
 
-import com.luban.jpa.BaseJpaAggregate;
+import com.hp.jpa.BaseJpaAggregate;
 import com.querydsl.core.annotations.QueryEntities;
 ```

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.luban</groupId>
+        <groupId>com.hp</groupId>
         <artifactId>common-bom</artifactId>
         <version>1.0.0-sp3.2-SNAPSHOT</version>
     </parent>
@@ -43,20 +43,20 @@
     <properties>
         <!--in project-->
         <common-base.version>1.0.0-sp3.2-SNAPSHOT</common-base.version>
-        <luban-dingtalk.version>1.0.0-sp3.2-SNAPSHOT</luban-dingtalk.version>
+        <dingtalk-module.version>1.0.1-sp2-SNAPSHOT</dingtalk-module.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.luban</groupId>
+                <groupId>com.hp</groupId>
                 <artifactId>common-base</artifactId>
                 <version>${common-base.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.luban</groupId>
-                <artifactId>luban-dingtalk</artifactId>
-                <version>${luban-dingtalk.version}</version>
+                <groupId>com.hp</groupId>
+                <artifactId>dingtalk-module</artifactId>
+                <version>${dingtalk-module.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
