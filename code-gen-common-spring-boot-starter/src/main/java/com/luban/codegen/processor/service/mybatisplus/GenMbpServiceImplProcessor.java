@@ -404,13 +404,12 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                                         ClassName.get(PageRequestWrapper.class),
                                         ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName())
                                 ),
-                                "pageWrapper"
+                                "requestWrapper"
                         )
                         .addModifiers(Modifier.PUBLIC)
                         .addCode(
                                 CodeBlock.of(
-                                        "$T page = new $T<>(pageWrapper.getPage(), pageWrapper.getPageSize());\n" +
-                                                "page.setOptimizeCountSql(true);\n" +
+                                        "$T page = new $T<>(requestWrapper.getPage(), requestWrapper.getSize());\n" +
                                                 "page.setOrders($T.newArrayList($T.desc(\"id\")));\n",
                                         ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(typeElement)),
                                         Page.class,
@@ -438,7 +437,7 @@ public class GenMbpServiceImplProcessor extends AbstractCodeGenProcessor {
                                                 ".map($T.INSTANCE::entityToCustomPageResponse)\n" +
                                                 ".collect($T.toList()),\n" +
                                                 "page.getTotal(),\n"+
-                                                "pageWrapper\n"+
+                                                "requestWrapper\n"+
                                                 ");\n",
                                         ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()),
                                         ClassName.get(Collectors.class)

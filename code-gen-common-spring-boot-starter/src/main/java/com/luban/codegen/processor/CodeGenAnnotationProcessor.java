@@ -19,6 +19,7 @@ import java.util.Set;
  * @author hp
  * @date 2022/10/24
  */
+@SupportedAnnotationTypes("com.luban.codegen.processor.*")
 @AutoService(Processor.class)
 public class CodeGenAnnotationProcessor extends AbstractProcessor {
     protected final String orm = "orm";
@@ -48,7 +49,7 @@ public class CodeGenAnnotationProcessor extends AbstractProcessor {
                     final CodeGenProcessor processor = CodeGenProcessorRegistry.find(annotation.getQualifiedName().toString(), supportedOrm);
                     processor.generate(typeElement, roundEnv);
                 } catch (Exception e) {
-                    ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("生成%s异常: %s", typeElement, e.getLocalizedMessage()));
+                    ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("生成%s异常: %s", typeElement, e));
                 }
             });
         });
@@ -62,10 +63,10 @@ public class CodeGenAnnotationProcessor extends AbstractProcessor {
         CodeGenProcessorRegistry.initProcessors();
     }
 
-    @Override
-    public Set<String> getSupportedAnnotationTypes() {
-        return CodeGenProcessorRegistry.getSupportedAnnotations();
-    }
+//    @Override
+//    public Set<String> getSupportedAnnotationTypes() {
+//        return CodeGenProcessorRegistry.getSupportedAnnotations();
+//    }
 
     @Override
     public SourceVersion getSupportedSourceVersion() {

@@ -13,7 +13,7 @@
     <version>1.0.0-sp3.2-SNAPSHOT</version>
 
     <properties>
-        <code-gen-starter.version>1.0.1-sp3.2-SNAPSHOT</code-gen-starter.version>
+        <code-gen-starter.version>1.0.2-sp3.2-SNAPSHOT</code-gen-starter.version>
         <jpa-starter.version>1.0.0-sp3.2-SNAPSHOT</jpa-starter.version>
         <mybatis-plus-starter.version>1.0.0-sp3.2-SNAPSHOT</mybatis-plus-starter.version>
         <spring-cloud-openfeign.version>4.1.0</spring-cloud-openfeign.version>

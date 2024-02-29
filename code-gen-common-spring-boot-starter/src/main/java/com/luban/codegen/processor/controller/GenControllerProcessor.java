@@ -304,7 +304,13 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
         }
         return Optional.of(MethodSpec.methodBuilder("findByPage")
                 .addParameter(
-                        ParameterSpec.builder(ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName()), "request")
+                        ParameterSpec.builder(
+                                        ParameterizedTypeName.get(
+                                                ClassName.get(PageRequestWrapper.class),
+                                                ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName())
+                                        ),
+                                        "requestWrapper"
+                                )
                                 .addAnnotation(RequestBody.class)
                                 .build()
                 )
@@ -312,10 +318,9 @@ public class GenControllerProcessor extends AbstractCodeGenProcessor {
                 .addModifiers(Modifier.PUBLIC)
                 .addCode(
                         CodeBlock.of(
-                                "return $T.success($L.findByPage($T.createWrapper(request)));",
+                                "return $T.success($L.findByPage(requestWrapper));",
                                 Returns.class,
-                                serviceFieldName,
-                                PageRequestWrapper.class
+                                serviceFieldName
                         )
                 )
                 .returns(

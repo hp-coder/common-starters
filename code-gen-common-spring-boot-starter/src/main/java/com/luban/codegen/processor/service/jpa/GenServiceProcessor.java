@@ -153,7 +153,7 @@ public class GenServiceProcessor extends AbstractCodeGenProcessor {
             return Optional.empty();
         }
         return Optional.of(MethodSpec.methodBuilder("findByPage")
-                .addParameter(ParameterizedTypeName.get(ClassName.get(PageRequestWrapper.class), ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName())), "query")
+                .addParameter(ParameterizedTypeName.get(ClassName.get(PageRequestWrapper.class), ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName())), "requestWrapper")
                 .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                 .returns(ParameterizedTypeName.get(ClassName.get(PageResponse.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))
                 .build());

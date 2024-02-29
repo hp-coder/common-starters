@@ -170,7 +170,7 @@ public class GenMbpServiceProcessor extends AbstractCodeGenProcessor {
                                         ClassName.get(PageRequestWrapper.class),
                                         ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName())
                                 ),
-                                "query"
+                                "requestWrapper"
                         )
                         .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
                         .returns(ParameterizedTypeName.get(ClassName.get(PageResponse.class), ClassName.get(nameContext.getPageResponsePackageName(), nameContext.getPageResponseClassName())))

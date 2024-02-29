@@ -418,14 +418,14 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                                         ClassName.get(PageRequestWrapper.class),
                                         ClassName.get(nameContext.getPageRequestPackageName(), nameContext.getPageRequestClassName())
                                 ),
-                                "pageWrapper"
+                                "requestWrapper"
                         )
                         .addModifiers(Modifier.PUBLIC)
                         .addCode(
                                 CodeBlock.of("final $T booleanBuilder = new $T();\n", ClassName.get(BooleanBuilder.class), ClassName.get(BooleanBuilder.class))
                         )
                         .addCode(
-                                CodeBlock.of("final $T page = $L.findAll(booleanBuilder, $T.of(pageWrapper.getPage() - 1, pageWrapper.getPageSize(), $T.by($T.DESC, \"id\")));\n",
+                                CodeBlock.of("final $T page = $L.findAll(booleanBuilder, $T.of(requestWrapper.getPage() - 1, requestWrapper.getSize(), $T.by($T.DESC, \"id\")));\n",
                                         ParameterizedTypeName.get(ClassName.get(Page.class), ClassName.get(typeElement)),
                                         repositoryFieldName,
                                         ClassName.get(PageRequest.class),
@@ -441,7 +441,7 @@ public class GenServiceImplProcessor extends AbstractCodeGenProcessor {
                                                 "   .map($T.INSTANCE::entityToCustomPageResponse)\n" +
                                                 "   .collect($T.toList()),\n" +
                                                 "page.getTotalElements(),\n" +
-                                                "pageWrapper \n" +
+                                                "requestWrapper \n" +
                                                 ");\n",
                                         ClassName.get(PageResponse.class),
                                         ClassName.get(nameContext.getMapperPackageName(), nameContext.getMapperClassName()),
