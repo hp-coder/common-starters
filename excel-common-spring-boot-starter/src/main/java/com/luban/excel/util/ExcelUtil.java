@@ -101,7 +101,7 @@ public class ExcelUtil {
         validation.setSuppressDropDownArrow(true);
         validation.createErrorBox("提示", "请输入下拉选项中的内容");
         sheet.addValidationData(validation);
-//        hideSheet(workbook, tmpSheet);
+        hideSheet(workbook, tmpSheet);
     }
 
     private static String createIndirectFormula(String columnName, int startRow) {
