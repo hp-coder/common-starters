@@ -1,6 +1,6 @@
 package com.luban.joininmemory;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author hp
@@ -12,7 +12,7 @@ public interface JoinFieldExecutor<DATA> {
      *
      * @param dataList 数据集合
      */
-    void execute(List<DATA> dataList);
+    void execute(Collection<DATA> dataList);
 
     /**
      * 执行层级，用于并行任务的分类

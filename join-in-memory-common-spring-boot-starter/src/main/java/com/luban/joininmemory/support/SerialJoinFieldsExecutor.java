@@ -5,6 +5,7 @@ import com.luban.joininmemory.JoinFieldExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StopWatch;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class SerialJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor<D
     }
 
     @Override
-    public void execute(List<DATA> dataList) {
+    public void execute(Collection<DATA> dataList) {
         getJoinFieldExecutors()
                 .forEach(executor -> {
                     if (log.isDebugEnabled()) {

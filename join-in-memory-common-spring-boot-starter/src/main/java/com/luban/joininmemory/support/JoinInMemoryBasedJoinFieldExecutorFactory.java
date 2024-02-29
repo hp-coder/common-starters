@@ -137,7 +137,7 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
             } else {
                 this.expression = expressionParser.parseExpression(expStr);
             }
-            StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
+            final StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
             evaluationContext.setBeanResolver(beanResolver);
             this.evaluationContext = evaluationContext;
         }

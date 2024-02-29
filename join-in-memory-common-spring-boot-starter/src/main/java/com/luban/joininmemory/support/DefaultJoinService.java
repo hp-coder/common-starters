@@ -5,7 +5,7 @@ import com.luban.joininmemory.JoinFieldsExecutor;
 import com.luban.joininmemory.JoinFieldsExecutorFactory;
 import com.luban.joininmemory.JoinService;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -23,7 +23,7 @@ public class DefaultJoinService implements JoinService {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> void joinInMemory(Class<T> clazz, List<T> data) {
+    public <T> void joinInMemory(Class<T> clazz, Collection<T> data) {
         this.cache.computeIfAbsent(clazz, this::createJoinExecutorGroup).execute(data);
     }
 

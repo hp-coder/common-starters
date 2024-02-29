@@ -41,7 +41,7 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
     }
 
     private <DATA> List<JoinFieldExecutor<DATA>> createJoinFieldExecutor(Class<DATA> clazz, JoinContext<DATA> context) {
-        if (context.getConfig().processPolicy().isGrouped()) {
+        if (context.getConfig().fieldProcessPolicy().isGrouped()) {
             return createGroupedJoinFieldExecutor(clazz);
         } else {
             return createJoinFieldExecutor(clazz);

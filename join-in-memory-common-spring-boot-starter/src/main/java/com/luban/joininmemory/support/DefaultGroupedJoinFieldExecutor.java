@@ -26,7 +26,7 @@ public class DefaultGroupedJoinFieldExecutor<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_
         this.joinFieldExecutors = joinFieldExecutors;
     }
 
-    private List<JoinFieldContext<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_KEY, JOIN_DATA, DATA_JOIN_KEY, JOIN_RESULT>> createJoinContext(List<SOURCE_DATA> sourceData) {
+    private List<JoinFieldContext<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_KEY, JOIN_DATA, DATA_JOIN_KEY, JOIN_RESULT>> createJoinContext(Collection<SOURCE_DATA> sourceData) {
         return joinFieldExecutors.stream()
                 .map(executor -> executor.createJoinFieldContext(sourceData))
                 .filter(CollUtil::isNotEmpty)
@@ -35,7 +35,7 @@ public class DefaultGroupedJoinFieldExecutor<SOURCE_DATA, SOURCE_JOIN_KEY, JOIN_
     }
 
     @Override
-    public void execute(List<SOURCE_DATA> sourceDataList) {
+    public void execute(Collection<SOURCE_DATA> sourceDataList) {
         if (CollUtil.isEmpty(sourceDataList)) {
             log.warn("The given source data is empty. Abort Join!");
             return;

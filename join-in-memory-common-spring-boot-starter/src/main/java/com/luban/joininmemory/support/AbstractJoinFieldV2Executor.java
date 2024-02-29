@@ -92,7 +92,7 @@ public abstract class AbstractJoinFieldV2Executor<SOURCE_DATA, SOURCE_JOIN_KEY, 
                 JOIN_DATA,
                 DATA_JOIN_KEY,
                 JOIN_RESULT
-                >> createJoinFieldContext(List<SOURCE_DATA> sourceDataList) {
+                >> createJoinFieldContext(Collection<SOURCE_DATA> sourceDataList) {
         if (CollUtil.isEmpty(sourceDataList)) {
             return Collections.emptyList();
         }
@@ -134,7 +134,7 @@ public abstract class AbstractJoinFieldV2Executor<SOURCE_DATA, SOURCE_JOIN_KEY, 
     }
 
     @Override
-    public void execute(List<SOURCE_DATA> sourceDataList) {
+    public void execute(Collection<SOURCE_DATA> sourceDataList) {
         try {
             if (CollUtil.isEmpty(sourceDataList)) {
                 log.warn("The given source data is empty. Abort Join!");

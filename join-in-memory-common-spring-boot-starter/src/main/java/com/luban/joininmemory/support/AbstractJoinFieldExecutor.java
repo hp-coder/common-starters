@@ -6,10 +6,7 @@ import com.luban.joininmemory.exception.JoinErrorCode;
 import com.luban.joininmemory.exception.JoinException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -85,7 +82,7 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
      */
     protected abstract void onNotFound(SOURCE_DATA data, JOIN_KEY joinKey);
 
-    private List<JOIN_KEY> joinKeys(List<SOURCE_DATA> sourceDataList) {
+    private List<JOIN_KEY> joinKeys(Collection<SOURCE_DATA> sourceDataList) {
         if (CollUtil.isEmpty(sourceDataList)) {
             return Collections.emptyList();
         }
@@ -101,7 +98,7 @@ public abstract class AbstractJoinFieldExecutor<SOURCE_DATA, ROW_JOIN_KEY, JOIN_
     }
 
     @Override
-    public void execute(List<SOURCE_DATA> sourceDataList) {
+    public void execute(Collection<SOURCE_DATA> sourceDataList) {
         try {
             // 从源数据中提取 JoinKey
             final List<JOIN_KEY> joinKeys = joinKeys(sourceDataList);

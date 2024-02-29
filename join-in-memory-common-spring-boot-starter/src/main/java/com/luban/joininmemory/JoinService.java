@@ -2,8 +2,9 @@ package com.luban.joininmemory;
 
 import cn.hutool.core.collection.CollUtil;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author hp 2023/3/27
@@ -19,17 +20,19 @@ public interface JoinService {
     }
 
     @SuppressWarnings("unchecked")
-    default <T> void joinInMemory(List<T> t){
+    default <T> void joinInMemory(Collection<T> t){
         if (CollUtil.isEmpty(t)){
             return;
         }
+        final Iterator<T> iterator = t.iterator();
+        final T next = iterator.next();
         if (t.size() == 1){
-            joinInMemory(t.get(0));
+            joinInMemory(next);
         }
-        joinInMemory((Class<T>) t.get(0).getClass(), t);
+        joinInMemory((Class<T>) next.getClass(), t);
     }
 
-    <T> void joinInMemory(Class<T> tCls, List<T> t);
+    <T> void joinInMemory(Class<T> tCls, Collection<T> t);
 
     <T> void register(Class<T> clazz);
 }

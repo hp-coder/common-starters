@@ -1,5 +1,6 @@
 package com.luban.joininmemory;
 
+import com.luban.joininmemory.aspect.JoinAtReturnAdvice;
 import com.luban.joininmemory.exception.AfterJoinExceptionNotifier;
 import com.luban.joininmemory.exception.JoinExceptionNotifier;
 import com.luban.joininmemory.support.AfterJoinBasedAfterJoinMethodExecutorFactory;
@@ -8,6 +9,7 @@ import com.luban.joininmemory.support.DefaultJoinService;
 import com.luban.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +29,14 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Configuration
 public class JoinInMemoryAutoConfiguration {
+
+    @Bean
+    public JoinAtReturnAdvice joinAtReturnAdvice(
+            @Qualifier("joinService") JoinService joinService,
+            ApplicationContext applicationContext
+    ) {
+        return new JoinAtReturnAdvice(joinService, new BeanFactoryResolver(applicationContext));
+    }
 
     @Bean
     @ConditionalOnMissingBean

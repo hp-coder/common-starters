@@ -9,18 +9,33 @@ import java.lang.annotation.Target;
 
 
 /**
+ * The standard format of the SpEL is an expression wrapped by #{},
+ * but this specific implementation, which is {@linkplain JoinInMemoryBasedJoinFieldExecutorFactory.DataGetter modified}, supports
+ * passing the expression itself without the wrapping format.
+ *
  * @author hp
+ * @see com.luban.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory
  */
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JoinInMemory {
 
     /**
+     * Filter before join
+     * Reduce certain numbers of data to be processed.
+     * <p>
+     * A boolean value is excepted.
+     * <p>
+     * Exceptions will be thrown if the return value of the Expression is not a boolean.
+     */
+    String filter() default "";
+
+    /**
      * Using SpEL to extract the field value from the given source.
      * <p>
      * Usage Example:
      * <p>
-     * "#{user.id}"
+     * "#{user.id}" or "user.id"
      *
      * @return SpEL expression of the key extracted from the given source
      */
@@ -96,5 +111,11 @@ public @interface JoinInMemory {
      */
     String joinDataConverter() default "";
 
+    /**
+     * Runlevel defines the task executing orders in
+     * both parallel and serial executors.
+     *
+     * @return The default is fifth, which is in the middle.
+     */
     ExecuteLevel runLevel() default ExecuteLevel.FIFTH;
 }

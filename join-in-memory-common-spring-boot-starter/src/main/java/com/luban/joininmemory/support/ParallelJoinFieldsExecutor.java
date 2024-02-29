@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StopWatch;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -67,12 +68,12 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
     }
 
     @Override
-    public void execute(List<DATA> dataList) {
+    public void execute(Collection<DATA> dataList) {
         executeJoinTasks(dataList);
         executeAfterJoinTasks(dataList);
     }
 
-    private void executeJoinTasks(List<DATA> dataList) {
+    private void executeJoinTasks(Collection<DATA> dataList) {
         this.joinExecutorWithLevels.forEach(leveledTasks -> {
             log.debug("run join on level {} use {}", leveledTasks.getLevel(), leveledTasks.getJoinFieldExecutors());
             final List<Task> tasks = buildJoinTasks(leveledTasks, dataList);
@@ -92,7 +93,7 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
         });
     }
 
-    private void executeAfterJoinTasks(List<DATA> dataList) {
+    private void executeAfterJoinTasks(Collection<DATA> dataList) {
         afterJoinExecutorWithLevels.forEach(leveled -> {
             final AfterJoinExecutorWithLevel leveled1 = leveled;
             final List<Task> afterJoinTasks = dataList.stream().flatMap(data -> buildAfterJoinTasks(leveled1, data).stream()).collect(Collectors.toList());
@@ -114,10 +115,10 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
     }
 
     @SuppressWarnings("unchecked")
-    private List<Task> buildJoinTasks(JoinExecutorWithLevel leveledExecutors, List<DATA> dataList) {
+    private List<Task> buildJoinTasks(JoinExecutorWithLevel leveledExecutors, Collection<DATA> dataList) {
         return leveledExecutors.getJoinFieldExecutors()
                 .stream()
-                .map(executor -> new Task(data -> executor.execute((List<DATA>) data), dataList, joinExceptionNotifier))
+                .map(executor -> new Task(data -> executor.execute((Collection<DATA>) data), dataList, joinExceptionNotifier))
                 .collect(Collectors.toList());
     }
 
