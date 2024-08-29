@@ -1,0 +1,2 @@
+com.hp.redis.MultiDatabaseRedisAutoConfiguration
+com.hp.redis.MultiDatabaseRedisPrimaryConnectionFactoryRegistryPostProcessor

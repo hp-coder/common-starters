@@ -13,5 +13,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Component
 public @interface Extension {
+
     String bizId();
 }

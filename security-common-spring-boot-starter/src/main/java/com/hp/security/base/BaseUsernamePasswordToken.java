@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.io.Serial;
 import java.util.Collection;
 
 /**
@@ -11,6 +12,7 @@ import java.util.Collection;
  */
 public abstract class BaseUsernamePasswordToken extends AbstractAuthenticationToken {
 
+  @Serial
   private static final long serialVersionUID = 4869510722869347201L;
   @Getter
   private final String username;

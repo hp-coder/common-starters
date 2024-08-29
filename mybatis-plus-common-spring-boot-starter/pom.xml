@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp3.2-SNAPSHOT</version>
+    <version>1.0.3-sp3.2-SNAPSHOT</version>
     <description>DDD-mybatis+的封装</description>
 
     <properties>
@@ -21,7 +21,13 @@
     <dependencies>
         <dependency>
             <groupId>com.hp</groupId>
-            <artifactId>common-base</artifactId>
+            <artifactId>orm-common-base</artifactId>
+            <version>1.0.0-sp3.2-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hp</groupId>
+            <artifactId>id-common-spring-boot-starter</artifactId>
+            <version>1.0.0-sp3.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -29,12 +35,13 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.vavr</groupId>
-            <artifactId>vavr</artifactId>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>3.0.3</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
     </dependencies>
 

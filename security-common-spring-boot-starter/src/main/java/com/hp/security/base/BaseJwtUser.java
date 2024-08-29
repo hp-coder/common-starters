@@ -4,6 +4,7 @@ import com.hp.common.base.annotation.FieldDesc;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
@@ -15,7 +16,9 @@ import java.util.Map;
 @Data
 public abstract class BaseJwtUser implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 6312856382068055376L;
+
     @FieldDesc("用户Id")
     private Long userId;
 

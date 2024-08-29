@@ -5,10 +5,13 @@ import org.intellij.lang.annotations.Language;
 import java.lang.annotation.*;
 
 /**
- * @since 1.0.1-sp3.2-SNAPSHOT
+ * Optional Wrapper supported.
+ * <p>
+ * 如果返回值为Optional, 则尝试提取其包含的非空值进行表达式解析并执行Join操作
+ *
  * @author hp
+ * @since 1.0.1-sp3.2-SNAPSHOT
  */
-
 @Documented
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

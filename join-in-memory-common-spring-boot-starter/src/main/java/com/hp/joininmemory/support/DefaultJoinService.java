@@ -2,8 +2,8 @@ package com.hp.joininmemory.support;
 
 import com.google.common.collect.Maps;
 import com.hp.joininmemory.JoinFieldsExecutor;
-import com.hp.joininmemory.JoinService;
 import com.hp.joininmemory.JoinFieldsExecutorFactory;
+import com.hp.joininmemory.JoinService;
 
 import java.util.Collection;
 import java.util.Map;

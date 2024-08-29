@@ -1,6 +1,5 @@
 package com.hp.joininmemory.annotation;
 
-import com.hp.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory;
 import com.hp.joininmemory.JoinInMemoryAutoConfiguration;
 import com.hp.joininmemory.constant.JoinFieldProcessPolicy;
 import com.hp.joininmemory.constant.JoinInMemoryExecutorType;
@@ -64,7 +63,7 @@ public @interface JoinInMemoryConfig {
      * will only combine those fields annotated with the same
      * join-annotation which has the same value.
      * <p>
-     * Attributes used to determine groups: {@link JoinInMemoryBasedJoinFieldExecutorFactory#groupBy(Class, Field, JoinInMemory)}
+     * Attributes used to determine groups: {@link com.hp.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory#groupBy(Class, Field, JoinInMemory)}
      *
      * <p>
      * By default, SEPARATED.

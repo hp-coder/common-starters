@@ -1,6 +1,7 @@
 package com.hp.jpa;
 
-import com.hp.jpa.convertor.InstantLongConverter;
+import com.hp.jpa.converter.InstantLongConverter;
+import com.hp.jpa.id.CustomIdGenerator;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,8 +16,8 @@ import java.time.Instant;
 public abstract class BaseJpaAggregate extends AbstractAggregateRoot<BaseJpaAggregate> {
 
     @Id
-    @GeneratedValue(generator = "snowflakeIdGenerator")
-    @GenericGenerator(name = "snowflakeIdGenerator", strategy = "com.hp.jpa.id.SnowflakeIdGenerator")
+    @GeneratedValue(generator = "customIdGenerator")
+    @GenericGenerator(name = "customIdGenerator", type = CustomIdGenerator.class)
     @Setter
     @Column(name = "id")
     private Long id;
@@ -34,7 +35,7 @@ public abstract class BaseJpaAggregate extends AbstractAggregateRoot<BaseJpaAggr
     @Version
     @Column(name = "version")
     @Setter(AccessLevel.PRIVATE)
-    private Integer version;
+    private int version;
 
     @PrePersist
     public void prePersist(){

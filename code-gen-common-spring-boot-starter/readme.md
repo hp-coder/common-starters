@@ -151,20 +151,20 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
 
 适用非Jakarta环境
 ```shell
-import com.hp.codegen.processor.controller.GenController;
+import com.hp.codegen.annotation.client.GenController;
 import com.hp.codegen.processor.dto.GenDto;
-import com.hp.codegen.processor.mapper.GenMapper;
-import com.hp.codegen.processor.repository.GenRepository;
-import com.hp.codegen.processor.request.GenRequest;
-import com.hp.codegen.processor.response.GenResponse;
-import com.hp.codegen.processor.service.GenService;
-import com.hp.codegen.processor.service.GenServiceImpl;
+import com.hp.codegen.annotation.domain.GenMapper;
+import com.hp.codegen.annotation.infrastructure.GenCommandRepositoryository;
+import com.hp.codegen.annotation.model.GenRequest;
+import com.hp.codegen.annotation.model.GenResponse;
+import com.hp.codegen.annotation.GenService;
+import com.hp.codegen.annotation.GenServiceImpl;
 import com.hp.codegen.processor.vo.GenVo;
 import com.hp.common.base.annotation.FieldDesc;
 import com.hp.common.base.enums.ValidStatus;
 import com.hp.jpa.BaseJpaAggregate;
-import com.hp.jpa.convertor.LocalDateTimeConverter;
-import com.hp.jpa.convertor.ValidStatusConverter;
+import com.hp.jpa.converter.LocalDateTimeConverter;
+import com.hp.jpa.converter.ValidStatusConverter;
 import lombok.Data;
 
 import jakarta.persistence.Convert;
@@ -174,15 +174,15 @@ import jakarta.persistence.Table;
 /**
  * @author hp 2023/4/10
  */
-@GenRequest(pkgName = "$PACKAGE$.request")
-@GenResponse(pkgName = "$PACKAGE$.response")
-@GenDto(pkgName = "$PACKAGE$.request")
-@GenVo(pkgName = "$PACKAGE$.response")
-@GenController(pkgName = "$CONTROLLER$.controller")
-@GenService(pkgName = "$PACKAGE$.service")
-@GenServiceImpl(pkgName = "$PACKAGE$.service.impl")
-@GenRepository(pkgName = "$PACKAGE$.repository")
-@GenMapper(pkgName = "$PACKAGE$.mapper")
+@GenRequest(packageName = "$PACKAGE$.request")
+@GenResponse(packageName = "$PACKAGE$.response")
+@GenDto(packageName = "$PACKAGE$.request")
+@GenVo(packageName = "$PACKAGE$.response")
+@GenController(packageName = "$CONTROLLER$.controller")
+@GenService(packageName = "$PACKAGE$.service")
+@GenServiceImpl(packageName = "$PACKAGE$.service.impl")
+@GenRepository(packageName = "$PACKAGE$.repository")
+@GenMapper(packageName = "$PACKAGE$.mapper")
 @Entity
 @Table(name = "$TABLE_NAME$")
 @Data
@@ -220,15 +220,15 @@ import jakarta.persistence.Table;
 /**
  * @author hp 2023/4/10
  */
-@GenRequest(pkgName = "$PACKAGE$.request")
-@GenResponse(pkgName = "$PACKAGE$.response")
-@GenDto(pkgName = "$PACKAGE$.request")
-@GenVo(pkgName = "$PACKAGE$.response")
-@GenController(pkgName = "$CONTROLLER$.controller")
-@GenService(pkgName = "$PACKAGE$.service")
-@GenServiceImpl(pkgName = "$PACKAGE$.service.impl")
-@GenRepository(pkgName = "$PACKAGE$.repository")
-@GenMapper(pkgName = "$PACKAGE$.mapper")
+@GenRequest(packageName = "$PACKAGE$.request")
+@GenResponse(packageName = "$PACKAGE$.response")
+@GenDto(packageName = "$PACKAGE$.request")
+@GenVo(packageName = "$PACKAGE$.response")
+@GenController(packageName = "$CONTROLLER$.controller")
+@GenService(packageName = "$PACKAGE$.service")
+@GenServiceImpl(packageName = "$PACKAGE$.service.impl")
+@GenRepository(packageName = "$PACKAGE$.repository")
+@GenMapper(packageName = "$PACKAGE$.mapper")
 @Entity
 @Table(name = "$TABLE_NAME$")
 @Data
@@ -253,53 +253,54 @@ public class $ENTITY$ extends BaseJpaAggregate {
 ```
 
 #### Mbp模版
+
 ```java
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.hp.codegen.processor.controller.GenController;
+import com.hp.codegen.annotation.feignservice.GenCommandFeignService;
+import com.hp.codegen.annotation.domain.GenCommandRepository;
 import com.hp.codegen.processor.dto.GenDto;
-import com.hp.codegen.processor.mapper.GenMapper;
-import com.hp.codegen.processor.repository.GenRepository;
-import com.hp.codegen.processor.request.GenRequest;
-import com.hp.codegen.processor.response.GenResponse;
-import com.hp.codegen.processor.service.GenService;
-import com.hp.codegen.processor.service.GenServiceImpl;
+import com.hp.codegen.annotation.domain.GenMapper;
+import com.hp.codegen.annotation.model.GenRequest;
+import com.hp.codegen.annotation.model.GenResponse;
+import com.hp.codegen.annotation.GenService;
+import com.hp.codegen.annotation.GenServiceImpl;
 import com.hp.codegen.processor.vo.GenVo;
 import com.hp.common.base.annotation.FieldDesc;
 import com.hp.common.base.enums.ValidStatus;
 import com.hp.mybatisplus.BaseMbpAggregate;
-import com.hp.mybatisplus.convertor.ValidStatusConverter;
+import com.hp.mybatisplus.converter.ValidStatusConverter;
 import lombok.Data;
 
 /**
  * @author hp 2023/4/10
  */
-@GenRequest(pkgName = "$PACKAGE$.request")
-@GenResponse(pkgName = "$PACKAGE$.response")
-@GenDto(pkgName = "$PACKAGE$.request")
-@GenVo(pkgName = "$PACKAGE$.response")
-@GenController(pkgName = "$CONTROLLER$.controller")
-@GenService(pkgName = "$PACKAGE$.service")
-@GenServiceImpl(pkgName = "$PACKAGE$.service.impl")
-@GenRepository(pkgName = "$PACKAGE$.repository")
-@GenMapper(pkgName = "$PACKAGE$.mapper")
-@TableName(value="$TABLE_NAME$")
+@GenRequest(packageName = "$PACKAGE$.request")
+@GenResponse(packageName = "$PACKAGE$.response")
+@GenDto(packageName = "$PACKAGE$.request")
+@GenVo(packageName = "$PACKAGE$.response")
+@GenCommandFeignService(packageName = "$CONTROLLER$.controller")
+@GenService(packageName = "$PACKAGE$.service")
+@GenServiceImpl(packageName = "$PACKAGE$.service.impl")
+@GenCommandRepository(packageName = "$PACKAGE$.repository")
+@GenMapper(packageName = "$PACKAGE$.mapper")
+@TableName(value = "$TABLE_NAME$")
 @Data
 public class $ENTITY$ extends BaseMbpAggregate {
 
     @TableField(typeHandler = ValidStatusConverter.class)
     @FieldDesc("状态")
     private ValidStatus status;
-    
-    public void init(){
+
+    public void init() {
         setStatus(ValidStatus.VALID);
     }
 
-    public void valid(){
+    public void valid() {
         setStatus(ValidStatus.VALID);
     }
 
-    public void invalid(){
+    public void invalid() {
         setStatus(ValidStatus.INVALID);
     }
 }

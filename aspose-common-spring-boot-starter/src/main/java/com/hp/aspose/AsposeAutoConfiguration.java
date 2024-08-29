@@ -1,10 +1,14 @@
 package com.hp.aspose;
 
-import com.hp.aspose.license.*;
+import com.hp.aspose.license.ExcelLicense;
+import com.hp.aspose.license.LicenseLoader;
+import com.hp.aspose.license.WordLicense;
+import com.hp.aspose.license.XmlLicenseLoader;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 
 /**
  * @author hp 2023/4/20
@@ -17,20 +21,18 @@ public class AsposeAutoConfiguration implements ApplicationListener<ApplicationR
         return new XmlLicenseLoader();
     }
 
-    public AsposeLicense excelLicense(LicenseLoader licenseLoader) {
+    public void excelLicense(LicenseLoader licenseLoader) {
         final ExcelLicense excelLicense = new ExcelLicense();
         excelLicense.license(licenseLoader);
-        return excelLicense;
     }
 
-    public AsposeLicense wordLicense(LicenseLoader licenseLoader) throws Exception {
+    public void wordLicense(LicenseLoader licenseLoader) throws Exception {
         final WordLicense wordLicense = new WordLicense();
         wordLicense.license(licenseLoader);
-        return wordLicense;
     }
 
     @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
         try {
             final LicenseLoader licenseLoader = this.xmlLicenseLoader();
             this.excelLicense(licenseLoader);

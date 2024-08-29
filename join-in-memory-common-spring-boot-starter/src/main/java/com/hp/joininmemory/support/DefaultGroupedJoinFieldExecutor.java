@@ -6,7 +6,6 @@ import com.hp.joininmemory.JoinFieldExecutor;
 import com.hp.joininmemory.context.JoinFieldContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.expression.spel.support.StandardTypeConverter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,7 +48,7 @@ public class DefaultGroupedJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
         }
         final List<JoinFieldContext<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT>> contexts = createJoinContext(sourceDataList);
         if (CollUtil.isEmpty(contexts)) {
-            log.trace("Join contexts are empty. Abort Join!");
+            log.trace("Join field contexts are empty. Abort Join!");
             return;
         }
         final Set<JOIN_KEY> joinKeys = contexts.stream()
@@ -82,7 +81,7 @@ public class DefaultGroupedJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
             final SOURCE_DATA sourceData = context.getSourceData();
             final AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> executor = context.getExecutor();
             final JOIN_KEY joinKey = context.getJoinKey();
-            final JOIN_KEY convertedJoinKey = (JOIN_KEY) new StandardTypeConverter().convertValue(joinKey, TypeDescriptor.forObject(joinKey), targetType);
+            final JOIN_KEY convertedJoinKey = (JOIN_KEY) STANDARD_TYPE_CONVERTER.convertValue(joinKey, TypeDescriptor.forObject(joinKey), targetType);
             final List<JOIN_DATA> mappingData = joinDataMapping.get(convertedJoinKey);
             if (CollUtil.isEmpty(mappingData)) {
                 log.trace("Join data can't be found through the join key {}", joinKey);

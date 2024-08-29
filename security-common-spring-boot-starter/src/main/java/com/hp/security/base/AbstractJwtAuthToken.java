@@ -5,12 +5,14 @@ import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.io.Serial;
 import java.util.Collection;
 
 /**
  * @author hp
  */
 public abstract class AbstractJwtAuthToken implements Authentication {
+    @Serial
     private static final long serialVersionUID = 3307781535363682674L;
     protected final String token;
     @Setter

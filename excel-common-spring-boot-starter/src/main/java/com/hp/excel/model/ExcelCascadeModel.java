@@ -3,9 +3,9 @@ package com.hp.excel.model;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.hp.excel.annotation.ExcelSelect;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;

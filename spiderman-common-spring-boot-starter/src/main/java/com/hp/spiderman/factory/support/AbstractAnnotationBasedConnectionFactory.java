@@ -12,8 +12,8 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.hp.common.base.utils.ParamUtils.Maps;
-import static com.hp.common.base.utils.ParamUtils.Strings;
+import static com.hp.common.base.utils.ParameterHelper.Maps;
+import static com.hp.common.base.utils.ParameterHelper.Strings;
 import static org.jsoup.Connection.Method;
 
 /**

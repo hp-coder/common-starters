@@ -1,10 +1,10 @@
 package com.hp.excel.annotation;
 
-import com.hp.common.base.annotation.MethodDesc;
 import com.hp.excel.validation.ExcelSelectConstraintValidator;
+import com.hp.common.base.annotation.MethodDesc;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 /**

@@ -6,7 +6,7 @@ import com.hp.excel.model.ExcelErrorMessageModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

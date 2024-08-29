@@ -1,23 +1,84 @@
-# In Memory Join
-`对于性能（大表，多表join等）及服务化（服务自治，分库分表等）的考虑，使用（服务）内存join是一个更具扩展性和适应性的选择`
+# ReadMe
 
-一般逻辑
+Single table query is the key. Join actions are most likely to be avoided by the proper design of the project.
 
-1. 查询到所有主体数据后对每个关联属性串行装载并循环处理整个集合
-2. 查询到所有主体数据后，聚合关联属性，串行查询所有关联数据，通过map映射状态数据
-3. 查询到所有主体数据后，聚合关联属性，并行查询所有关联数据，通过map映射状态数据
+## Usage
 
-注解抽象
+### 1. Defined a custom root annotation
 
-- 通过注解配置，模版方法统一"不变"的流程减少硬编码的实现，spring解析EL并调用的能力，完成对数据的装载
-- 客户端不需要在加载数据方法中因新的关联数据而打破开标原则等
+Annotate the annotation with the meta-annotation `@JoinInMemory`
 
-核心
+- The `keyFromSourceData` attribute must be overridden to provide access for clients to use the root annotation.
+- The `keyFromJoinData` represents which field from the fetched data should be used when joining. Like the outer key in any relational database.
+- The `loader` represents the method that fetches the join data.
+  - Note that the loader method also supports passing custom parameters which are extracted from the `custom attributes` defined in the root annotation.
+  - By `Custom attributes`, it means any attributes that are not defined in the `@JoinInMemory`
+- The `joinDataConverter` means converting the match data before setting it to the field,
+- The `runLevel` means the executing order in both parallel or serial executors.
 
-- 模版方法
-- 查询全部数据后再串/并行查询其关联数据后组装，与DB仅做有限次交互，连接次数不受数据量变化而影响，受数据对象定义的关联属性数量影响
-- Spring支持的表达式解析，如在Spring Security中的@PreAuthorize("hasRole('')")
-- 工厂
+```java
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+@JoinInMemory(
+        keyFromSourceData = "",
+        keyFromJoinData = "id",
+        loader = "@joinRepository.findAllById(#root)",
+        joinDataConverter = "#root.name"
+)
+public @interface JoinUsernameOnUserId {
 
-架构
+    @AliasFor(annotation = JoinInMemory.class, value="keyFromSourceData")
+    @Language("SpEL")
+    String value();
 
+    @AliasFor(annotation = JoinInMemory.class, value = "runLevel")
+    ExecuteLevel runLevel() default ExecuteLevel.FIFTH;
+}
+```
+
+---
+
+### 2. Annotate the source class
+
+Like so
+
+```java
+@Data
+@JoinInMemoryConfig(
+        executorType = JoinInMemoryExecutorType.PARALLEL,
+        fieldProcessPolicy = JoinFieldProcessPolicy.GROUPED
+)
+public class JoinTester {
+    
+    String createdBy;
+
+    @JoinUsernameOnUserId(value = "createdBy")
+    String creator;
+
+    String updatedBy;
+
+    @JoinUsernameOnUserId(value = "updatedBy")
+    String updater;
+
+    Long removedBy;
+
+    @JoinUsernameOnUserId(value = "removedBy")
+    String remover;
+
+    public JoinTester(String createdBy, String updatedBy) {
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+    }
+}
+```
+
+--- 
+
+### 3. Call join
+
+```java
+private final JoinService joinSerivce;
+
+joinService.joinInMemory(tester);
+```

@@ -7,7 +7,6 @@ import com.hp.joininmemory.annotation.JoinAtReturn;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -16,6 +15,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author hp
@@ -36,25 +36,33 @@ public class JoinAtReturnAdvice {
 
     @AfterReturning(value = "joinAtReturn()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
-        final Signature signature = joinPoint.getSignature();
-        if (signature instanceof MethodSignature methodSignature) {
-            final Method method = methodSignature.getMethod();
-            final JoinAtReturn joinAtReturn = method.getAnnotation(JoinAtReturn.class);
-            Object joinData = returnValue;
-            if (Objects.isNull(joinData)) {
+        if (!(joinPoint.getSignature() instanceof MethodSignature methodSignature)) {
+           return;
+        }
+        final Method method = methodSignature.getMethod();
+        final JoinAtReturn joinAtReturn = method.getAnnotation(JoinAtReturn.class);
+
+        Object joinData = returnValue;
+        if (Objects.isNull(joinData)) {
+            return;
+        }
+        if (joinData instanceof Optional<?> optionalVal) {
+            if (optionalVal.isEmpty()) {
                 return;
-            }
-            if (StrUtil.isNotEmpty(joinAtReturn.value())) {
-                joinData = spELHelper.newGetterInstance(joinAtReturn.value()).apply(returnValue);
-            }
-            if (Objects.isNull(joinData)) {
-                return;
-            }
-            if (Collection.class.isAssignableFrom(joinData.getClass())) {
-                joinService.joinInMemory((Collection<?>) joinData);
             } else {
-                joinService.joinInMemory(joinData);
+                joinData = optionalVal.get();
             }
+        }
+        if (StrUtil.isNotEmpty(joinAtReturn.value())) {
+            joinData = spELHelper.newGetterInstance(joinAtReturn.value()).apply(joinData);
+        }
+        if (Objects.isNull(joinData)) {
+            return;
+        }
+        if (Collection.class.isAssignableFrom(joinData.getClass())) {
+            joinService.joinInMemory((Collection<?>) joinData);
+        } else {
+            joinService.joinInMemory(joinData);
         }
     }
 }

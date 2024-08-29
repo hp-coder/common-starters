@@ -1,8 +1,10 @@
 package com.hp.codegen.processor;
 
+import cn.hutool.core.collection.CollUtil;
 import com.google.auto.service.AutoService;
+import com.hp.codegen.constant.MappingMode;
 import com.hp.codegen.constant.Orm;
-import com.hp.codegen.context.ProcessingEnvironmentContextHolder;
+import com.hp.codegen.context.CodeGenContextHolder;
 import com.hp.codegen.registry.CodeGenProcessorRegistry;
 import com.hp.codegen.spi.CodeGenProcessor;
 
@@ -19,37 +21,37 @@ import java.util.Set;
  * @author hp
  * @date 2022/10/24
  */
-@SupportedAnnotationTypes("com.hp.codegen.processor.*")
+@SupportedAnnotationTypes("com.hp.codegen.annotation.*")
 @AutoService(Processor.class)
 public class CodeGenAnnotationProcessor extends AbstractProcessor {
+
     protected final String orm = "orm";
-    protected final Orm defaultOrm = Orm.SPRING_DATA_JPA;
+    protected final String mappingMode = "mapping.mode";
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Orm supportedOrm;
-        final Map<String, String> options = ProcessingEnvironmentContextHolder.getEnvironment().getOptions();
-        if (options != null && !options.isEmpty()) {
-            final Messager messager = ProcessingEnvironmentContextHolder.getMessager();
-            options.forEach((k, v) -> messager.printMessage(Diagnostic.Kind.NOTE, String.format("code-gen getting a compile arg: %s=%s", k, v)));
-            final String providedOrm = options.get(orm);
-            if (providedOrm != null && !providedOrm.isEmpty()) {
-                supportedOrm = Orm.of(providedOrm).orElse(defaultOrm);
-            } else {
-                supportedOrm = defaultOrm;
-            }
-        } else {
-            supportedOrm = defaultOrm;
+        final Map<String, String> compileArgs = CodeGenContextHolder.getCompileArgs();
+        if (compileArgs != null && !compileArgs.isEmpty()) {
+            compileArgs.forEach((k, v) -> CodeGenContextHolder.getMessager().printMessage(Diagnostic.Kind.NOTE, String.format("code-gen getting a compile arg: %s=%s", k, v)));
+            CodeGenContextHolder.setOrm(Orm.of(compileArgs.get(orm)).orElse(Orm.SPRING_DATA_JPA));
+            CodeGenContextHolder.setMappingMode(MappingMode.of(compileArgs.get(mappingMode)).orElse(MappingMode.MapStruct));
         }
         annotations.forEach(annotation -> {
             final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(annotation);
             final Set<TypeElement> typeElements = ElementFilter.typesIn(elements);
             typeElements.forEach(typeElement -> {
                 try {
-                    final CodeGenProcessor processor = CodeGenProcessorRegistry.find(annotation.getQualifiedName().toString(), supportedOrm);
-                    processor.generate(typeElement, roundEnv);
+                    CodeGenContextHolder.createTypeElementContext(typeElement);
+                    final Set<CodeGenProcessor> processors = CodeGenProcessorRegistry.findAll(annotation.getQualifiedName().toString());
+                    if (CollUtil.isNotEmpty(processors)) {
+                        processors.forEach(processor -> {
+                            processor.init(typeElement, roundEnv);
+                            processor.generate(typeElement, roundEnv);
+                        });
+                    }
                 } catch (Exception e) {
-                    ProcessingEnvironmentContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("生成%s异常: %s", typeElement, e));
+                    CodeGenContextHolder.getMessager().printMessage(Diagnostic.Kind.ERROR, String.format("生成%s代码异常: %s", typeElement, e), typeElement);
+                    e.printStackTrace();
                 }
             });
         });
@@ -59,14 +61,14 @@ public class CodeGenAnnotationProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        ProcessingEnvironmentContextHolder.setEnvironment(processingEnv);
+        CodeGenContextHolder.setEnvironment(processingEnv);
         CodeGenProcessorRegistry.initProcessors();
     }
 
-//    @Override
-//    public Set<String> getSupportedAnnotationTypes() {
-//        return CodeGenProcessorRegistry.getSupportedAnnotations();
-//    }
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        return CodeGenProcessorRegistry.getSupportedAnnotationTypes();
+    }
 
     @Override
     public SourceVersion getSupportedSourceVersion() {

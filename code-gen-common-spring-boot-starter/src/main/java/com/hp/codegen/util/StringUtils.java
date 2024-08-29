@@ -2,26 +2,24 @@ package com.hp.codegen.util;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.google.common.base.CaseFormat;
+import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author hp
  */
-public final class StringUtils {
-
-    private StringUtils() {
-    }
+@UtilityClass
+public class StringUtils {
 
     public static String camel(String source) {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, source);
     }
 
     public static boolean containsNull(List<String> list) {
-        List<String> nullList = list.stream().filter(Objects::isNull).collect(Collectors.toList());
-        return nullList.size() > 0;
+        List<String> nullList = list.stream().filter(Objects::isNull).toList();
+        return !nullList.isEmpty();
     }
 
     public static boolean containsNull(String value, String... list) {
@@ -36,9 +34,9 @@ public final class StringUtils {
     }
 
     public static boolean notEmpty(String value, String... list) {
-        if (value == null || value.length() == 0) {
+        if (value == null || value.isEmpty()) {
             return false;
         }
-        return ArrayUtil.isAllNotEmpty(list);
+        return ArrayUtil.isAllNotEmpty((Object) list);
     }
 }

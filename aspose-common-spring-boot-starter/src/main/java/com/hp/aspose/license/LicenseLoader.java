@@ -7,5 +7,5 @@ import java.io.InputStream;
  */
 public interface LicenseLoader {
 
-    InputStream licenseLoader();
+    InputStream license();
 }

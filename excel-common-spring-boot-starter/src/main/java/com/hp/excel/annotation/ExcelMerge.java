@@ -1,9 +1,9 @@
 package com.hp.excel.annotation;
 
 
-import java.lang.annotation.*;
+import com.hp.excel.constant.ExcelConstants;
 
-import static com.hp.excel.constant.ExcelConstants.MergeStrategy;
+import java.lang.annotation.*;
 
 /**
  * 暂时简单点，默认使用了此注解的列都是一组，做一样的操作
@@ -18,6 +18,6 @@ import static com.hp.excel.constant.ExcelConstants.MergeStrategy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelMerge {
 
-    MergeStrategy rowStrategy() default MergeStrategy.CONTENT;
+    ExcelConstants.MergeStrategy rowStrategy() default ExcelConstants.MergeStrategy.CONTENT;
 
 }

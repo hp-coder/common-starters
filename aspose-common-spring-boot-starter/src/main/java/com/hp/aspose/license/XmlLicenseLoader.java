@@ -10,7 +10,7 @@ public class XmlLicenseLoader implements LicenseLoader {
     private static final String LICENSE = "License.xml";
 
     @Override
-    public InputStream licenseLoader() {
+    public InputStream license() {
         return LicenseLoader.class.getClassLoader().getResourceAsStream(LICENSE);
     }
 }

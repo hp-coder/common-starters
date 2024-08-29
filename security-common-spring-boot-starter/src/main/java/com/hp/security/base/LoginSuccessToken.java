@@ -4,10 +4,13 @@ import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 
+import java.io.Serial;
+
 /**
  * @author hp
  */
 public class LoginSuccessToken extends AbstractAuthenticationToken {
+    @Serial
     private static final long serialVersionUID = 324521504234222456L;
     private final String token;
     @Getter

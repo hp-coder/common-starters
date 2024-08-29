@@ -10,7 +10,7 @@ public class ExcelLicense implements AsposeLicense {
     public void license(LicenseLoader licenseLoader) {
         AsposeLicense.chinese();
         final License license = new License();
-        license.setLicense(licenseLoader.licenseLoader());
+        license.setLicense(licenseLoader.license());
     }
 
 }

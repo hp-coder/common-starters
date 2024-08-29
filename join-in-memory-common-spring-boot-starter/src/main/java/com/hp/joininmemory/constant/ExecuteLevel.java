@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * The smaller the value, the higher the priority.
+ * The lower the value, the higher the priority.
  *
  * @author hp
  */

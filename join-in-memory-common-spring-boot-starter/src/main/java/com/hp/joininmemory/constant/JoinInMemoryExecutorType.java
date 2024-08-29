@@ -4,7 +4,6 @@ package com.hp.joininmemory.constant;
 /**
  * @author hp
  */
-
 public enum JoinInMemoryExecutorType {
     /**
      * 并行

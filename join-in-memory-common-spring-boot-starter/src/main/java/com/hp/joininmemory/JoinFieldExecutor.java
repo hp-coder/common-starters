@@ -1,11 +1,15 @@
 package com.hp.joininmemory;
 
+import org.springframework.expression.spel.support.StandardTypeConverter;
+
 import java.util.Collection;
 
 /**
  * @author hp
  */
 public interface JoinFieldExecutor<DATA> {
+
+    StandardTypeConverter STANDARD_TYPE_CONVERTER = new StandardTypeConverter();
 
     /**
      * 对应关联属性的数据查询，转换，装载逻辑

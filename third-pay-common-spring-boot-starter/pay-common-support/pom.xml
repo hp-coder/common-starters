@@ -22,10 +22,6 @@
             <groupId>com.hp</groupId>
             <artifactId>common-base</artifactId>
         </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

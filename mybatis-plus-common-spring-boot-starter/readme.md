@@ -1,11 +1,38 @@
-Abstract
+# ReadMe
 
-针对DDD思想封装的更偏向面向对象的方式封装mybatis-plus组件
+DDD style encapsulation.
 
-- jpa + querydsl 也可以通过该方式改造
-- 该starter不影响项目中原有mybatisplus的配置等，仅仅做了一个再次封装
-- UpdateHandler.update()方法主要期望能通过抽象及面向对象的思想集成到对象中形成对象的具体行为（方法）而非一味set
+## Note
 
-Note 
+### 1. TypeHandler
 
-如果需要code-gen模块将复杂类型转换为简单数据类型, 比如在生成request,response对象时, 转换功能必须实现
+Use `TypeHandlerAdapter` instead of `TypeHandler` directly for much easier conversion.
+
+---
+
+### 2. Wrapper in Query Or Save
+
+Use `QueryHelper` or `UpdaterHelper`, they use `TypeHandlerAdapter` and fallback conversion logic to convert
+parameters before interacting with the data source.
+
+---
+
+### 3. Mapper
+
+Use `BaseRepository` instead of `BaseMapper` directly for more functionalities.
+
+Use `OrmOperations` to perform save and update.
+
+---
+
+### 4. Model
+
+If the project is designed in the DDD style, like the COLA framework.
+
+Entities or aggregate roots should implement `BaseMbpAggregate` instead of `Model`.
+
+---
+
+### 5. Pagination
+
+Use `PageHelper` with `PageRequestWrapper` and `PageResponse` instead `IPage` for a more generic design.

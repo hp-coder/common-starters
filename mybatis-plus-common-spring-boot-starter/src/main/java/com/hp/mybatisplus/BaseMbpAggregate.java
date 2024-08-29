@@ -1,15 +1,17 @@
 package com.hp.mybatisplus;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.hp.mybatisplus.convertor.InstantLongConverter;
+import com.hp.mybatisplus.converter.InstantLongConverter;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Setter;
 
 import java.time.Instant;
 
+@EqualsAndHashCode(callSuper = false)
 @Data
-public abstract class BaseMbpAggregate {
+public abstract class BaseMbpAggregate extends AbstractMbpAggregationRoot<BaseMbpAggregate> {
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;

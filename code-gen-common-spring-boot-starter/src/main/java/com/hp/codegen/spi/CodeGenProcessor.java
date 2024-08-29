@@ -12,13 +12,11 @@ import java.lang.annotation.Annotation;
  */
 public interface CodeGenProcessor extends OrmSupport {
 
+    void init(TypeElement typeElement, RoundEnvironment roundEnvironment);
+
     Class<? extends Annotation> getAnnotation();
 
-    String generatePackage(TypeElement typeElement);
-
-    default String generatePath(TypeElement typeElement){
-        return null;
-    }
+    Class<? extends Annotation> getAnnotationGroup();
 
     void generate(TypeElement typeElement, RoundEnvironment roundEnvironment);
 }

@@ -32,10 +32,8 @@ public class SpringSecurityUtils {
     if(authentication.getClass().isAssignableFrom(AnonymousAuthenticationToken.class)){
       return null;
     }else{
-      BaseJwtUser info = (BaseJwtUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      return info;
+        return (BaseJwtUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
-
   }
 
 }

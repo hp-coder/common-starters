@@ -24,19 +24,19 @@ import java.util.stream.Stream;
  * @date 2022/8/25
  */
 @Configuration
-@ConditionalOnProperty(prefix = "oss",name = "enable",havingValue = "true")
+@ConditionalOnProperty(prefix = "oss", name = "enable", havingValue = "true")
 @EnableConfigurationProperties(OssProperties.class)
 public class OssAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(S3OssClient.class)
-    public OssClient ossClient(AmazonS3 amazonS3){
+    public OssClient ossClient(AmazonS3 amazonS3) {
         return new S3OssClient(amazonS3);
     }
 
     @Bean
     @ConditionalOnMissingBean(AmazonS3.class)
-    public AmazonS3 amazonS3(OssProperties ossProperties){
+    public AmazonS3 amazonS3(OssProperties ossProperties) {
         final long count = Stream.builder()
                 .add(ossProperties.getEndpoint())
                 .add(ossProperties.getAccessSecret())
@@ -50,7 +50,7 @@ public class OssAutoConfiguration {
         final BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(ossProperties.getAccessKey(), ossProperties.getAccessSecret());
         final AWSStaticCredentialsProvider awsStaticCredentialsProvider = new AWSStaticCredentialsProvider(basicAWSCredentials);
         return AmazonS3Client.builder()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(ossProperties.getEndpoint(),ossProperties.getRegion()))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(ossProperties.getEndpoint(), ossProperties.getRegion()))
                 .withCredentials(awsStaticCredentialsProvider)
                 .disableChunkedEncoding()
                 .withPathStyleAccessEnabled(ossProperties.isPathStyleAccess())

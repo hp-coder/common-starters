@@ -23,12 +23,10 @@ import java.io.IOException;
  *
  * @author hp
  */
+@Getter
 public abstract class BaseLoginProcessFilter extends AbstractAuthenticationProcessingFilter {
-    @Getter
     private final AuthenticationSuccessHandler successHandler;
-    @Getter
     private final AuthenticationFailureHandler failureHandler;
-    @Getter
     private final ObjectMapper mapper;
 
     protected BaseLoginProcessFilter(

@@ -10,6 +10,6 @@ public class WordLicense implements AsposeLicense {
     public void license(LicenseLoader licenseLoader) throws Exception {
         AsposeLicense.chinese();
         final License license = new  License();
-        license.setLicense(licenseLoader.licenseLoader());
+        license.setLicense(licenseLoader.license());
     }
 }

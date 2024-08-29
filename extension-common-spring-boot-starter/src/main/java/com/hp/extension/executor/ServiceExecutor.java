@@ -11,5 +11,5 @@ public interface ServiceExecutor {
 
     <S> void execute(Class<S> service, BizScene scene, Consumer<S> consumer);
 
-    <S,R> R execute(Class<S> serivce, BizScene scene, Function<S,R> function);
+    <S,R> R execute(Class<S> service, BizScene scene, Function<S,R> function);
 }

@@ -10,7 +10,7 @@ public interface AsposeLicense {
     void license(LicenseLoader licenseLoader) throws Exception;
 
     static void chinese() {
-        Locale locale = new Locale("zh", "cn");
+        Locale locale = Locale.of("zh", "cn");
         Locale.setDefault(locale);
     }
 }

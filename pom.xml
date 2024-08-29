@@ -23,6 +23,12 @@
         <module>join-in-memory-common-spring-boot-starter</module>
         <module>aspose-common-spring-boot-starter</module>
         <module>spiderman-common-spring-boot-starter</module>
+        <module>biz-logger-common-spring-boot-starter</module>
+        <module>id-common-spring-boot-starter</module>
+        <module>lazyloader-common-spring-boot-starter</module>
+        <module>redis-common-spring-boot-starter</module>
+        <module>dingtalk-common-spring-boot-starter</module>
+
     </modules>
 
     <artifactId>common-starters</artifactId>
@@ -41,7 +47,7 @@
     <properties>
         <!--in project-->
         <common-base.version>1.0.0-sp3.2-SNAPSHOT</common-base.version>
-        <dingtalk-module.version>1.0.1-sp2-SNAPSHOT</dingtalk-module.version>
+        <dingtalk-starter.version>1.0.0-sp3.2-SNAPSHOT</dingtalk-starter.version>
     </properties>
 
     <dependencyManagement>
@@ -53,8 +59,8 @@
             </dependency>
             <dependency>
                 <groupId>com.hp</groupId>
-                <artifactId>dingtalk-module</artifactId>
-                <version>${dingtalk-module.version}</version>
+                <artifactId>dingtalk-common-spring-boot-starter</artifactId>
+                <version>${dingtalk-starter.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

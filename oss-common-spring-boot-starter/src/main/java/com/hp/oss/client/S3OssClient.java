@@ -33,7 +33,7 @@ public class S3OssClient implements OssClient {
     }
 
     @Override
-    public void bucketPolicy(String bucketName,String policy){
+    public void bucketPolicy(String bucketName, String policy) {
         amazonS3.setBucketPolicy(bucketName, policy);
     }
 

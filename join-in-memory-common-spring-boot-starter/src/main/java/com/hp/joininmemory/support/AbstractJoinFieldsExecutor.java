@@ -1,9 +1,9 @@
 package com.hp.joininmemory.support;
 
 import com.google.common.base.Preconditions;
+import com.hp.joininmemory.AfterJoinMethodExecutor;
 import com.hp.joininmemory.JoinFieldExecutor;
 import com.hp.joininmemory.JoinFieldsExecutor;
-import com.hp.joininmemory.AfterJoinMethodExecutor;
 import lombok.AccessLevel;
 import lombok.Getter;
 

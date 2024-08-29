@@ -10,6 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -42,6 +44,7 @@ public final class HandleHttpErrorUtil {
 
     @Data
     static class AuthResponse implements Serializable {
+        @Serial
         private static final long serialVersionUID = -3474646849529247442L;
         private Integer status;
         private String message;

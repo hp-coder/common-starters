@@ -5,9 +5,8 @@ import com.google.common.collect.Lists;
 import com.hp.joininmemory.*;
 import com.hp.joininmemory.annotation.JoinInMemoryConfig;
 import com.hp.joininmemory.constant.JoinInMemoryExecutorType;
-import com.hp.joininmemory.exception.ExceptionNotifier;
-import com.hp.joininmemory.*;
 import com.hp.joininmemory.context.JoinContext;
+import com.hp.joininmemory.exception.ExceptionNotifier;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 

@@ -1,7 +1,6 @@
 package com.hp.joininmemory.annotation;
 
 import com.hp.joininmemory.constant.ExecuteLevel;
-import com.hp.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory;
 import org.intellij.lang.annotations.Language;
 
 import java.lang.annotation.ElementType;
@@ -14,7 +13,7 @@ import java.lang.annotation.Target;
  * <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/expressions.html">Spring SpEL</a>
  *
  * @author hp
- * @see JoinInMemoryBasedJoinFieldExecutorFactory
+ * @see com.hp.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory
  */
 @Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
