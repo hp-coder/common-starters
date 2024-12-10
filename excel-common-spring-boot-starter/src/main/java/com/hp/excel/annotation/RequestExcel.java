@@ -30,6 +30,10 @@ public @interface RequestExcel {
     @MethodDesc("对导入的增强")
     Class<? extends ExcelReaderBuilderEnhance>[] enhancement() default {};
 
+    @MethodDesc("导入功能历史设计问题, 与导出迭代后有冲突, 如果模版文件有下拉菜单, 并且是通过此框架生成, 第0个sheet用于存放下拉数据, 导入时续修改为1")
+    int sheetIndex() default 0;
+
     @MethodDesc("是否忽略空行")
     boolean ignoreEmptyRow() default false;
+
 }

@@ -5,15 +5,16 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.hp.common.base.utils.SpELHelper;
 import com.hp.excel.annotation.ExcelOptions;
 import com.hp.excel.annotation.ExcelSelect;
+import com.hp.excel.context.ExcelContext;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.engine.constraintvalidation.ConstraintValidatorContextImpl;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -21,7 +22,7 @@ import java.util.Optional;
  * @date 2022/11/7
  */
 @Slf4j
-public class ExcelSelectConstraintValidator implements ConstraintValidator<ExcelSelect, String> {
+public class ExcelSelectConstraintValidator implements ConstraintValidator<ExcelSelect, Object> {
 
     private ExcelSelect excelSelect = null;
     private Map<Object, Collection<Object>> cascadeOptions = null;
@@ -38,16 +39,16 @@ public class ExcelSelectConstraintValidator implements ConstraintValidator<Excel
     }
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
-        if (StrUtil.isEmpty(value)) {
+    public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
+        if (Objects.isNull(value)) {
             return true;
         }
-        final ConstraintValidatorContextImpl unwrap = constraintValidatorContext.unwrap(ConstraintValidatorContextImpl.class);
-
+        final String strValue = String.valueOf(value);
         if (StrUtil.isNotEmpty(this.excelSelect.parentColumnName())) {
-            return Optional.ofNullable(cascadeOptions.get("")).map(opts -> opts.stream().map(String::valueOf).toList().contains(value)).orElse(true);
+            // TODO 缺少与上级的关联性
+            return Optional.ofNullable(cascadeOptions).map(opts -> opts.values().stream().flatMap(Collection::stream).map(String::valueOf).toList().contains(strValue)).orElse(true);
         } else {
-            return Optional.ofNullable(options).map(opts -> opts.stream().map(String::valueOf).toList().contains(value)).orElse(true);
+            return Optional.ofNullable(options).map(opts -> opts.stream().map(String::valueOf).toList().contains(strValue)).orElse(true);
         }
     }
 
@@ -60,10 +61,13 @@ public class ExcelSelectConstraintValidator implements ConstraintValidator<Excel
         }
         final SpELHelper spELHelper = SpringUtil.getBean(SpELHelper.class);
         // TODO 暂不支持校验时的条件
-        return (T) spELHelper.newGetterInstance(excelOptions.expression()).apply(
-                null,
-                evaluationContext -> {
-                }
-        );
+        try {
+            return (T) spELHelper.newGetterInstance(excelOptions.expression()).apply(
+                    null,
+                    evaluationContext -> ExcelContext.getParameters().ifPresent(params -> params.forEach(evaluationContext::setVariable))
+            );
+        } finally {
+            ExcelContext.clearParameters();
+        }
     }
 }

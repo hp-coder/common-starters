@@ -12,12 +12,12 @@ import com.alibaba.excel.write.handler.WriteHandler;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.hp.excel.annotation.ResponseExcel;
 import com.hp.excel.annotation.Sheet;
-import com.hp.excel.constant.ExcelConstants;
 import com.hp.excel.converter.LocalDateConverter;
 import com.hp.excel.converter.LocalDateTimeConverter;
 import com.hp.excel.enhance.ExcelWriterBuilderEnhance;
 import com.hp.excel.head.HeadGenerator;
 import com.hp.excel.head.HeadMetaData;
+import com.hp.excel.util.ExcelHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,15 +33,14 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.MimeType;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author hp
@@ -63,16 +62,8 @@ public abstract class AbstractExcelSheetWriteHandler implements ExcelSheetWriteH
 
     @Override
     public void export(Object object, HttpServletRequest request, HttpServletResponse response, ResponseExcel responseExcel) {
-        this.check(responseExcel);
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        String name = (String) (Objects.requireNonNull(requestAttributes)).getAttribute(ExcelConstants.FILENAME_ATTRIBUTE_KEY, 0);
-        if (StrUtil.isEmpty(name)) {
-            name = responseExcel.name();
-            if (StrUtil.isEmpty(name)) {
-                name = UUID.randomUUID().toString();
-            }
-        }
-        final String fileName = String.format("%s%s", URLEncoder.encode(name, StandardCharsets.UTF_8), responseExcel.suffix().getValue());
+        check(responseExcel);
+        final String fileName = ExcelHelper.getFilename(request,responseExcel);
         final String contentType = MediaTypeFactory.getMediaType(fileName).map(MimeType::toString).orElse("application/vnd.ms-excel");
         response.setContentType(contentType);
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName);

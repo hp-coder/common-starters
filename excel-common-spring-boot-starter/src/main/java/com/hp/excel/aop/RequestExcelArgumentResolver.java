@@ -6,11 +6,11 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.builder.ExcelReaderSheetBuilder;
 import com.google.common.collect.Lists;
-import com.hp.excel.listener.ExcelAnalysisEventListener;
 import com.hp.excel.annotation.RequestExcel;
 import com.hp.excel.converter.LocalDateConverter;
 import com.hp.excel.converter.LocalDateTimeConverter;
 import com.hp.excel.enhance.ExcelReaderBuilderEnhance;
+import com.hp.excel.listener.ExcelAnalysisEventListener;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.MethodParameter;
@@ -86,7 +86,7 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
                 excelReaderBuilder = enhance.enhanceExcel(excelReaderBuilder, request, requestExcel, excelModelClass);
             }
         }
-        ExcelReaderSheetBuilder excelReaderSheetBuilder = initSheetReaderBuilder(excelReaderBuilder);
+        ExcelReaderSheetBuilder excelReaderSheetBuilder = initSheetReaderBuilder(excelReaderBuilder, requestExcel.sheetIndex());
         if (CollUtil.isNotEmpty(enhanceHolder)) {
             for (ExcelReaderBuilderEnhance enhance : enhanceHolder) {
                 excelReaderSheetBuilder = enhance.enhanceSheet(excelReaderSheetBuilder, request, requestExcel, excelModelClass);
@@ -113,8 +113,7 @@ public class RequestExcelArgumentResolver implements HandlerMethodArgumentResolv
                 .ignoreEmptyRow(requestExcel.ignoreEmptyRow());
     }
 
-    private static ExcelReaderSheetBuilder initSheetReaderBuilder(ExcelReaderBuilder readerBuilder) {
-        return readerBuilder.sheet();
+    private static ExcelReaderSheetBuilder initSheetReaderBuilder(ExcelReaderBuilder readerBuilder, int index) {
+        return readerBuilder.sheet(index);
     }
-
 }

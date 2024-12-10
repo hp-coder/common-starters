@@ -1,16 +1,22 @@
 package com.hp.excel.util;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
+import com.hp.excel.annotation.ResponseExcel;
 import com.hp.excel.constant.ExcelConstants;
+import com.hp.excel.context.ExcelContext;
 import com.hp.excel.model.ExcelCascadeModel;
 import com.hp.excel.model.ExcelSelectModel;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -207,5 +213,21 @@ public class ExcelHelper {
             exponent++;
         }
         return exponent;
+    }
+
+    public static String getFilename(HttpServletRequest request, ResponseExcel responseExcel) {
+        String name;
+        try {
+            name = ExcelContext.getFilename().orElseGet(
+                    () -> Optional.ofNullable(request.getAttribute(ExcelConstants.FILENAME_ATTRIBUTE_KEY))
+                            .map(Objects::toString).orElse(responseExcel.name())
+            );
+            if (StrUtil.isEmpty(name)) {
+                name = UUID.randomUUID().toString();
+            }
+            return String.format("%s%s", URLEncoder.encode(name, StandardCharsets.UTF_8), responseExcel.suffix().getValue());
+        } finally {
+            ExcelContext.clearFilename();
+        }
     }
 }
