@@ -6,19 +6,19 @@
     <parent>
         <groupId>com.hp</groupId>
         <artifactId>common-starters</artifactId>
-        <version>1.0.0-sp3.2-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>code-gen-common-spring-boot-starter</artifactId>
-    <version>1.0.5-sp3.2-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <description>DDD风格代码生成器</description>
 
     <properties>
-        <orm-common-base.version>1.0.0-sp3.2-SNAPSHOT</orm-common-base.version>
+        <orm-common-base.version>1.0.0-SNAPSHOT</orm-common-base.version>
         <auto-service.version>1.0-rc5</auto-service.version>
         <javapoet.version>1.13.0</javapoet.version>
-        <jpa-starter.version>1.0.2-sp3.2-SNAPSHOT</jpa-starter.version>
-        <mybatis-plus-starter.version>1.0.3-sp3.2-SNAPSHOT</mybatis-plus-starter.version>
+        <jpa-starter.version>1.0.2-SNAPSHOT</jpa-starter.version>
+        <mybatis-plus-starter.version>1.0.3-SNAPSHOT</mybatis-plus-starter.version>
     </properties>
 
     <dependencies>

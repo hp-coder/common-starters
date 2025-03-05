@@ -6,10 +6,10 @@
     <parent>
         <groupId>com.hp</groupId>
         <artifactId>third-pay-common-spring-boot-starter</artifactId>
-        <version>1.0.0-sp3.2-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>unionpay-common-spring-boot-starter</artifactId>
-    <version>1.0.0-sp3.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <description>银联</description>
 </project>

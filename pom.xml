@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.hp</groupId>
         <artifactId>common-bom</artifactId>
-        <version>1.0.1-sp3.2-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <modules>
@@ -33,7 +33,7 @@
     </modules>
 
     <artifactId>common-starters</artifactId>
-    <version>1.0.0-sp3.2-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <developers>
@@ -47,8 +47,8 @@
 
     <properties>
         <!--in project-->
-        <common-base.version>1.0.0-sp3.2-SNAPSHOT</common-base.version>
-        <dingtalk-starter.version>1.0.0-sp3.2-SNAPSHOT</dingtalk-starter.version>
+        <common-base.version>1.0.0-SNAPSHOT</common-base.version>
+        <dingtalk-starter.version>1.0.0-SNAPSHOT</dingtalk-starter.version>
     </properties>
 
     <dependencyManagement>

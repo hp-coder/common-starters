@@ -15,7 +15,7 @@
     <dependency>
       <groupId>com.hp</groupId>
       <artifactId>redis-common-spring-boot-starter</artifactId>
-      <version>1.0.0-sp3.2-SNAPSHOT</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     ```
    

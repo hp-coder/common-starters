@@ -46,12 +46,12 @@ google的auto包目前已经满足需求, 但是由于编译时不想再引入�
         <!--其中包含了配置的apt插件, 和主要版本-->
         <artifactId>common-starters</artifactId>
         <groupId>com.hp</groupId>
-        <version>1.0.0-sp3.2-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     
     <properties>
-        <!--1.0.0-sp3.2-SNAPSHOT不支持生成Mybatis-Plus的代码-->
-        <code-gen-version>1.0.0-sp3.2-SNAPSHOT</code-gen-version>
+        <!--1.0.0-SNAPSHOT不支持生成Mybatis-Plus的代码-->
+        <code-gen-version>1.0.0-SNAPSHOT</code-gen-version>
     </properties>
     
     <dependencies>

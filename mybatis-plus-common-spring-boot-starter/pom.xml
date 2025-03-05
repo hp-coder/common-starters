@@ -6,11 +6,11 @@
     <parent>
         <groupId>com.hp</groupId>
         <artifactId>common-starters</artifactId>
-        <version>1.0.0-sp3.2-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>mybatis-plus-common-spring-boot-starter</artifactId>
-    <version>1.0.3-sp3.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <description>DDD-mybatis+的封装</description>
 
     <properties>
@@ -22,12 +22,12 @@
         <dependency>
             <groupId>com.hp</groupId>
             <artifactId>orm-common-base</artifactId>
-            <version>1.0.0-sp3.2-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.hp</groupId>
             <artifactId>id-common-spring-boot-starter</artifactId>
-            <version>1.0.0-sp3.2-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
