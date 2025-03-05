@@ -28,6 +28,7 @@
         <module>lazyloader-common-spring-boot-starter</module>
         <module>redis-common-spring-boot-starter</module>
         <module>dingtalk-common-spring-boot-starter</module>
+        <module>gc-collector-common-spring-boot-starter</module>
 
     </modules>
 
