@@ -87,14 +87,14 @@ public class BizDiffDTO {
             if (isAdded()) {
                 return parsed ? this.parsedAfter : this.after;
             }
-            throw new IllegalStateException("The action is not a added action.");
+            throw new IllegalStateException("The action is not an add-action.");
         }
 
         public String getRemoveValue(boolean parsed) {
             if (isRemoved()) {
                 return parsed ? this.parsedBefore : this.before;
             }
-            throw new IllegalStateException("The action is not a removed action.");
+            throw new IllegalStateException("The action is not a remove-action.");
         }
     }
 
