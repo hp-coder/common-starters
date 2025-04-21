@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hp
@@ -24,15 +25,18 @@ public class InvocationInfo {
     @FieldDesc("方法入参")
     private Object[] args;
 
-    @FieldDesc("调用是否成功")
-    private boolean success = false;
-
     @FieldDesc("方法出参")
-    private Object result = null;
+    private Object returned = null;
+
+    @FieldDesc("调用是否成功")
+    private boolean succeed = false;
 
     @FieldDesc("方法抛出的异常")
     private Throwable throwable;
 
-    @FieldDesc("方法调用耗时(毫秒)")
+    @FieldDesc("方法调用耗时")
     private Long timeCost;
+
+    @FieldDesc("时间单位")
+    private TimeUnit timeUnit;
 }

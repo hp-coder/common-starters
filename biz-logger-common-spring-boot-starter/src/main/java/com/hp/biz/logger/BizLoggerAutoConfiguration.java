@@ -1,11 +1,7 @@
 package com.hp.biz.logger;
 
 import cn.hutool.core.collection.CollUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cn.hutool.json.JSONUtil;
 import com.google.common.collect.Lists;
 import com.hp.biz.logger.annotation.EnableBizLogger;
 import com.hp.biz.logger.aop.BizLoggerAspect;
@@ -24,6 +20,8 @@ import com.hp.biz.logger.service.IBizLogSyncService;
 import com.hp.biz.logger.service.IBizLoggerPerformanceMonitor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -170,23 +168,12 @@ public class BizLoggerAutoConfiguration implements ImportAware {
     @Role(BeanDefinition.ROLE_APPLICATION)
     @ConditionalOnMissingBean(IBizLogSyncService.class)
     public IBizLogSyncService bizLogSyncService() {
-        final JsonMapper jsonMapper = JsonMapper.builder()
-                .defaultPrettyPrinter(new DefaultPrettyPrinter())
-                .addModule(new JavaTimeModule())
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
-                .build();
         return logs -> {
             if (CollUtil.isEmpty(logs)) {
                 return;
             }
-            logs.forEach(bizLog -> {
-                try {
-                    log.info("{}", jsonMapper.writeValueAsString(bizLog));
-                } catch (JsonProcessingException e) {
-                    log.error("Biz Logger - Default bizLogSyncService failed: ", e);
-                }
-            });
+            final Logger logger = LoggerFactory.getLogger("Biz-Logger");
+            logs.forEach(bizLog -> logger.info("{}", JSONUtil.toJsonPrettyStr(bizLog)));
         };
     }
 

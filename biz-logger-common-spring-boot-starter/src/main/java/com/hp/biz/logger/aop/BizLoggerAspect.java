@@ -57,7 +57,7 @@ public class BizLoggerAspect {
         if (invocationWrapper.failed()) {
             invocationWrapper.throwException();
         }
-        return invocationWrapper.getResult();
+        return invocationWrapper.getReturned();
     }
 
     private void syncLogs(Collection<BizLogDTO> preInvocationLogs, Collection<BizLogDTO> postInvocationLogs, StopWatch stopWatch) {

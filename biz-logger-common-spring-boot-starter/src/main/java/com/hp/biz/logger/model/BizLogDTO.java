@@ -1,8 +1,10 @@
 package com.hp.biz.logger.model;
 
 import com.hp.common.base.annotation.FieldDesc;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -12,6 +14,8 @@ import java.util.Collection;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class BizLogDTO {
 
     @FieldDesc("@EnableBizLogger上的租户信息")

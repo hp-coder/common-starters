@@ -12,6 +12,7 @@ import org.springframework.util.StopWatch;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hp
@@ -36,11 +37,11 @@ public class MethodInvocationWrapper {
     private final Object[] args;
 
     @FieldDesc("调用是否成功")
-    private boolean success = false;
+    private boolean succeed = false;
 
     @FieldDesc("方法出参")
     @Getter
-    private Object result = null;
+    private Object returned = null;
 
     @FieldDesc("方法抛出的异常")
     @Getter
@@ -63,11 +64,11 @@ public class MethodInvocationWrapper {
     public void proceed() {
         stopWatch.start(IBizLoggerPerformanceMonitor.MONITOR_TASK_INVOCATION);
         try {
-            this.result = joinPoint.proceed();
-            this.success = true;
-            BizLoggerContext.putReturnValue(this.result);
+            this.returned = joinPoint.proceed();
+            this.succeed = true;
+            BizLoggerContext.putReturnValue(this.returned);
         } catch (Throwable e) {
-            this.success = false;
+            this.succeed = false;
             this.throwable = e;
             BizLoggerContext.putThrowable(this.throwable);
         }
@@ -76,15 +77,16 @@ public class MethodInvocationWrapper {
                 this.targetClass,
                 this.method,
                 this.args,
-                this.success,
-                this.result,
+                this.returned,
+                this.succeed,
                 this.throwable,
-                stopWatch.lastTaskInfo().getTimeMillis()
+                stopWatch.getTotalTimeNanos(),
+                TimeUnit.NANOSECONDS
         ));
     }
 
     public boolean failed() {
-        return Objects.nonNull(this.throwable) || !this.success;
+        return Objects.nonNull(this.throwable) || !this.succeed;
     }
 
     private static Class<?> getTargetClass(Object target) {
