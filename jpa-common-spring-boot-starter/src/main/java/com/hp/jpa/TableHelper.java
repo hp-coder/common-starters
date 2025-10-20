@@ -2,6 +2,7 @@ package com.hp.jpa;
 
 import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.lang.func.LambdaUtil;
+import cn.hutool.core.map.WeakConcurrentMap;
 import com.google.common.collect.Maps;
 import jakarta.validation.constraints.NotNull;
 import lombok.experimental.UtilityClass;
@@ -19,7 +20,7 @@ import java.util.Objects;
 @UtilityClass
 public class TableHelper {
 
-    private static final Map<Class<?>, Map<String, String>> COLUMN_CACHE = Maps.newConcurrentMap();
+    private static final Map<Class<?>, Map<String, String>> COLUMN_CACHE = new WeakConcurrentMap<>();
 
     public static <T> String columnName(@NotNull Func1<T, ?> fieldFunction) {
         final String fieldName = LambdaUtil.getFieldName(fieldFunction);

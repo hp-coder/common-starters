@@ -58,8 +58,7 @@ public class DefaultGroupedJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
             log.trace("Join keys from source are empty. Abort Join!");
             return;
         }
-        final AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT>
-                _1st = joinFieldExecutors.get(0);
+        final AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> _1st = joinFieldExecutors.getFirst();
         final Collection<JOIN_DATA> joinDataList = _1st.joinDataByJoinKeys(joinKeys);
         if (CollUtil.isEmpty(joinKeys)) {
             log.trace("Join data list from datasource is empty. Abort Join!");
