@@ -1,12 +1,11 @@
 package com.hp.jpa;
 
 import com.hp.jpa.converter.InstantLongConverter;
-import com.hp.jpa.id.CustomIdGenerator;
+import com.hp.jpa.id.CustomId;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.time.Instant;
@@ -16,8 +15,7 @@ import java.time.Instant;
 public abstract class BaseJpaAggregate extends AbstractAggregateRoot<BaseJpaAggregate> {
 
     @Id
-    @GeneratedValue(generator = "customIdGenerator")
-    @GenericGenerator(name = "customIdGenerator", type = CustomIdGenerator.class)
+    @CustomId
     @Setter
     @Column(name = "id")
     private Long id;
