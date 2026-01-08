@@ -1,10 +1,12 @@
 package com.hp.joininmemory.support;
 
+import com.alibaba.ttl.TtlCallable;
 import com.hp.joininmemory.AfterJoinMethodExecutor;
 import com.hp.joininmemory.JoinFieldExecutor;
 import com.hp.joininmemory.exception.ExceptionNotifier;
 import com.hp.joininmemory.exception.JoinErrorCode;
 import com.hp.joininmemory.exception.JoinException;
+import com.hp.joininmemory.utils.JoinHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StopWatch;
@@ -18,7 +20,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Slf4j
 public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor<DATA> {
@@ -68,25 +70,31 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
 
     @Override
     public void execute(Collection<DATA> dataList) {
-        executeJoinTasks(dataList);
+        try {
+            executeJoinTasks(dataList);
+        } finally {
+            JoinHelper.clearDynamicFields();
+        }
         executeAfterJoinTasks(dataList);
     }
 
     private void executeJoinTasks(Collection<DATA> dataList) {
         this.joinExecutorWithLevels.forEach(leveledTasks -> {
             log.debug("run join on level {} use {}", leveledTasks.level(), leveledTasks.joinFieldExecutors());
-            final List<Task> tasks = buildJoinTasks(leveledTasks, dataList);
+            List<Callable<Void>> tasks = buildJoinTasks(leveledTasks, dataList);
+            tasks = ttlWrapper(tasks);
             try {
                 if (log.isDebugEnabled()) {
                     StopWatch stopwatch = new StopWatch("Starting executing join tasks");
                     stopwatch.start();
                     this.executorService.invokeAll(tasks);
                     stopwatch.stop();
-                    log.debug("run execute cost {} ms, task is {}.", stopwatch.getTotalTimeMillis(), tasks);
+                    log.debug("run execute cost {} ms", stopwatch.getTotalTimeMillis());
                 } else {
                     this.executorService.invokeAll(tasks);
                 }
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new JoinException(JoinErrorCode.JOIN_ERROR, e);
             }
         });
@@ -94,34 +102,46 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
 
     private void executeAfterJoinTasks(Collection<DATA> dataList) {
         afterJoinExecutorWithLevels.forEach(leveled -> {
-            final List<Task> afterJoinTasks = dataList.stream().flatMap(data -> buildAfterJoinTasks(leveled, data).stream()).collect(Collectors.toList());
+            List<Callable<Void>> tasks = dataList.stream()
+                    .flatMap(data -> buildAfterJoinTasks(leveled, data).stream())
+                    .collect(Collectors.toList());
+            tasks = ttlWrapper(tasks);
             try {
                 if (log.isDebugEnabled()) {
                     StopWatch stopwatch = new StopWatch("Starting executing after join tasks");
                     stopwatch.start();
-                    this.executorService.invokeAll(afterJoinTasks);
+                    this.executorService.invokeAll(tasks);
                     stopwatch.stop();
-                    log.debug("run execute cost {} ms, task is {}.", stopwatch.getTotalTimeMillis(), afterJoinTasks);
+                    log.debug("run execute cost {} ms.", stopwatch.getTotalTimeMillis());
                 } else {
-                    this.executorService.invokeAll(afterJoinTasks);
+                    this.executorService.invokeAll(tasks);
                 }
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new JoinException(JoinErrorCode.AFTER_JOIN_ERROR, e);
             }
         });
 
     }
 
+    private List<Callable<Void>> ttlWrapper(List<Callable<Void>> tasks) {
+        return tasks.stream()
+                .map(TtlCallable::get)
+                .collect(Collectors.toList());
+    }
+
     @SuppressWarnings("unchecked")
-    private List<Task> buildJoinTasks(JoinExecutorWithLevel<DATA> leveledExecutors, Collection<DATA> dataList) {
+    private List<Callable<Void>> buildJoinTasks(JoinExecutorWithLevel<DATA> leveledExecutors, Collection<DATA> dataList) {
         return leveledExecutors.joinFieldExecutors()
                 .stream()
+                .filter(executor -> JoinHelper.notExcluded(executor.getTargetClassName(), executor.getTargetFieldName()) &&
+                        JoinHelper.isIncluded(executor.getTargetClassName(), executor.getTargetFieldName()))
                 .map(executor -> new Task(data -> executor.execute((Collection<DATA>) data), dataList, joinExceptionNotifier))
                 .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")
-    private List<Task> buildAfterJoinTasks(AfterJoinExecutorWithLevel<DATA> leveledExecutors, DATA data) {
+    private List<Callable<Void>> buildAfterJoinTasks(AfterJoinExecutorWithLevel<DATA> leveledExecutors, DATA data) {
         return leveledExecutors.afterJoinMethodExecutors()
                 .stream()
                 .map(executor -> new Task(d -> executor.execute((DATA) d), data, afterJoinExceptionNotifier))
@@ -149,7 +169,8 @@ public class ParallelJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor
     record JoinExecutorWithLevel<DATA>(Integer level, List<JoinFieldExecutor<DATA>> joinFieldExecutors) {
     }
 
-    record AfterJoinExecutorWithLevel<DATA>(Integer level, List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors) {
+    record AfterJoinExecutorWithLevel<DATA>(Integer level,
+                                            List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors) {
     }
 
 }

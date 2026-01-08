@@ -6,8 +6,6 @@ import com.hp.joininmemory.JoinFieldExecutor;
 import com.hp.joininmemory.JoinFieldExecutorFactory;
 import com.hp.joininmemory.JoinFieldExecutorGrouper;
 import com.hp.joininmemory.context.JoinContext;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -25,7 +23,7 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.groupingBy;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends Annotation> implements JoinFieldExecutorFactory, JoinFieldExecutorGrouper<A, String> {
 
@@ -57,14 +55,13 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
         if (CollUtil.isEmpty(fields)) {
             return Collections.emptyList();
         }
-        final Map<String, List<Field>> maps = fields.stream()
+        return fields.stream()
                 .filter(field -> AnnotatedElementUtils.isAnnotated(field, annotationClass))
                 .collect(groupingBy(field -> {
                     final A mergedAnnotation = AnnotatedElementUtils.getMergedAnnotation(field, annotationClass);
                     final MergedAnnotation<?> rootAnnotation = getRootAnnotation(field);
                     return groupBy(clazz, field, mergedAnnotation).apply(rootAnnotation);
-                }));
-        return maps
+                }))
                 .values()
                 .stream()
                 .map(groupedFields -> (JoinFieldExecutor<DATA>) new DefaultGroupedJoinFieldExecutor<>(
@@ -108,7 +105,6 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
         );
     }
 
-    @Nonnull
     protected Map<String, Method> getNonMetaAnnotationAttributeMethods(MergedAnnotation<?> rootAnnotation) {
         return Arrays.stream(rootAnnotation.getType().getDeclaredMethods())
                 .filter(i -> {
@@ -118,7 +114,6 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
                 .collect(Collectors.toMap(Method::getName, Function.identity()));
     }
 
-    @Nonnull
     protected List<Map.Entry<String, Object>> getNonMetaAnnotationAttributes(MergedAnnotation<?> rootAnnotation) {
         final Map<String, Method> nonMetaAnnotationAttributeMethods = getNonMetaAnnotationAttributeMethods(rootAnnotation);
         return rootAnnotation.asAnnotationAttributes()
@@ -130,7 +125,6 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
                 .collect(Collectors.toList());
     }
 
-    @Nonnull
     protected MergedAnnotation<?> getRootAnnotation(Field field) {
         final MergedAnnotations from = MergedAnnotations.from(field, MergedAnnotations.SearchStrategy.TYPE_HIERARCHY);
         return from.get(this.annotationClass).getRoot();
@@ -144,7 +138,6 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
 
     protected abstract <DATA> int createRunLevel(Class<DATA> clazz, Field field, A annotation);
 
-    @Nullable
     protected abstract <DATA> Function<DATA, Boolean> createSourceDataFilter(Class<DATA> clazz, Field field, A annotation);
 
     protected abstract <DATA, SOURCE_JOIN_KEY> Function<DATA, SOURCE_JOIN_KEY> createKeyFromSourceData(Class<DATA> clazz, Field field, A annotation);
@@ -153,10 +146,8 @@ public abstract class AbstractAnnotationBasedJoinFieldExecutorFactory<A extends 
 
     protected abstract <DATA, JOIN_DATA, DATA_JOIN_KEY> Function<JOIN_DATA, DATA_JOIN_KEY> createKeyFromJoinData(Class<DATA> clazz, Field field, A annotation);
 
-    @Nullable
     protected abstract <DATA, JOIN_DATA> Function<JOIN_DATA, Boolean> createJoinDataFilter(Class<DATA> clazz, Field field, A annotation);
 
-    @Nullable
     protected abstract <DATA, JOIN_DATA, JOIN_RESULT> Function<JOIN_DATA, JOIN_RESULT> createJoinDataConverter(Class<DATA> clazz, Field field, A annotation);
 
     protected abstract <DATA, JOIN_RESULT> BiConsumer<DATA, Collection<JOIN_RESULT>> createFoundFunction(Class<DATA> clazz, Field field, A annotation);

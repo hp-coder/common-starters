@@ -1,39 +1,47 @@
 package com.hp.joininmemory.support;
 
-import com.google.common.collect.Maps;
 import com.hp.joininmemory.JoinFieldsExecutor;
 import com.hp.joininmemory.JoinFieldsExecutorFactory;
+import com.hp.joininmemory.JoinInMemoryProperties;
 import com.hp.joininmemory.JoinService;
+import com.hp.joininmemory.cache.JoinInMemoryCacheManager;
+import com.hp.joininmemory.metrics.JoinInMemoryMetrics;
+import io.micrometer.core.instrument.Timer;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
+@RequiredArgsConstructor
 public class DefaultJoinService implements JoinService {
 
     private final JoinFieldsExecutorFactory joinFieldsExecutorFactory;
+    private final JoinInMemoryMetrics metrics;
+    private final JoinInMemoryCacheManager cacheManager;
+    private final JoinInMemoryProperties properties;
 
-    public DefaultJoinService(JoinFieldsExecutorFactory joinFieldsExecutorFactory) {
-        this.joinFieldsExecutorFactory = joinFieldsExecutorFactory;
-    }
-
-    @SuppressWarnings("rawtypes")
-    private final Map<Class, JoinFieldsExecutor> cache = Maps.newConcurrentMap();
-
-    @SuppressWarnings("unchecked")
     @Override
     public <T> void joinInMemory(Class<T> klass, Collection<T> data) {
-        this.cache.computeIfAbsent(klass, this::createJoinExecutorGroup).execute(data);
+        final JoinFieldsExecutor<T> joinFieldsExecutor = cacheManager.getOrCreate(klass, joinFieldsExecutorFactory::createFor);
+
+        if (!properties.getMetrics().isEnableMetrics()) {
+            joinFieldsExecutor.execute(data);
+            return;
+        }
+
+        metrics.recordJoinExecution(klass, data.size());
+        final Timer.Sample sample = metrics.startExecutionTimer();
+        try {
+            joinFieldsExecutor.execute(data);
+        } finally {
+            metrics.stopExecutionTimer(sample, klass);
+        }
     }
 
     @Override
     public <T> void register(Class<T> klass) {
-        this.cache.computeIfAbsent(klass, this::createJoinExecutorGroup);
-    }
-
-    private <T> JoinFieldsExecutor<T> createJoinExecutorGroup(Class<T> klass) {
-        return this.joinFieldsExecutorFactory.createFor(klass);
+        cacheManager.getOrCreate(klass, joinFieldsExecutorFactory::createFor);
     }
 }

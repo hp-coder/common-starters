@@ -18,8 +18,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * @author hp
- * @since 1.0.1-SNAPSHOT
+ * Aspect for join at return
+ *
+ *
+ *
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
+ *
  */
 @Slf4j
 @Aspect
@@ -37,7 +41,7 @@ public class JoinAtReturnAdvice {
     @AfterReturning(value = "joinAtReturn()", returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
         if (!(joinPoint.getSignature() instanceof MethodSignature methodSignature)) {
-           return;
+            return;
         }
         final Method method = methodSignature.getMethod();
         final JoinAtReturn joinAtReturn = method.getAnnotation(JoinAtReturn.class);
@@ -46,6 +50,7 @@ public class JoinAtReturnAdvice {
         if (Objects.isNull(joinData)) {
             return;
         }
+        // optional support
         if (joinData instanceof Optional<?> optionalVal) {
             if (optionalVal.isEmpty()) {
                 return;
@@ -53,6 +58,7 @@ public class JoinAtReturnAdvice {
                 joinData = optionalVal.get();
             }
         }
+        // extract join data. the data is supposed to be a collection or a single object instance
         if (StrUtil.isNotEmpty(joinAtReturn.value())) {
             joinData = spELHelper.newGetterInstance(joinAtReturn.value()).apply(joinData);
         }

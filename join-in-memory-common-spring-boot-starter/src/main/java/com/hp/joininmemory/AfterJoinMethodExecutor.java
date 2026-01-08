@@ -1,7 +1,9 @@
 package com.hp.joininmemory;
 
+import io.micrometer.core.instrument.MeterRegistry;
+
 /**
- * @author hp
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 public interface AfterJoinMethodExecutor<DATA_AFTER_JOIN> {
 
@@ -11,6 +13,11 @@ public interface AfterJoinMethodExecutor<DATA_AFTER_JOIN> {
      * @param data 数据集合
      */
     void execute(DATA_AFTER_JOIN data);
+
+    /**
+     * Metrics support
+     */
+    void execute(DATA_AFTER_JOIN data, MeterRegistry meterRegistry);
 
     /**
      * 执行层级，用于并行任务的分类, 越低越优先

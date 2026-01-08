@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 import static java.util.stream.Collectors.toList;
 
 /**
- * @author hp
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 public abstract class AbstractAnnotationBasedAfterJoinMethodExecutorFactory<A extends Annotation> implements AfterJoinMethodExecutorFactory {
 

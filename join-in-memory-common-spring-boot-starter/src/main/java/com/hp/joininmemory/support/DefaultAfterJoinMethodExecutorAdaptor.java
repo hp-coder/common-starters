@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.function.Consumer;
 
 /**
- * @author hp
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Slf4j
 public class DefaultAfterJoinMethodExecutorAdaptor<DATA_AFTER_JOIN> extends AbstractAfterJoinMethodExecutor<DATA_AFTER_JOIN> {

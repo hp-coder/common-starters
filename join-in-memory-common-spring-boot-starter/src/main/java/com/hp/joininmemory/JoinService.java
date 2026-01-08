@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 public interface JoinService {
 

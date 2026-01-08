@@ -9,8 +9,7 @@ import java.lang.annotation.*;
  * <p>
  * 如果返回值为Optional, 则尝试提取其包含的非空值进行表达式解析并执行Join操作
  *
- * @author hp
- * @since 1.0.1-SNAPSHOT
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Documented
 @Target({ElementType.METHOD})

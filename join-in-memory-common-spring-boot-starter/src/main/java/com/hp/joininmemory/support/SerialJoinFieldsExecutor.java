@@ -2,6 +2,7 @@ package com.hp.joininmemory.support;
 
 import com.hp.joininmemory.AfterJoinMethodExecutor;
 import com.hp.joininmemory.JoinFieldExecutor;
+import com.hp.joininmemory.utils.JoinHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StopWatch;
 
@@ -10,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Slf4j
 public class SerialJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor<DATA> {
@@ -25,22 +26,32 @@ public class SerialJoinFieldsExecutor<DATA> extends AbstractJoinFieldsExecutor<D
 
     @Override
     public void execute(Collection<DATA> dataList) {
+        try {
+            doExecute(dataList);
+        } finally {
+            JoinHelper.clearDynamicFields();
+        }
+    }
+
+    private void doExecute(Collection<DATA> dataList) {
         final List<JoinFieldExecutor<DATA>> executors = getJoinFieldExecutors()
                 .stream()
+                .filter(executor -> JoinHelper.isIncluded(executor.getTargetClassName(), executor.getTargetFieldName()))
+                .filter(executor -> JoinHelper.notExcluded(executor.getTargetClassName(), executor.getTargetFieldName()))
                 .sorted(Comparator.comparing(JoinFieldExecutor::runOnLevel))
                 .toList();
 
         executors.forEach(executor -> {
-                    if (log.isDebugEnabled()) {
-                        StopWatch stopwatch = new StopWatch("Starting executing join tasks");
-                        stopwatch.start();
-                        executor.execute(dataList);
-                        stopwatch.stop();
-                        log.debug("run execute cost {} ms, executor is {}, data is {}.", stopwatch.getTotalTimeMillis(), executor, dataList);
-                    } else {
-                        executor.execute(dataList);
-                    }
-                });
+            if (log.isDebugEnabled()) {
+                StopWatch stopwatch = new StopWatch("Starting executing join tasks");
+                stopwatch.start();
+                executor.execute(dataList);
+                stopwatch.stop();
+                log.debug("run execute cost {} ms, executor is {}, data is {}.", stopwatch.getTotalTimeMillis(), executor, dataList);
+            } else {
+                executor.execute(dataList);
+            }
+        });
 
         final List<AfterJoinMethodExecutor<DATA>> afterJoinMethodExecutors = getAfterJoinMethodExecutors()
                 .stream()

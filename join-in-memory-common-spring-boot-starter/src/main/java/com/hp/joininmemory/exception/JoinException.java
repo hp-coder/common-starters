@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.io.Serial;
 
 /**
- * @author hp
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Getter
 public class JoinException extends RuntimeException {

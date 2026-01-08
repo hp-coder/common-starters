@@ -1,13 +1,18 @@
 package com.hp.joininmemory;
 
+
 import com.hp.common.base.utils.SpELHelper;
 import com.hp.joininmemory.aspect.JoinAtReturnAdvice;
+import com.hp.joininmemory.cache.JoinInMemoryCacheManager;
+import com.hp.joininmemory.endpoint.JoinInMemoryEndpoint;
 import com.hp.joininmemory.exception.AfterJoinExceptionNotifier;
 import com.hp.joininmemory.exception.JoinExceptionNotifier;
+import com.hp.joininmemory.metrics.JoinInMemoryMetrics;
 import com.hp.joininmemory.support.AfterJoinBasedAfterJoinMethodExecutorFactory;
 import com.hp.joininmemory.support.DefaultJoinFieldsExecutorFactory;
 import com.hp.joininmemory.support.DefaultJoinService;
 import com.hp.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import java.util.Collection;
 import java.util.Map;
@@ -24,10 +30,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Slf4j
 @Configuration
+@Import(JoinInMemoryProperties.class)
 public class JoinInMemoryAutoConfiguration {
 
     @Bean
@@ -46,14 +53,16 @@ public class JoinInMemoryAutoConfiguration {
             Collection<? extends AfterJoinMethodExecutorFactory> afterJoinMethodExecutorFactories,
             Map<String, ExecutorService> executorServiceMap,
             JoinExceptionNotifier joinExceptionNotifier,
-            AfterJoinExceptionNotifier afterJoinExceptionNotifier
+            AfterJoinExceptionNotifier afterJoinExceptionNotifier,
+            MeterRegistry meterRegistry
     ) {
         return new DefaultJoinFieldsExecutorFactory(
                 joinFieldExecutorFactories,
                 afterJoinMethodExecutorFactories,
                 executorServiceMap,
                 joinExceptionNotifier,
-                afterJoinExceptionNotifier
+                afterJoinExceptionNotifier,
+                meterRegistry
         );
     }
 
@@ -62,7 +71,6 @@ public class JoinInMemoryAutoConfiguration {
     public JoinExceptionNotifier joinExceptionNotifier() {
         return () -> (data, ex) -> {
             log.error("Join Exception:", ex);
-            log.error("Exceptional data={}", data);
         };
     }
 
@@ -71,14 +79,36 @@ public class JoinInMemoryAutoConfiguration {
     public AfterJoinExceptionNotifier afterJoinExceptionNotifier() {
         return () -> (data, ex) -> {
             log.error("AfterJoin Exception:", ex);
-            log.error("Exceptional data={}", data);
         };
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public JoinService joinService(JoinFieldsExecutorFactory joinFieldsExecutorFactory) {
-        return new DefaultJoinService(joinFieldsExecutorFactory);
+    public JoinInMemoryEndpoint joinInMemoryEndpoint(JoinInMemoryCacheManager cacheManager) {
+        return new JoinInMemoryEndpoint(cacheManager);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public JoinInMemoryMetrics joinInMemoryMetrics(MeterRegistry meterRegistry) {
+        return new JoinInMemoryMetrics(meterRegistry);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public JoinInMemoryCacheManager joinInMemoryCacheManager() {
+        return JoinInMemoryCacheManager.getInstance();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public JoinService joinService(
+            JoinFieldsExecutorFactory joinFieldsExecutorFactory,
+            JoinInMemoryMetrics joinInMemoryMetrics,
+            JoinInMemoryCacheManager joinInMemoryCacheManager,
+            JoinInMemoryProperties joinInMemoryProperties
+    ) {
+        return new DefaultJoinService(joinFieldsExecutorFactory, joinInMemoryMetrics, joinInMemoryCacheManager, joinInMemoryProperties);
     }
 
     @Bean
@@ -93,11 +123,11 @@ public class JoinInMemoryAutoConfiguration {
 
     @Bean
     public ExecutorService defaultJoinInMemoryExecutor() {
-        BasicThreadFactory basicThreadFactory = new BasicThreadFactory.Builder()
+        final BasicThreadFactory basicThreadFactory = new BasicThreadFactory.Builder()
                 .namingPattern("JoinInMemory-Thread-%d")
                 .daemon(true)
                 .build();
-        int maxSize = Runtime.getRuntime().availableProcessors() * 3;
+        final int maxSize = Runtime.getRuntime().availableProcessors() * 3;
         return new ThreadPoolExecutor(
                 0,
                 maxSize,

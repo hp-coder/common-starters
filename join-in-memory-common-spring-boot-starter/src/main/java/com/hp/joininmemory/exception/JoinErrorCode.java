@@ -1,11 +1,12 @@
 package com.hp.joininmemory.exception;
 
+
 import com.hp.common.base.enums.BaseEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @author hp
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Getter
 @AllArgsConstructor

@@ -7,12 +7,11 @@ import lombok.Getter;
 /**
  * The lower the value, the higher the priority.
  *
- * @author hp
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Getter
 @AllArgsConstructor
 public enum ExecuteLevel {
-    /***/
     FIRST(1),
     SECOND(2),
     THIRD(3),

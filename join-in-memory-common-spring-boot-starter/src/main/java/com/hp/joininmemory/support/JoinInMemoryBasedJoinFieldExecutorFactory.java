@@ -4,7 +4,6 @@ import cn.hutool.core.util.StrUtil;
 import com.google.common.base.Preconditions;
 import com.hp.common.base.utils.SpELHelper;
 import com.hp.joininmemory.annotation.JoinInMemory;
-import jakarta.annotation.Nullable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -19,7 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Slf4j
 public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotationBasedJoinFieldExecutorFactory<JoinInMemory> {
@@ -71,7 +70,6 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
         return spELHelper.newGetterInstance(annotation.keyFromJoinData());
     }
 
-    @Nullable
     @Override
     protected <DATA, JOIN_DATA> Function<JOIN_DATA, Boolean> createJoinDataFilter(Class<DATA> clazz, Field field, JoinInMemory annotation) {
         final String expression = annotation.joinDataFilter();
@@ -82,7 +80,6 @@ public class JoinInMemoryBasedJoinFieldExecutorFactory extends AbstractAnnotatio
     }
 
     @SuppressWarnings("unchecked")
-    @Nullable
     @Override
     protected <DATA, JOIN_DATA, JOIN_RESULT> Function<JOIN_DATA, JOIN_RESULT> createJoinDataConverter(Class<DATA> clazz, Field field, JoinInMemory annotation) {
         if (StrUtil.isEmpty(annotation.joinDataConverter())) {

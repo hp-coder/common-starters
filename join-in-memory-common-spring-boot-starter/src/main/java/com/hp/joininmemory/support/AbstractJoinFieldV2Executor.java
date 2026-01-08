@@ -7,10 +7,12 @@ import com.hp.joininmemory.JoinFieldExecutor;
 import com.hp.joininmemory.context.JoinFieldContext;
 import com.hp.joininmemory.exception.JoinErrorCode;
 import com.hp.joininmemory.exception.JoinException;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.TypeDescriptor;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,7 +20,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 /**
- * @author hp 2024/1/8
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Slf4j
 public abstract class AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> implements JoinFieldExecutor<SOURCE_DATA> {
@@ -101,7 +103,6 @@ public abstract class AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DA
                 .collect(toList());
     }
 
-    @Nullable
     Map<JOIN_KEY, List<JOIN_DATA>> createJoinDataMapping(Collection<JOIN_DATA> joinDataList) {
         final Map<Optional<JOIN_KEY>, List<JOIN_DATA>> joinDataMap = joinDataList.stream()
                 .filter(Objects::nonNull)
@@ -109,7 +110,7 @@ public abstract class AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DA
 
         if (MapUtil.isEmpty(joinDataMap)) {
             log.trace("Join data from the datasource is empty. Abort Join!");
-            return null;
+            return MapUtil.empty();
         }
         final Map<JOIN_KEY, List<JOIN_DATA>> map = Maps.newHashMap();
         joinDataMap.forEach((k, v) -> {
@@ -121,21 +122,44 @@ public abstract class AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DA
         return map;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void execute(Collection<SOURCE_DATA> sourceDataList) {
+        doExecute(sourceDataList);
+    }
+
+    @Override
+    public void execute(Collection<SOURCE_DATA> sourceDataList, MeterRegistry meterRegistry) {
+        // 记录数据量指标
+        Gauge.builder("join.field.data.size", sourceDataList::size)
+                .description("Number of data items processed by grouped field executor")
+                .tags("field", getName())
+                .register(meterRegistry);
+
+        io.micrometer.core.instrument.Timer.Sample sample = io.micrometer.core.instrument.Timer.start(meterRegistry);
+        try {
+            execute(sourceDataList);
+        } finally {
+            sample.stop(
+                    Timer.builder("join.fields.execution.time")
+                            .tag("field", getName())
+                            .register(meterRegistry)
+            );
+        }
+    }
+
+    void doExecute(Collection<SOURCE_DATA> sourceDataList) {
         try {
             if (CollUtil.isEmpty(sourceDataList)) {
                 log.trace("The given source data is empty. Abort Join!");
                 return;
             }
-            final List<JoinFieldContext<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT>> joinContexts =
+            final List<JoinFieldContext<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT>> joinFieldContexts =
                     createJoinFieldContext(sourceDataList);
-            if (CollUtil.isEmpty(joinContexts)) {
+            if (CollUtil.isEmpty(joinFieldContexts)) {
                 log.trace("Join field contexts are empty. Abort Join!");
                 return;
             }
-            final Set<JOIN_KEY> joinKeys = joinContexts.stream()
+            final Set<JOIN_KEY> joinKeys = joinFieldContexts.stream()
                     .map(JoinFieldContext::getJoinKey)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
@@ -144,17 +168,20 @@ public abstract class AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DA
                 return;
             }
 
-            final Collection<JOIN_DATA> joinDataList = joinDataByJoinKeys(joinKeys);
             if (CollUtil.isEmpty(joinKeys)) {
                 log.trace("Join data list from datasource is empty. Abort Join!");
                 return;
             }
-            final Map<JOIN_KEY, List<JOIN_DATA>> joinDataMapping = createJoinDataMapping(joinDataList);
-            if (CollUtil.isEmpty(joinDataMapping)) {
-                log.trace("Join data mapping from datasource is empty. Abort Join!");
+
+            final Collection<JOIN_DATA> joinDataList = joinDataByJoinKeys(joinKeys);
+
+            if (CollUtil.isEmpty(joinDataList)) {
+                log.trace("Join data from datasource is empty. Abort Join!");
                 log.trace("Possible reasons are: \n 1. join keys from datasource are all null; \n 2. converted join keys from datasource are all null;");
                 return;
             }
+
+            final Map<JOIN_KEY, List<JOIN_DATA>> joinDataMapping = createJoinDataMapping(joinDataList);
 
             final Optional<JOIN_KEY> first = joinDataMapping.keySet().stream().findFirst();
             assert first.isPresent();
@@ -162,10 +189,10 @@ public abstract class AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DA
             assert targetType != null;
 
             log.trace("Starting join process");
-            joinContexts.forEach(context -> {
+            joinFieldContexts.forEach(context -> {
                 final SOURCE_DATA sourceData = context.getSourceData();
                 final JOIN_KEY joinKey = context.getJoinKey();
-                final JOIN_KEY convertedJoinKey = (JOIN_KEY) STANDARD_TYPE_CONVERTER.convertValue(joinKey, TypeDescriptor.forObject(joinKey), targetType);
+                @SuppressWarnings("unchecked") final JOIN_KEY convertedJoinKey = (JOIN_KEY) STANDARD_TYPE_CONVERTER.convertValue(joinKey, TypeDescriptor.forObject(joinKey), targetType);
                 final List<JOIN_DATA> mappingData = joinDataMapping.get(convertedJoinKey);
                 if (CollUtil.isEmpty(mappingData)) {
                     log.trace("Join data can't be found through the join key {}", joinKey);

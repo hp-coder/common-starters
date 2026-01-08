@@ -7,6 +7,8 @@ import com.hp.joininmemory.annotation.JoinInMemoryConfig;
 import com.hp.joininmemory.constant.JoinInMemoryExecutorType;
 import com.hp.joininmemory.context.JoinContext;
 import com.hp.joininmemory.exception.ExceptionNotifier;
+import com.hp.joininmemory.utils.JoinHelper;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
@@ -17,7 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Slf4j
 public class DefaultJoinFieldsExecutorFactory implements JoinFieldsExecutorFactory {
@@ -27,13 +29,15 @@ public class DefaultJoinFieldsExecutorFactory implements JoinFieldsExecutorFacto
     private final Map<String, ExecutorService> executorServiceMap;
     private final ExceptionNotifier joinExceptionNotifier;
     private final ExceptionNotifier afterJoinExceptionNotifier;
+    private final MeterRegistry meterRegistry;
 
     public DefaultJoinFieldsExecutorFactory(
             Collection<? extends JoinFieldExecutorFactory> joinFieldExecutorFactories,
             Collection<? extends AfterJoinMethodExecutorFactory> afterJoinMethodExecutorFactories,
             Map<String, ExecutorService> executorServiceMap,
             ExceptionNotifier joinExceptionNotifier,
-            ExceptionNotifier afterJoinExceptionNotifier
+            ExceptionNotifier afterJoinExceptionNotifier,
+            MeterRegistry meterRegistry
     ) {
         this.joinFieldExecutorFactories = Lists.newArrayList(joinFieldExecutorFactories);
         this.afterJoinMethodExecutorFactories = Lists.newArrayList(afterJoinMethodExecutorFactories);
@@ -42,12 +46,20 @@ public class DefaultJoinFieldsExecutorFactory implements JoinFieldsExecutorFacto
         this.executorServiceMap = executorServiceMap;
         this.joinExceptionNotifier = joinExceptionNotifier;
         this.afterJoinExceptionNotifier = afterJoinExceptionNotifier;
+        this.meterRegistry = meterRegistry;
     }
 
     @Override
     public <DATA> JoinFieldsExecutor<DATA> createFor(Class<DATA> clazz) {
-        final JoinInMemoryConfig joinInMemoryConfig = clazz.getAnnotation(JoinInMemoryConfig.class);
-        final JoinContext<DATA> joinContext = new JoinContext<>(clazz, joinInMemoryConfig);
+        try {
+            return doCreateFor(clazz);
+        } finally {
+            JoinHelper.clearJoinContext();
+        }
+    }
+
+    public <DATA> JoinFieldsExecutor<DATA> doCreateFor(Class<DATA> clazz) {
+        final JoinContext<DATA> joinContext = JoinHelper.createJoinContext(clazz);
 
         final List<JoinFieldExecutor<DATA>> joinItemExecutors = this.joinFieldExecutorFactories.stream()
                 .flatMap(factory -> factory.createForType(joinContext).stream())
@@ -57,7 +69,7 @@ public class DefaultJoinFieldsExecutorFactory implements JoinFieldsExecutorFacto
                 .flatMap(factory -> factory.createForType(joinContext).stream())
                 .collect(Collectors.toList());
 
-        return buildJoinFieldsExecutor(clazz, joinInMemoryConfig, joinItemExecutors, afterJoinMethodExecutors);
+        return buildJoinFieldsExecutor(clazz, joinContext.getConfig(), joinItemExecutors, afterJoinMethodExecutors);
     }
 
     private <DATA> JoinFieldsExecutor<DATA> buildJoinFieldsExecutor(

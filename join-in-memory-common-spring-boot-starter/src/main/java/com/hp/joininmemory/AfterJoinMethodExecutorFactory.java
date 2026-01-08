@@ -5,7 +5,7 @@ import com.hp.joininmemory.context.JoinContext;
 import java.util.List;
 
 /**
- * @author hp
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 public interface AfterJoinMethodExecutorFactory {
 

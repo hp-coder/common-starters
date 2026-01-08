@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
 /**
- * @author hp
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 public class AfterJoinBasedAfterJoinMethodExecutorFactory extends AbstractAnnotationBasedAfterJoinMethodExecutorFactory<AfterJoin> {
     public AfterJoinBasedAfterJoinMethodExecutorFactory() {

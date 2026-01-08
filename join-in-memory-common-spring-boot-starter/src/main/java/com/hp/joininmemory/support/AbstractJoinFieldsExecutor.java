@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 abstract class AbstractJoinFieldsExecutor<DATA> implements JoinFieldsExecutor<DATA> {
 

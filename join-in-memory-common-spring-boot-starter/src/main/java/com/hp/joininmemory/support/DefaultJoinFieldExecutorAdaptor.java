@@ -1,22 +1,31 @@
 package com.hp.joininmemory.support;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+import com.hp.joininmemory.utils.JoinHelper;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * @author hp 2023/3/27
+ * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
  */
 @Getter
 @Slf4j
 public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> extends AbstractJoinFieldV2Executor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, JOIN_RESULT> {
 
+    private static final Pattern nameExtractor = Pattern.compile("class\\[([^]]+)]#field\\[([^]]+)]");
+
     private final String name;
+    private final int batchSize;
     private final int runLevel;
 
     private final Function<SOURCE_DATA, Boolean> sourceDataFilter;
@@ -54,6 +63,8 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
             this.lostCallback = getDefaultLostFunction();
         }
         this.runLevel = runLevel;
+
+        this.batchSize = JoinHelper.getJoinKeyBatch();
     }
 
     private BiConsumer<SOURCE_DATA, JOIN_KEY> getDefaultLostFunction() {
@@ -72,7 +83,14 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
 
     @Override
     protected Collection<JOIN_DATA> joinDataByJoinKeys(Collection<JOIN_KEY> joinKeys) {
-        return this.joinDataLoader.apply(joinKeys);
+        if (CollUtil.isEmpty(joinKeys)) {
+            return Collections.emptyList();
+        }
+        final List<List<JOIN_KEY>> batchedJoinKeys = JoinHelper.batchJoinKeys(joinKeys, batchSize);
+
+        return batchedJoinKeys.stream()
+                .flatMap(keys -> this.joinDataLoader.apply(keys).stream())
+                .toList();
     }
 
     @Override
@@ -98,6 +116,24 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
     @Override
     protected void onNotFound(SOURCE_DATA sourceData, JOIN_KEY joinKey) {
         this.lostCallback.accept(sourceData, joinKey);
+    }
+
+    @Override
+    public String getTargetClassName() {
+        final Matcher matcher = nameExtractor.matcher(name);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return StrUtil.EMPTY;
+    }
+
+    @Override
+    public String getTargetFieldName() {
+        final Matcher matcher = nameExtractor.matcher(name);
+        if (matcher.find()) {
+            return matcher.group(2);
+        }
+        return StrUtil.EMPTY;
     }
 
     @Override
