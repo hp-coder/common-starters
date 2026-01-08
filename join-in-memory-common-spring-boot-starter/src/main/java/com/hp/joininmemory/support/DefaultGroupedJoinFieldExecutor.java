@@ -147,6 +147,4 @@ public class DefaultGroupedJoinFieldExecutor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
             }
         });
     }
-
-
 }

@@ -27,9 +27,10 @@ Join In Memory 是一个基于内存的关联查询框架，旨在简化对象�
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @JoinInMemory(
-    keyFromJoinData = "id",
-    loader = "userService.findByIds(#root)",
-    joinDataConverter = "#this.toVO()"
+        keyFromSourceData = "",
+        keyFromJoinData = "id",
+        loader = "@userService.findByIds(#root)",
+        joinDataConverter = "#this.toVO()"
 )
 public @interface JoinUser {
     @AliasFor(annotation = JoinInMemory.class, attribute = "keyFromSourceData")
