@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 
+ *
  * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
  * @date 2026/1/22
  */
@@ -32,5 +32,6 @@ public class Order {
     @AfterJoin
     public void orderAfterJoin() {
         System.out.println("Order After Join!!!");
+        System.out.println("this.orderItems = " + this.orderItems);
     }
 }

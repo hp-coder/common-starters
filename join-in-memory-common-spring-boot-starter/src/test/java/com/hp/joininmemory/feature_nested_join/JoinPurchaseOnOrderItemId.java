@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 
 
 /**
- * 
+ *
  * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
  * @date 2026-2月-10
  */
@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @JoinInMemory(
         keyFromJoinData = "orderItemId",
-        loader = "@orderRepository.selectByOrderItemIds(#this)"
+        loader = "@nestedJoinOrderRepository.selectByOrderItemIds(#this)"
 )
 public @interface JoinPurchaseOnOrderItemId {
 

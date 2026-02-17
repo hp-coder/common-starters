@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 /**
- * 
+ *
  * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
  * @date 2026/1/22
  */
@@ -46,15 +46,6 @@ public class NestedJoinTest {
 
         final List<Purchase> purchases = orderItem1.getPurchases();
         Assertions.assertThat(purchases).isNotEmpty().size().isEqualTo(1);
-
-        final Purchase purchase = purchases.getFirst();
-
-
-        System.out.println("order = " + order1);
-
-        System.out.println("orderItem = " + orderItem1);
-
-        System.out.println("purchase = " + purchase);
     }
 
     @Test

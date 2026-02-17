@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @JoinInMemory(
         keyFromJoinData = "id",
-        loader = "@userRepository.findByIds(#root)",
+        loader = "@dynamicFieldsUserRepository.findByIds(#root)",
         joinDataConverter = "#this.username"
 )
 public @interface JoinUsernameOnUserId {

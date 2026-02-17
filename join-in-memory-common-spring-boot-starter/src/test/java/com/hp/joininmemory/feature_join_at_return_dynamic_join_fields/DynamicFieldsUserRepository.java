@@ -8,12 +8,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 
+ *
  * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
  * @date 2026/1/22
  */
 @Repository
-public class UserRepository {
+public class DynamicFieldsUserRepository {
 
     public List<User> findByIds(Collection<Long> ids) {
         if (CollUtil.isEmpty(ids)) return Collections.emptyList();

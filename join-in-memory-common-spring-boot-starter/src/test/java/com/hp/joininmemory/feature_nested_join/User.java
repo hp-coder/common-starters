@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ *
  * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
  * @date 2026/1/22
  */
@@ -40,5 +40,6 @@ public class User {
     @AfterJoin
     public void userAfterJoin() {
         System.out.println("User After Join!!!");
+        System.out.println("this.order = " + this.order);
     }
 }
