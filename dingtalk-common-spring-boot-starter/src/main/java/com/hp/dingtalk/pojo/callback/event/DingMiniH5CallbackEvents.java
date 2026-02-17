@@ -1,15 +1,14 @@
 package com.hp.dingtalk.pojo.callback.event;
 
 import com.google.gson.GsonBuilder;
-import com.hp.dingtalk.constant.minih5event.DingMiniH5Event;
 import com.hp.common.base.annotation.FieldDesc;
 import com.hp.common.base.annotation.MethodDesc;
+import com.hp.dingtalk.constant.minih5event.DingMiniH5Event;
 import com.hp.dingtalk.pojo.GsonBuilderVisitor;
 import com.hp.dingtalk.pojo.callback.eventbody.IDingMiniH5EventBody;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.util.Optional;
 
