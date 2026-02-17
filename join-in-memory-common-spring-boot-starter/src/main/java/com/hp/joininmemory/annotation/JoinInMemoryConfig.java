@@ -3,21 +3,24 @@ package com.hp.joininmemory.annotation;
 import com.hp.joininmemory.JoinInMemoryAutoConfiguration;
 import com.hp.joininmemory.constant.JoinFieldProcessPolicy;
 import com.hp.joininmemory.constant.JoinInMemoryExecutorType;
+import com.hp.joininmemory.context.JoinContext;
 import com.hp.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Field;
 
 
 /**
  * This config annotation is used to configure join policies for each class.
  * <p>
- * If the join class was not annotated with {@code @JoinInMemoryConfig}, a default config will be used.
+ * If the join class was not annotated with {@code @JoinInMemoryConfig}, a default config will be provided.
  *
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
+ * @version 1.0.0
+ * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
+ * @date 2026/1/6
+ * @see JoinContext Default JoinInMemoryConfig
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -65,8 +68,7 @@ public @interface JoinInMemoryConfig {
      * {@code JoinFieldProcessPolicy.GROUPED} will only combine those fields annotated with the same join-annotation
      * which has the same value.
      * <p>
-     * Attributes used to determine groups:
-     * {@link JoinInMemoryBasedJoinFieldExecutorFactory#groupBy(Class, Field, JoinInMemory)}
+     * Attributes used to determine groups: {@link JoinInMemoryBasedJoinFieldExecutorFactory}
      *
      * <p>
      * By default, GROUPED.
@@ -78,10 +80,10 @@ public @interface JoinInMemoryConfig {
      * <p>
      * Ignore when 0 or negative value is provided.
      * <p>
-     * For example, if a collection of 5000 elements is provided to trigger a join service, for query optimization, the
-     * collection will be divided into 5 batches, each batch contains 1000 elements.
-     * <p>
-     * experimental feature
+     * For example, if a collection of 5000 elements is provided to trigger a join operation, for query optimization,
+     * the collection will be divided into 5 batches, each batch contains 1000 elements.
+     *
+     * @since 1.0.0 experimental feature
      */
     int joinBatchSize() default 1000;
 

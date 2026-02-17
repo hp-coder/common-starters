@@ -1,6 +1,7 @@
 package com.hp.joininmemory.annotation;
 
 import com.hp.joininmemory.constant.ExecuteLevel;
+import com.hp.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory;
 import org.intellij.lang.annotations.Language;
 
 import java.lang.annotation.ElementType;
@@ -10,12 +11,25 @@ import java.lang.annotation.Target;
 
 
 /**
- * The root annotation
+ * 内存连接注解的根注解，用于定义字段或类级别的内存数据连接配置。
  * <p>
- * For usage, please refer to the {@code readme.md}
+ * 该注解支持通过 Spring SpEL 表达式实现灵活的数据过滤、键值提取、数据加载和结果转换等功能。
+ * 适用于需要在内存中进行数据关联和转换的场景，可显著提升数据处理效率。
+ * <p>
+ * 使用方法请参考 {@code readme.md} 文档。
+ * <p>
+ * The root annotation for defining in-memory data join configurations at field or class level.
+ * <p>
+ * This annotation supports flexible data filtering, key extraction, data loading and result conversion
+ * through Spring SpEL expressions. It is suitable for scenarios requiring data association and
+ * transformation in memory, which can significantly improve data processing efficiency.
+ * <p>
+ * For usage instructions, please refer to the {@code readme.md} documentation.
  *
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
- * @see com.hp.joininmemory.support.JoinInMemoryBasedJoinFieldExecutorFactory
+ * @version 1.0.0
+ * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
+ * @date 2026/1/6
+ * @see JoinInMemoryBasedJoinFieldExecutorFactory
  * @see <a href="https://docs.spring.io/spring-framework/docs/3.2.x/spring-framework-reference/html/expressions.html">Spring SpEL</a>
  */
 @Target({ElementType.FIELD, ElementType.TYPE})
@@ -43,7 +57,7 @@ public @interface JoinInMemory {
      * @return SpEL expression of the key extracted from the given source
      */
     @Language("SpEL")
-    String keyFromSourceData();
+    String keyFromSourceData() default "";
 
     /**
      * Using SpEL to extract field value from the datasource. Define using which field to construct a mapping relation.
@@ -54,7 +68,7 @@ public @interface JoinInMemory {
      * @return SpEL expression of the field value retrieved from the datasource
      */
     @Language("SpEL")
-    String keyFromJoinData();
+    String keyFromJoinData() default "";
 
     /**
      * Define a method which takes one parameter contains all the values composed of keyFromSourceData() and returns a
@@ -65,9 +79,10 @@ public @interface JoinInMemory {
      * <p>
      * This attribute is used in the grouping process if the {@link JoinInMemoryConfig#fieldProcessPolicy()} is set to
      * GROUP.
+     *
      */
     @Language("SpEL")
-    String loader();
+    String loader() default "";
 
     /**
      * Filter after join Reduce certain numbers of data to be processed.

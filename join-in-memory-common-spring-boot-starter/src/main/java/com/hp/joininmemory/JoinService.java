@@ -7,7 +7,11 @@ import java.util.Collections;
 import java.util.Iterator;
 
 /**
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
+ * User interface: Entry point
+ *
+ * @version 1.0.0
+ * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
+ * @date 2026/1/6
  */
 public interface JoinService {
 
@@ -34,6 +38,4 @@ public interface JoinService {
     }
 
     <T> void joinInMemory(Class<T> tCls, Collection<T> t);
-
-    <T> void register(Class<T> clazz);
 }

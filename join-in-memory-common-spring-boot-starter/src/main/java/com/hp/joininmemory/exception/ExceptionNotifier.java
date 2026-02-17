@@ -1,10 +1,12 @@
-
 package com.hp.joininmemory.exception;
 
 import java.util.function.BiConsumer;
 
 /**
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
+ *
+ * @version 1.0.0
+ * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
+ * @date 2026/1/6
  */
 @FunctionalInterface
 public interface ExceptionNotifier {

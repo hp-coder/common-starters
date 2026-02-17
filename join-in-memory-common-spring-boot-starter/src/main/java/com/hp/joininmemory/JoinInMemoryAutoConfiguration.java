@@ -1,6 +1,5 @@
 package com.hp.joininmemory;
 
-
 import com.hp.common.base.utils.SpELHelper;
 import com.hp.joininmemory.aspect.JoinAtReturnAdvice;
 import com.hp.joininmemory.cache.JoinInMemoryCacheManager;
@@ -30,7 +29,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
+ * @version 1.0.0
+ * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
+ * @date 2026/1/6
  */
 @Slf4j
 @Configuration
@@ -53,33 +54,27 @@ public class JoinInMemoryAutoConfiguration {
             Collection<? extends AfterJoinMethodExecutorFactory> afterJoinMethodExecutorFactories,
             Map<String, ExecutorService> executorServiceMap,
             JoinExceptionNotifier joinExceptionNotifier,
-            AfterJoinExceptionNotifier afterJoinExceptionNotifier,
-            MeterRegistry meterRegistry
+            AfterJoinExceptionNotifier afterJoinExceptionNotifier
     ) {
         return new DefaultJoinFieldsExecutorFactory(
                 joinFieldExecutorFactories,
                 afterJoinMethodExecutorFactories,
                 executorServiceMap,
                 joinExceptionNotifier,
-                afterJoinExceptionNotifier,
-                meterRegistry
+                afterJoinExceptionNotifier
         );
     }
 
     @Bean
     @ConditionalOnMissingBean
     public JoinExceptionNotifier joinExceptionNotifier() {
-        return () -> (data, ex) -> {
-            log.error("Join Exception:", ex);
-        };
+        return () -> (data, ex) -> log.error("Join Exception:", ex);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public AfterJoinExceptionNotifier afterJoinExceptionNotifier() {
-        return () -> (data, ex) -> {
-            log.error("AfterJoin Exception:", ex);
-        };
+        return () -> (data, ex) -> log.error("AfterJoin Exception:", ex);
     }
 
     @Bean
@@ -117,14 +112,17 @@ public class JoinInMemoryAutoConfiguration {
     }
 
     @Bean
-    public AfterJoinBasedAfterJoinMethodExecutorFactory afterJoinBasedAfterJoinMethodExecutorFactory() {
-        return new AfterJoinBasedAfterJoinMethodExecutorFactory();
+    public AfterJoinBasedAfterJoinMethodExecutorFactory afterJoinBasedAfterJoinMethodExecutorFactory(SpELHelper spELHelper) {
+        return new AfterJoinBasedAfterJoinMethodExecutorFactory(spELHelper);
     }
 
+    /**
+     * Default Join In Memory Executor (Default pool)
+     */
     @Bean
     public ExecutorService defaultJoinInMemoryExecutor() {
         final BasicThreadFactory basicThreadFactory = new BasicThreadFactory.Builder()
-                .namingPattern("JoinInMemory-Thread-%d")
+                .namingPattern("JIM-T-%d")
                 .daemon(true)
                 .build();
         final int maxSize = Runtime.getRuntime().availableProcessors() * 3;

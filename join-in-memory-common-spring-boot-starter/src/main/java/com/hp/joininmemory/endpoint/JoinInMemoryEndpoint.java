@@ -9,12 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Actuator Endpoint
- *
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
- */
-@Endpoint(id = "join-in-memory")
+@Endpoint(id = "joininmemory")
 @RequiredArgsConstructor
 public class JoinInMemoryEndpoint {
 

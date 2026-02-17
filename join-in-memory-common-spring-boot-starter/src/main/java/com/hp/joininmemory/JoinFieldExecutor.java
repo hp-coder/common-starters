@@ -1,16 +1,17 @@
 package com.hp.joininmemory;
 
+import com.hp.joininmemory.support.AbstractAnnotationBasedJoinFieldExecutorFactory;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.expression.spel.support.StandardTypeConverter;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.Collection;
 
 /**
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
+ * @version 1.0.0
+ * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
+ * @date 2026/1/6
  */
-public interface JoinFieldExecutor<DATA> {
+public interface JoinFieldExecutor<DATA> extends JoinFieldGrouper {
 
     StandardTypeConverter STANDARD_TYPE_CONVERTER = new StandardTypeConverter();
 
@@ -38,12 +39,18 @@ public interface JoinFieldExecutor<DATA> {
     /**
      * The name of the join field executor
      *
-     * @see com.hp.joininmemory.support.AbstractAnnotationBasedJoinFieldExecutorFactory#createName(Class, Field,
-     * Annotation)
+     * @see AbstractAnnotationBasedJoinFieldExecutorFactory
+     * AbstractAnnotationBasedJoinFieldExecutorFactory.createName(Class, Field, Annotation)
      */
     String getName();
 
+    /**
+     * The actual field that is being joined. It can be a nested field.
+     */
     String getTargetFieldName();
 
+    /**
+     * The class of the target field. In nested join operations, it is the root class name
+     */
     String getTargetClassName();
 }

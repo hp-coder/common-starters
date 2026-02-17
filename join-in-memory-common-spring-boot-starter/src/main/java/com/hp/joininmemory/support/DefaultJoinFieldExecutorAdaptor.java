@@ -11,12 +11,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
+ * @version 1.0.0
+ * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
+ * @date 2026/1/6
  */
 @Getter
 @Slf4j
@@ -27,7 +30,10 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
     private final String name;
     private final int batchSize;
     private final int runLevel;
+    private final String groupingKey;
+    private final List<String> hierarchicalPaths;
 
+    private final BiFunction<SOURCE_DATA, List<String>, Collection<SOURCE_DATA>> extractSourceData;
     private final Function<SOURCE_DATA, Boolean> sourceDataFilter;
     private final Function<SOURCE_DATA, JOIN_KEY> keyFromSource;
     private final Function<Collection<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader;
@@ -40,6 +46,8 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
     public DefaultJoinFieldExecutorAdaptor(
             String name,
             int runLevel,
+            List<String> hierarchicalPaths,
+            BiFunction<SOURCE_DATA, List<String>, Collection<SOURCE_DATA>> extractSourceData,
             Function<SOURCE_DATA, Boolean> sourceDataFilter,
             Function<SOURCE_DATA, JOIN_KEY> keyFromSource,
             Function<Collection<JOIN_KEY>, List<JOIN_DATA>> joinDataLoader,
@@ -47,9 +55,12 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
             Function<JOIN_DATA, Boolean> joinDataFilter,
             Function<JOIN_DATA, JOIN_RESULT> joinDataConverter,
             BiConsumer<SOURCE_DATA, Collection<JOIN_RESULT>> foundCallback,
-            BiConsumer<SOURCE_DATA, JOIN_KEY> lostCallback
+            BiConsumer<SOURCE_DATA, JOIN_KEY> lostCallback,
+            String groupingKey
     ) {
         this.name = name;
+        this.hierarchicalPaths = hierarchicalPaths;
+        this.extractSourceData = extractSourceData;
         this.sourceDataFilter = sourceDataFilter;
         this.keyFromSource = Objects.requireNonNull(keyFromSource);
         this.joinDataLoader = Objects.requireNonNull(joinDataLoader);
@@ -65,10 +76,17 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
         this.runLevel = runLevel;
 
         this.batchSize = JoinHelper.getJoinKeyBatch();
+
+        this.groupingKey = groupingKey;
     }
 
     private BiConsumer<SOURCE_DATA, JOIN_KEY> getDefaultLostFunction() {
         return (data, joinKey) -> log.debug("failed to find join data by {} for {}", joinKey, data);
+    }
+
+    @Override
+    protected Collection<SOURCE_DATA> extractSouceData(SOURCE_DATA rawDataList) {
+        return this.extractSourceData.apply(rawDataList, hierarchicalPaths);
     }
 
     @Override
@@ -144,5 +162,10 @@ public class DefaultJoinFieldExecutorAdaptor<SOURCE_DATA, JOIN_KEY, JOIN_DATA, J
     @Override
     public String toString() {
         return "JoinExecutorAdapter-for-" + name;
+    }
+
+    @Override
+    public String groupingKey() {
+        return this.groupingKey;
     }
 }

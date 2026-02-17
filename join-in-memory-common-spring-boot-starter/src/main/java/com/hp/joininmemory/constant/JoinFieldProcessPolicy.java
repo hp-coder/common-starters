@@ -3,12 +3,19 @@ package com.hp.joininmemory.constant;
 import java.util.Objects;
 
 /**
- * For {@link JoinFieldProcessPolicy#GROUPED}, the framework will try to group the join fields using the same join
- * annotation into one executor.
- * <p>
- * For {@link JoinFieldProcessPolicy#SEPARATED}, the framework will treat each join field as a separate executor.
+ * The JoinFieldProcessPolicy enum defines strategies for processing join fields.
  *
- * @author <a href="mailto:max_verstrappon@outlook.com">HuPeng</a>
+ * <p>For the {@link JoinFieldProcessPolicy#GROUPED} strategy,
+ * the framework attempts to group join fields with the same join annotation
+ * into a single executor. This approach significantly reduces I/O operations
+ * and is recommended for performance optimization.</p>
+ *
+ * <p>For the {@link JoinFieldProcessPolicy#SEPARATED} strategy,
+ * the framework treats each join field as an independent executor.</p>
+ *
+ * @version 1.0.0
+ * @developers <a href="mailto:max_verstrappon@outlook.com">Hu Peng</a>
+ * @date 2026/1/6
  */
 public enum JoinFieldProcessPolicy {
     GROUPED,

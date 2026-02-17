@@ -1,0 +1,15 @@
+logging:
+  level:
+    root: info
+    com.pwc.sdc: debug
+    com.pwc.sdc.joininmemory: trace
+commons:
+  json:
+    base-enum:
+      enhancement:
+        enable: false
+
+join-in-memory:
+  metrics:
+    enable-detailed-metrics: true
+    enable-metrics: true
